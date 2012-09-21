@@ -1,0 +1,36 @@
+#! /usr/bin/env ruby
+# encoding: UTF-8
+
+require "clap"
+require "terminal-table/import"
+require File.expand_path("../lib/ft", File.dirname(__FILE__))
+
+Clap.run ARGV,
+  "query" => -> {
+    format = nil
+
+    args = Clap.run ARGV[1..-1],
+      "-f" => -> f { format = f }
+
+    ft = FusionTables::Connection.new
+
+    begin
+      result = ft.query(args[0])
+    rescue FusionTables::Error => e
+      $stderr.puts(e.message)
+      exit 1
+    end
+
+    format ||= "table" if $stdout.tty?
+
+    if format == "table"
+      result << Array.new(result[0].size) if result.size == 1
+      puts table(*result)
+    else
+      CSV do |csv|
+        result.each do |row|
+          csv << row
+        end
+      end
+    end
+  }

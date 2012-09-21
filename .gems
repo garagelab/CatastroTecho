@@ -1,0 +1,3 @@
+rdiscount
+sequel-fusiontables
+sinatra
