@@ -34,16 +34,33 @@ header, footer, section, nav {
 
 /* line 44, ../../sass/styles.scss */
 body {
-  background: #e0e0e0;
+/*  background: #e0e0e0; */
+  background: #ffffff;
 }
+
+/* Test by Andreas >> */
+.tratamiento {
+  background: #ffffff;
+  color: #000000;
+ /* text-shadow: #aaaaaa 0px 0px 1px; */
+  font-size: 22px;
+  line-height: 38px;
+  font-weight: 600;
+  float: left;
+  padding: 5px 25px 0 15px;
+  width: 240px;
+}
+/* << End Test */
 
 /* line 48, ../../sass/styles.scss */
 body > header {
   background: url('/public/images/exclusive_paper.png?1342579446') repeat center center;
+/*
   -moz-box-shadow: 0px 0px 5px #333333;
   -webkit-box-shadow: 0px 0px 5px #333333;
   -o-box-shadow: 0px 0px 5px #333333;
   box-shadow: 0px 0px 5px #333333;
+*/
   color: #fff;
   display: block;
   height: 48px;
@@ -129,11 +146,11 @@ body > nav {
 }
 /* line 123, ../../sass/styles.scss */
 .views a.table span {
-  background: url('/public/images/table.png?1342579446') no-repeat center center;
+  background: url('/images/table.png?1342579446') no-repeat center center;
 }
 /* line 124, ../../sass/styles.scss */
 .views a.map span {
-  background: url('/public/images/map.png?1342579446') no-repeat center center;
+  background: url('/images/map.png?1342579446') no-repeat center center;
 }
 /* line 126, ../../sass/styles.scss */
 .views a.active {
@@ -325,18 +342,22 @@ body > nav {
 /* line 274, ../../sass/styles.scss */
 #sidebar {
   background: url('/public/images/exclusive_paper.png?1342579446') repeat center center;
+/*
   -moz-box-shadow: #999999 1px 0px 6px;
   -webkit-box-shadow: #999999 1px 0px 6px;
   -o-box-shadow: #999999 1px 0px 6px;
   box-shadow: #999999 1px 0px 6px;
+*/
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
+/*
   -moz-box-shadow: 0px 0px 5px #333333;
   -webkit-box-shadow: 0px 0px 5px #333333;
   -o-box-shadow: 0px 0px 5px #333333;
   box-shadow: 0px 0px 5px #333333;
+*/
   height: 100%;
   overflow: auto;
   padding-top: 48px;
@@ -409,11 +430,11 @@ body > nav {
 }
 /* line 340, ../../sass/styles.scss */
 #sidebar ul li.barrios {
-  border: 1px solid #e87569;
+  border: 2px solid #e87569;
 }
 /* line 27, ../../sass/styles.scss */
 #sidebar ul li.barrios > header {
-  background: #e87569;
+/*  background: #e87569; */
 }
 /* line 342, ../../sass/styles.scss */
 #sidebar ul li.disabled {

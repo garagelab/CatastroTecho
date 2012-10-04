@@ -1,19 +1,38 @@
 # encoding: UTF-8
 
 $LOAD_PATH.unshift(File.expand_path("vendor/ft-0.0.3/lib", File.dirname(__FILE__)))
-
+require 'rubygems'
+require 'bundler'
 require "sinatra/base"
 require "sequel"
 require "json"
 
 Tilt.register 'md', Tilt::RDiscountTemplate
 
+# Test-Connect to database.
+#db = Sequel.connect("fusiontables:///")[579353]
+
+# Get a datatest for testing.
+#ds = db.select("NOMBRE DEL BARRIO").all
+
+#table = db[579353]
+#FusionTables::Connection::URL = URI.parse("http://www.google.com/fusiontables/DataSource?dsrcid=5355203")
+#puts table.select("NOMBRE DEL BARRIO").where("AÑO DE CONFORMACIÓN DEL BARRIO" => 2005).all
+
 DB = Sequel.connect("fusiontables:///")
 
-FusionTables::Connection::URL = URI.parse("http://tables.googlelabs.com/api/query")
+# Call for "Old" Google API...
+#FusionTables::Connection::URL = URI.parse("http://tables.googlelabs.com/api/query")
+# New Google API, valid since June 2012!
+FusionTables::Connection::URL = URI.parse("https://www.googleapis.com/fusiontables/v1/query")
 
+#FusionTables::Connection::URL = URI.parse("http://www.google.com/fusiontables/DataSource?dsrcid=5355203")
+#http://www.google.com/fusiontables/DataSource?dsrcid=5355203
+
+# In Fusion, table IDs are numbers.
 TABLES = {
-  :barrios       => 2338632,
+  #:barrios => 2338632,
+  :barrios => 5355203, 
 }
 
 Barrios = DB[TABLES[:barrios]]
@@ -22,6 +41,7 @@ class NilClass
   def empty?; true; end
 end
 
+# Application main class
 class Techo < Sinatra::Base
   helpers do
     def root(path)
@@ -73,4 +93,7 @@ class Techo < Sinatra::Base
     @barrio = Barrios.where(:id => id).first
     erb(:"barrio")
   end
+
+  # Start the server, if ruby file executed directly.
+  run! if app_file == $0
 end

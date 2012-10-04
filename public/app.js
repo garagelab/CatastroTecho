@@ -19,6 +19,8 @@ var TECHO = {
 
   arrayToPolygon: function(ary, polygonOptions) {
     polygonOptions.paths = TECHO.arrayToPoints(ary);
+    polygonOptions.fillColor = "blue";
+
 
     return new google.maps.Polygon(polygonOptions);
   }
@@ -64,16 +66,19 @@ function initializeMap() {
                 ]
               }
             ];
+  
   window.map = new google.maps.Map(document.getElementById('map'), {
     center: mapaBase,
-    zoom: 12,
-    minZoom: 9,
+    zoom: 11, /* 12 was default by QPR. */
+    minZoom: 9, /* 9 was default by QPR. */
     mapTypeId: 'roadmap',
     streetViewControl: false,
-	styles: mapStyles
+    styles: mapStyles
   });
 
   var everything = [[-90, -90], [-90, 90], [90, -90], [-90, -90]];
+
+
 /*
   var cuenca = new google.maps.Polygon({
     paths: [TECHO.arrayToPoints(everything), TECHO.arrayToPoints(window.cuenca)],
@@ -85,8 +90,86 @@ function initializeMap() {
 
   cuenca.setMap(map);
 */
+
+// Adding Overlays TEST
+// ####### BEGIN InfoWindow test #################
+/*
+var myLatlng = new google.maps.LatLng(-34.672747, -58.41774);
+var marker = new google.maps.Marker({
+    position: myLatlng,
+    title:"Hello World!"
+});
+
+// To add the marker to the map, call setMap();
+marker.setMap(window.map);
+
+var infowindow = new google.maps.InfoWindow({content: "<p>Marker-Info</p>"});
+google.maps.event.addListener(marker, 'click', function() {
+  infowindow.open(map, marker);
+});
+*/
+// ####### END InfoWindow test #################
+
+
+
+
+// TEST POLIGONO
+//Cell: ( La Ribera 1 | Poligono  )
+/*
+var path_definition = [
+new google.maps.LatLng(-58.215881,-34.728414),
+new google.maps.LatLng(-58.215484,-34.727693),
+new google.maps.LatLng(-58.214899,-34.727073),
+new google.maps.LatLng(-58.209042,-34.724522),
+new google.maps.LatLng(-58.214501,-34.720804),
+new google.maps.LatLng(-58.227027,-34.712789),
+new google.maps.LatLng(-58.233318,-34.70865),
+new google.maps.LatLng(-58.238316,-34.711607),
+new google.maps.LatLng(-58.215881,-34.728414)
+];
+
+var myPolygon;
+myPolygon = new google.maps.Polygon({
+paths: path_definition,
+strokeColor: "#FF0000", 
+strokeOpacity: 0.3,     
+strokeWeight: 1,        
+fillColor: #FF0000,   
+fillOpacity: 0.1,       
+});
+
+myPolygon.setMap(map);
+
+// Add a listener for the click event
+google.maps.event.addListener(myPolygon, 'click', show_myInfowindow);
+
+var myInfowindow;
+myInfowindow = new google.maps.InfoWindow();
+*/
+
   refresh();
 }
+
+
+function show_myInfowindow(event) {
+
+var vertices = this.getPath();
+var contentString = "<b>My Polygon</b>";
+
+// Iterate over the vertices.
+for (var i =0; i < vertices.length; i++) {
+var xy = vertices.getAt(i);
+}
+
+// Replace our Info Window's position
+myInfowindow.setContent(contentString);
+myInfowindow.setPosition(event.latLng);
+myInfowindow.open(map);
+} 
+
+
+
+
 
 function refresh() {
   $.each(Layer.find('*'), function() { this.conditions = []; });
@@ -201,13 +284,43 @@ var bubble = null;
 
 var COLUMNS = {
   barrios: [
-    {sName: "semaforo_riesgo_absoluto", sTitle: "Semáforo (Riesgo)", asSorting: ["desc", "asc"]},
-    {sName: "semaforo_legal_absoluto", sTitle: "Semáforo (Legal)", asSorting: ["desc", "asc"]},
-    {sName: "razon_social", sTitle: "Razón social", fnRender: function(o) {
-      return '<a href="/industrias/' + o.aData[3] + '">' + o.aData[o.iDataColumn] + '</a>';
-    }},
-    {sName: "cuit", sTitle: "CUIT"},
-    {sName: "curt", sTitle: "CURT"},
+    { sName: "NOMBRE DEL BARRIO", sTitle: "NOMBRE DEL BARRIO", asSorting: ["desc", "asc"] },
+    { sName: "OTRO NOMBRE DEL BARRIO", sTitle: "OTRO NOMBRE DEL BARRIO", asSorting: ["desc", "asc"] },
+    { sName: "PARTIDO", sTitle: "PARTIDO", asSorting: ["desc", "asc"] },
+    { sName: "LOCALIDAD", sTitle: "LOCALIDAD", asSorting: ["desc", "asc"] },
+    { sName: "AÑO DE CONFORMACIÓN DEL BARRIO", sTitle: "AÑO DE CONFORMACIÓN DEL BARRIO", asSorting: ["desc", "asc"] },
+    { sName: "MODALIDAD EN LA QUE SE CONSTITUYÓ EL BARRIO", sTitle: "MODALIDAD EN LA QUE SE CONSTITUYÓ EL BARRIO", asSorting: ["desc", "asc"] },
+    { sName: "AÑO DE MAYOR CRECIMIENTO", sTitle: "AÑO DE MAYOR CRECIMIENTO", asSorting: ["desc", "asc"] },
+    { sName: "NRO DE FLIAS", sTitle: "NRO DE FAMILIAS", asSorting: ["desc", "asc"] },
+    { sName: "MODALIDAD ADOPTADA POR LAS NUEVAS GENERACIONES 1", sTitle: "MODALIDAD ADOPTADA POR LAS NUEVAS GENERACIONES 1", asSorting: ["desc", "asc"] },
+    { sName: "MODALIDAD ADOPTADA POR LAS NUEVAS GENERACIONES 2", sTitle: "MODALIDAD ADOPTADA POR LAS NUEVAS GENERACIONES 2", asSorting: ["desc", "asc"] },
+    { sName: "ACCESO A LA ENERGÍA", sTitle: "ACCESO A LA ENERGÍA", asSorting: ["desc", "asc"] },
+    { sName: "RED CLOACAL", sTitle: "RED CLOACAL", asSorting: ["desc", "asc"] },
+    { sName: "AGUA", sTitle: "AGUA", asSorting: ["desc", "asc"] },
+    { sName: "PROVISIÓN DE AGUA", sTitle: "PROVISIÓN DE AGUA", asSorting: ["desc", "asc"] },
+    { sName: "GAS", sTitle: "GAS", asSorting: ["desc", "asc"] },
+    { sName: "DESAGÜES PLUVIALES", sTitle: "DESAGÜES PLUVIALES", asSorting: ["desc", "asc"] },
+    { sName: "ALUMBRADO PÚBLICO", sTitle: "ALUMBRADO PÚBLICO", asSorting: ["desc", "asc"] },
+    { sName: "RECOLECCIÓN DE RESIDUOS", sTitle: "RECOLECCIÓN DE RESIDUOS", asSorting: ["desc", "asc"] },
+    { sName: "EL BARRIO SE ENCUENTRA CERCA DE 1", sTitle: "EL BARRIO SE ENCUENTRA CERCA DE 1", asSorting: ["desc", "asc"] },
+    { sName: "EL BARRIO SE ENCUENTRA CERCA DE 2", sTitle: "EL BARRIO SE ENCUENTRA CERCA DE 2", asSorting: ["desc", "asc"] },
+    { sName: "EL BARRIO SE ENCUENTRA CERCA DE 3", sTitle: "EL BARRIO SE ENCUENTRA CERCA DE 3", asSorting: ["desc", "asc"] },
+    { sName: "EXISTENCIA DE UN PROGRAMA DE VIVIENDA DEL ESTADO", sTitle: "EXISTENCIA DE UN PROGRAMA DE VIVIENDA DEL ESTADO", asSorting: ["desc", "asc"] },
+    { sName: "ESPECIFICAR CANTIDAD DE CASILLAS", sTitle: "ESPECIFICAR CANTIDAD DE CASILLAS", asSorting: ["desc", "asc"] },
+    { sName: "LLEGADA AL BARRIO EN TRANSPORTE PÚBLICO", sTitle: "LLEGADA AL BARRIO EN TRANSPORTE PÚBLICO", asSorting: ["desc", "asc"] }
+  ]
+};
+
+/*
+       fnRender: function(o) {
+        return '<a href="/industrias/' + o.aData[3] + '">' + o.aData[o.iDataColumn] + '</a>'; } 
+*/
+
+
+/*
+    { sName: "curt", 
+      sTitle: "CURT"
+    },
     {sName: "localidad_real", sTitle: "Localidad"},
     {sName: "partido_real", sTitle: "Partido"},
     {sName: "sitio_web", sTitle: "URL"},
@@ -222,14 +335,13 @@ var COLUMNS = {
     {sName: "actividad_4", sTitle: "Actividad 4"},
     {sName: "actividad_5", sTitle: "Actividad 5"},
     {sName: "location", sTitle: "Dirección"},
-    // {sName: "residuos_liquidos", sTitle: "Res. líquidos"},
+    {sName: "residuos_liquidos", sTitle: "Res. líquidos"},
     {sName: "emisiones_gaseosas", sTitle: "Emisiones gaseosas"},
     {sName: "residuos_patogenicos", sTitle: "Res. patogénicos"},
     {sName: "residuos_peligrosos", sTitle: "Res. peligrosos"},
     {sName: "residuos_solidos", sTitle: "Res. sólidos"},
-    {sName: "tratamiento_de_efluentes", sTitle: "Trata efluentes líquidos"},
-  ],
-};
+    {sName: "tratamiento_de_efluentes", sTitle: "Trata efluentes líquidos"}
+*/
 
 function fillTable($table, cols, rows) {
   var dataTable = $table.dataTable();
