@@ -1,0 +1,37 @@
+<!-- Tabla de Barrios - Test Prototipo
+================================================== -->
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span12 bs-docs-sidebar">
+      <h2>Tabla de Barrios</h2>
+      <p class="lead"><strong><span style="color: #0092dd">en el Gran Buenos Aires</span></strong></p>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span12">
+<!--
+      <form action="">
+        Number of rows to show:
+        <select onChange="setOption('pageSize', parseInt(this.value, 10))">
+          <option value="15">15</option>
+          <option selected=selected value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="-1">-1</option>
+        </select>
+      </form>
+-->
+      <div id="table_div" style="height: 700px; width: 1050px; margin: 0px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Initialize -->
+<script type="text/javascript">
+    google.load('visualization', '1', {'packages' : ['table'] } );
+    google.setOnLoadCallback(initTable);
+</script>
+</script>
+<script>
+  window.onload = function() { initTable(); };
+</script>

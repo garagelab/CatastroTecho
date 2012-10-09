@@ -54,8 +54,8 @@ body {
 
 /* line 48, ../../sass/styles.scss */
 body > header {
-  background: url('/public/images/exclusive_paper.png?1342579446') repeat center center;
 /*
+  background: url('/public/images/exclusive_paper.png?1342579446') repeat center center;
   -moz-box-shadow: 0px 0px 5px #333333;
   -webkit-box-shadow: 0px 0px 5px #333333;
   -o-box-shadow: 0px 0px 5px #333333;
@@ -341,8 +341,9 @@ body > nav {
 
 /* line 274, ../../sass/styles.scss */
 #sidebar {
-  background: url('/public/images/exclusive_paper.png?1342579446') repeat center center;
 /*
+  background: url('/public/images/exclusive_paper.png?1342579446') repeat center center;
+
   -moz-box-shadow: #999999 1px 0px 6px;
   -webkit-box-shadow: #999999 1px 0px 6px;
   -o-box-shadow: #999999 1px 0px 6px;

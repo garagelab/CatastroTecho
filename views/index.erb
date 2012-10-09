@@ -1,94 +1,23 @@
-    <div id='sidebar'>
-      
-      <a href="http://www.untechoparamipais.org/argentina/home" target="_blank">
-        <img src="/images/logo_techo1.png" width="260" height="105" alt="" />
-      </a>
-      
-      <h2>¿Qué estás viendo?</h2>
-      <ul id='layers'>
-        <li data-layer-name='barrios' class='barrios'>
-          <header>
-            <input type='checkbox' name='entity' value='barrios' checked> Barrios
-            <a href='#filters-barrios' class='expand'></a>
-          </header>
-        </li>
-      </ul>
-
-      <div class='views'>
-      	 <h2>¿Cómo lo estás viendo?</h2>
-        <a href='#view=map' title='Vista de mapa' class='map active'><span></span></a><a href='#view=table' title='Vista de tabla' class='table'><span></span></a>
-        <br /><span class="vista-mapa">Mapa</span><span class="vista-tabla">Tabla</span>
-      </div>
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span12 bs-docs-sidebar">
+      <h2>Las villas y los asentamientos</h2>
+      <p class="lead"><strong><span style="color: #0092dd">en el Gran Buenos Aires</span></strong></p>
+      <hr>
     </div>
-
-    <div id="main" role="main" class="fluid">
-      <div id="table" style='display: none'>
-        <table id='barrios-table' class='display'></table>
-      </div>
-
-      <div id="map"></div>
+  </div>
+  <div class="row-fluid">
+    <div class="span5">
+      <p class="lead">
+      En la Región del Gran Buenos Aires hay en la actualidad <strong>864</strong> villas y asentamientos, en los que residen <strong>508.144</strong> 
+      familias con un promedio de 604 familias por asentamiento.
+      </p>
+      <br />
+      <span class="muted">Fuente: Catastro 2011 UTPMP</span>
+      <br />
     </div>
-
-    <script type='text/html' id='barrios-bubble-template'>
-      <div class='bubble'>
-        <header>Barrio</header>
-        <h1><a href='/barrio/${id.value}'>${razon_social.value}</a></h1>
-        <span>Click para ver detalle</span>
-        <div class='chart' data-x='${semaforo_riesgo.value}' data-y='${semaforo_legal.value}'></div>
-
-        <table class='info'>
-          <!--tr>
-            <td>CUIT</td>
-            <td>${cuit.value}</td>
-          </tr>
-
-          <tr>
-            <td>Personal de oficina</td>
-            <td>${personal_oficina.value.toLowerCase()}</td>
-          </tr>
-
-          <tr>
-            <td>Personal de fábrica</td>
-            <td>${personal_fabrica.value.toLowerCase()}</td>
-          </tr>
-
-          <tr>
-            <td>Superficie total</td>
-            <td>${superficie_total.value.toLowerCase()} m²</td>
-          </tr>
-
-          <tr>
-            <td>Superficie cubierta</td>
-            <td>${superficie_cubierta.value.toLowerCase()} m²</td>
-          </tr>
-
-          <tr>
-            <td>Consumo eléctrico</td>
-            <td>${consumo_electricidad.value} HP</td>
-          </tr-->
-
-          <tr>
-            <td>Actividades</td>
-            <td>
-              ${excerpt(actividad_1.value, 100)}
-              <br>
-              ${excerpt(actividad_2.value, 100)}
-            </td>
-          </tr>
-          <tr>
-            <td>Direcci&oacute;n</td>
-            <td>
-              ${calle.value} ${nro_calle.value}
-              <br>
-              ${localidad_real.value} - ${partido_real.value}
-            </td>
-          </tr>
-
-
-        </table>
-      </div>
-    </script>
-
-    <script>
-      window.onload = function() { initializeMap(); };
-    </script>
+    <div class="span7">
+      <%=img("mapa_gran_bs_as1.gif")%>
+    </div>
+  </div>
+</div>

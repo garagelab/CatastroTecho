@@ -19,16 +19,17 @@ var TECHO = {
 
   arrayToPolygon: function(ary, polygonOptions) {
     polygonOptions.paths = TECHO.arrayToPoints(ary);
-    polygonOptions.fillColor = "blue";
-
+  //  polygonOptions.fillColor = '#FF0000';
+  //  polygonOptions.fillOpacity = 0.1;
 
     return new google.maps.Polygon(polygonOptions);
   }
 };
 
 function initializeMap() {
-
-  var mapaBase = new google.maps.LatLng(-34.672747,-58.41774);
+  //
+  //
+  var mapBase = new google.maps.LatLng(-34.672747,-58.41774);
   var mapStyles = [
               {
                 featureType: "poi.business",
@@ -65,10 +66,11 @@ function initializeMap() {
                   { visibility: "off" }
                 ]
               }
+
             ];
-  
+
   window.map = new google.maps.Map(document.getElementById('map'), {
-    center: mapaBase,
+    center: mapBase,
     zoom: 11, /* 12 was default by QPR. */
     minZoom: 9, /* 9 was default by QPR. */
     mapTypeId: 'roadmap',
@@ -76,100 +78,74 @@ function initializeMap() {
     styles: mapStyles
   });
 
+  // #############################################################################
+  // ####### BEGIN InfoWindow test #################
+  // #############################################################################
+  //Cell: ( La Ribera 1 | Poligono  )
+
+  var barrio_la_ribera1 = [
+    new google.maps.LatLng(-58.215881,-34.728414),
+    new google.maps.LatLng(-58.215484,-34.727693),
+    new google.maps.LatLng(-58.214899,-34.727073),
+    new google.maps.LatLng(-58.209042,-34.724522),
+    new google.maps.LatLng(-58.214501,-34.720804),
+    new google.maps.LatLng(-58.227027,-34.712789),
+    new google.maps.LatLng(-58.233318,-34.70865),
+    new google.maps.LatLng(-58.238316,-34.711607),
+    new google.maps.LatLng(-58.215881,-34.728414)
+  ];
+
   var everything = [[-90, -90], [-90, 90], [90, -90], [-90, -90]];
 
-
-/*
-  var cuenca = new google.maps.Polygon({
-    paths: [TECHO.arrayToPoints(everything), TECHO.arrayToPoints(window.cuenca)],
-    strokeWeight: 0,
-    strokeOpacity: 0.2,
-    fillColor: "#000000",
-    fillOpacity: 0.1
-  });
+  
+  var cuenca = new google.maps.Polygon(  {
+  //  paths: [TECHO.arrayToPoints(everything), TECHO.arrayToPoints(window.cuenca)],
+    paths: barrio_la_ribera1,
+    strokeColor: "#FF0000", 
+    strokeOpacity: 0.3,     
+    strokeWeight: 1,        
+    fillColor: "#FF0000",   
+    fillOpacity: 0.1    
+    }
+  );
 
   cuenca.setMap(map);
-*/
-
-// Adding Overlays TEST
-// ####### BEGIN InfoWindow test #################
-/*
-var myLatlng = new google.maps.LatLng(-34.672747, -58.41774);
-var marker = new google.maps.Marker({
-    position: myLatlng,
-    title:"Hello World!"
-});
-
-// To add the marker to the map, call setMap();
-marker.setMap(window.map);
-
-var infowindow = new google.maps.InfoWindow({content: "<p>Marker-Info</p>"});
-google.maps.event.addListener(marker, 'click', function() {
-  infowindow.open(map, marker);
-});
-*/
-// ####### END InfoWindow test #################
 
 
+  // Add a listener for the click event
+//  google.maps.event.addListener(cuenca, 'click', show_InfoWindow);
 
+//  info_window = new google.maps.InfoWindow();
+  // #############################################################################
+  // ####### END InfoWindow test #################
+  // #############################################################################
 
-// TEST POLIGONO
-//Cell: ( La Ribera 1 | Poligono  )
-/*
-var path_definition = [
-new google.maps.LatLng(-58.215881,-34.728414),
-new google.maps.LatLng(-58.215484,-34.727693),
-new google.maps.LatLng(-58.214899,-34.727073),
-new google.maps.LatLng(-58.209042,-34.724522),
-new google.maps.LatLng(-58.214501,-34.720804),
-new google.maps.LatLng(-58.227027,-34.712789),
-new google.maps.LatLng(-58.233318,-34.70865),
-new google.maps.LatLng(-58.238316,-34.711607),
-new google.maps.LatLng(-58.215881,-34.728414)
-];
-
-var myPolygon;
-myPolygon = new google.maps.Polygon({
-paths: path_definition,
-strokeColor: "#FF0000", 
-strokeOpacity: 0.3,     
-strokeWeight: 1,        
-fillColor: #FF0000,   
-fillOpacity: 0.1,       
-});
-
-myPolygon.setMap(map);
-
-// Add a listener for the click event
-google.maps.event.addListener(myPolygon, 'click', show_myInfowindow);
-
-var myInfowindow;
-myInfowindow = new google.maps.InfoWindow();
-*/
-
-  refresh();
+//  $('#map').show();
+//  $('#table').hide();
+//  TECHO.view = 'map';
+  refresh();  
 }
 
+  /*
+function show_InfoWindow(event) {
+  // Shows an InfoWindow for a polygon, point, etc.
+  //
+  // App-Test ONLY!!!!!!!!!!!!!!!!!!!
+  alert(event + " Funktion show_InfoWindow()");  
+  var vertices = this.getPath();
+  var contentString = "<b>My Polygon</b>";
 
-function show_myInfowindow(event) {
+  // Iterate over the vertices.
+  for (var i =0; i < vertices.length; i++) {
+    var xy = vertices.getAt(i);
+  }
 
-var vertices = this.getPath();
-var contentString = "<b>My Polygon</b>";
-
-// Iterate over the vertices.
-for (var i =0; i < vertices.length; i++) {
-var xy = vertices.getAt(i);
-}
-
-// Replace our Info Window's position
-myInfowindow.setContent(contentString);
-myInfowindow.setPosition(event.latLng);
-myInfowindow.open(map);
+  // Replace our Info Window's position
+  info_window.setContent(contentString);
+  info_window.setPosition(event.latLng);
+  info_window.open(map);
 } 
-
-
-
-
+  */
 
 function refresh() {
   $.each(Layer.find('*'), function() { this.conditions = []; });
@@ -280,6 +256,8 @@ function refreshVisibleEntities() {
   });
 }
 
+
+var info_window = null;
 var bubble = null;
 
 var COLUMNS = {
@@ -357,14 +335,45 @@ function Layer(name, source) {
   this.source = source;
   this.visible = true;
 
-  this.ftLayer = new google.maps.FusionTablesLayer({
-    suppressInfoWindows: true
-  });
+  this.ftLayer = new google.maps.FusionTablesLayer( {
+    suppressInfoWindows: false,
+    styles: [ {
+      polygonOptions: {
+        fillColor: "#1e90ff",     // Color del plano
+        fillOpacity: 0.5,         // Opacidad del plano
+        strokeColor: "#000000",   // Color del margen
+        strokeOpacity: 0.5,       // Opacidad del margen     
+        strokeWeight: 1,          // Grosor del margen
+      },
+    } ]
+  } );
+
+ // var contentString = "<b>My Polygon</b>";
+  // Replace our Info Window's position
+  //Layer.info_window.setContent(contentString);
+
+/*
+   var contentString = 
+                '<div id="content" style="width:400px; background-color:red;">' +
+                'My Text comes here' + 
+                '</div>';
+
+   var infowindow = new google.maps.InfoWindow({
+            content: contentString,
+            maxWidth: 400
+        });
+
+*/
+
 
   return this;
 }
 
 Layer.bubble = new google.maps.InfoWindow();
+Layer.info_window = new google.maps.InfoWindow();
+
+//var contentString = "<b>My Polygon</b>";
+//Layer.info_window.setContent(contentString);
 
 Layer.prototype.hide = function() {
   this.visible = false;
@@ -383,6 +392,7 @@ Layer.prototype.getBubbleHTML = function(row) {
 Layer.prototype.refreshMap = function(map) {
   Layer.bubble.close();
 
+
   var options = {
     query: {
       select: 'Poligono',
@@ -400,6 +410,10 @@ Layer.prototype.refreshMap = function(map) {
 
   var layer = this;
 
+  /*
+  // **************************************************************************************
+  // ha quitado temporal de Andreas
+  // **************************************************************************************
   google.maps.event.addListener(this.ftLayer, 'click', function(e) {
     Layer.bubble.close();
 
@@ -409,6 +423,7 @@ Layer.prototype.refreshMap = function(map) {
     Layer.bubble.open(map);
     $(document.body).trigger('bubble.maps', Layer.bubble);
   });
+  */
 }
 
 Layer.prototype.getMap = function() {

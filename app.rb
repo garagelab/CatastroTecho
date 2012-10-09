@@ -4,8 +4,13 @@ $LOAD_PATH.unshift(File.expand_path("vendor/ft-0.0.3/lib", File.dirname(__FILE__
 require 'rubygems'
 require 'bundler'
 require "sinatra/base"
+require 'erb'
+require 'sinatra/partial'
 require "sequel"
 require "json"
+
+#require File.expand_path( File.join File.dirname(__FILE__), "../ext/kernel.rb")
+#require_relative "../whitespace_remove.rb"
 
 Tilt.register 'md', Tilt::RDiscountTemplate
 
@@ -43,6 +48,8 @@ end
 
 # Application main class
 class Techo < Sinatra::Base
+  register Sinatra::Partial
+
   helpers do
     def root(path)
       File.expand_path(path, File.dirname(__FILE__))
@@ -64,6 +71,10 @@ class Techo < Sinatra::Base
         "No"
       end
     end
+
+    def img name
+      "<img src='/images/#{name}' alt='#{name}'/>"
+    end
   end
 
   set :app_file, __FILE__
@@ -81,12 +92,22 @@ class Techo < Sinatra::Base
     end
   end
 
-  get "/" do
-    erb(:"index")
+  configure do
+    #set :public_folder, Proc.new { File.join(root, "static") }
+    enable :sessions
   end
 
-  get "/contenido/:page" do |page|
-    erb(:"contenido/#{page}")
+  enable :partial_underscores
+  set :partial_template_engine, :erb
+    
+  get '/' do
+    navsidebar = partial :"partials/navsidebar"
+    footer = partial :"partials/footer"
+    erb :index, :locals => { :navsidebar => navsidebar, :footer => footer }
+  end
+
+  get "/content/:page" do |page|
+    erb :"content/#{page}"
   end
 
   get "/barrio/:id" do |id|
