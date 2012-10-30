@@ -4,29 +4,33 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
     <meta name='viewport' content='initial-scale=1.0, user-scalable=no'>
-    <title><%= "#{@page_title} - " if @page_title %> TECHO | UN TECHO PARA MI PAÍS</title>
+    <title><%= "#{@page_title} - " if @page_title %> TECHO | UN TECHO PARA MI PA&Iacute;S</title>
 
     <meta itemprop="name" content="Un techo para mi país">
     <meta itemprop="description" content="">
 
-    <link href='/css/smoothness/jquery-ui-1.8.14.custom.css' rel='stylesheet'>    
+    <link href='/css/smoothness/jquery-ui-1.8.14.custom.css' rel='stylesheet'>
     <link href='/css/demo_table_jui.css' rel='stylesheet'>
 
-    <!-- jQuery -->
+    <!-- jQuery library -->
     <script src="/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 
     <!-- Google Maps and Places API -->
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js'></script>
     <script type='text/javascript' src='/jquery.dataTables.min.js'></script>
+
     <script type='text/javascript' src='http://maps.google.com/maps/api/js?sensor=false'></script>
+
     <script type='text/javascript' src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'></script>
     <script src='/raphael.js'></script>
-    <script type='text/javascript' src='/app.js'></script>
 
+    <!-- Google AJAX API -->
     <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
+    <!-- Business code (Visualization functions, routines, etc.) -->
     <script type='text/javascript' src='/catastro_techo.js'></script>
-    
-    <!-- Bootstrap -->
+
+    <!-- Bootstrap javascript library -->
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
 
@@ -40,22 +44,26 @@
 -->
     <link href='/css/catastro_techo.css' rel='stylesheet'>
 
-    <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com  
+    <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com
       Quick fix for using Twitter Bootstrap with Google maps.
-      Controls and WindowInfo are not printed/shown correctly 
+      Controls and WindowInfo are not printed/shown correctly
       without this.
-      We override the style of the img tag for the div that 
-      contains the map and we need to make sure that this fix 
+      We override the style of the img tag for the div that
+      contains the map and we need to make sure that this fix
       gets included in the header aera of HTML-Code.
       See also: github.com/twitter/bootstrap/issues/1552
     ================================================== -->
     <style type="text/css">
-      #map_canvas img {  
+      #map_canvas img {
         max-width: none;
       }
 
-      #map img {  
+      #map img {
         max-width: none;
+      }
+
+      #map_canvas label {
+        width: auto; display:inline;
       }
     </style>
 
@@ -73,7 +81,8 @@
           </a>
 
           <ul class="nav">
-            <li><a href="/">Inicio</a></li>
+<!--             <li><a href="/">Inicio</a></li>
+ -->
           </ul>
 
           <ul class="nav pull-right">
@@ -91,12 +100,14 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span2 bs-docs-sidebar">
-          <%= partial :"partials/navsidebar" %>  
+          <%= partial :"partials/navsidebar" %>
+          <br>
+          <span style="font-size: 80%; color: #999999;">&nbsp;&nbsp;Versi&oacute;n de 30/10/2012</span>
         </div>
         <div class="span10">
           <!-- Código fuente individual.
           Depende de la página seleccionada.
-          ================================================== -->          
+          ================================================== -->
           <%= yield %>
         </div>
       </div>

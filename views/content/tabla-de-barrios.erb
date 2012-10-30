@@ -4,9 +4,12 @@
   <div class="row-fluid">
     <div class="span12 bs-docs-sidebar">
       <h2>Tabla de Barrios</h2>
-      <p class="lead"><strong><span style="color: #0092dd">en el Gran Buenos Aires</span></strong></p>
-    </div>
+<!--       <p class="lead"><strong><span style="color: #0092dd">en el Gran Buenos Aires</span></strong></p>
+ -->    </div>
   </div>
+
+  <div class="well">
+
   <div class="row-fluid">
     <div class="span12">
 <!--
@@ -21,17 +24,13 @@
         </select>
       </form>
 -->
-      <div id="table_div" style="height: 700px; width: 1050px; margin: 0px"></div>
+      <div id="table_div" style="height: 650px; width: 1000px; margin: 0px; border: 1px solid #ccc;"></div>
     </div>
   </div>
-</div>
 
-<!-- Initialize -->
+  </div>
+
+</div>
 <script type="text/javascript">
-    google.load('visualization', '1', {'packages' : ['table'] } );
-    google.setOnLoadCallback(initTable);
-</script>
-</script>
-<script>
-  window.onload = function() { initTable(); };
+    google.setOnLoadCallback(initializeTableBarriosPage);
 </script>

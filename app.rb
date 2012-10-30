@@ -7,17 +7,16 @@ require "sinatra/base"
 require 'erb'
 require 'sinatra/partial'
 require "sequel"
+require 'fusion_tables'
 require "json"
-
-#require File.expand_path( File.join File.dirname(__FILE__), "../ext/kernel.rb")
-#require_relative "../whitespace_remove.rb"
 
 Tilt.register 'md', Tilt::RDiscountTemplate
 
-# Test-Connect to database.
-#db = Sequel.connect("fusiontables:///")[579353]
+# Data source
 
-# Get a datatest for testing.
+# Test-Connect to data source.
+#@db_barrios = Sequel.connect("fusiontables:///")[5355203]
+# Get a dataset for testing.
 #ds = db.select("NOMBRE DEL BARRIO").all
 
 #table = db[579353]
@@ -26,8 +25,6 @@ Tilt.register 'md', Tilt::RDiscountTemplate
 
 DB = Sequel.connect("fusiontables:///")
 
-# Call for "Old" Google API...
-#FusionTables::Connection::URL = URI.parse("http://tables.googlelabs.com/api/query")
 # New Google API, valid since June 2012!
 FusionTables::Connection::URL = URI.parse("https://www.googleapis.com/fusiontables/v1/query")
 
@@ -36,11 +33,12 @@ FusionTables::Connection::URL = URI.parse("https://www.googleapis.com/fusiontabl
 
 # In Fusion, table IDs are numbers.
 TABLES = {
-  #:barrios => 2338632,
-  :barrios => 5355203, 
+  :barrios => 5355203,
 }
 
 Barrios = DB[TABLES[:barrios]]
+
+
 
 class NilClass
   def empty?; true; end
@@ -99,7 +97,8 @@ class Techo < Sinatra::Base
 
   enable :partial_underscores
   set :partial_template_engine, :erb
-    
+
+### Controllers
   get '/' do
     navsidebar = partial :"partials/navsidebar"
     footer = partial :"partials/footer"
