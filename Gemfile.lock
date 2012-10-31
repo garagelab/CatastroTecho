@@ -6,6 +6,9 @@ GEM
       clap
       net-http-persistent
       terminal-table
+    fusion_tables (0.3.1)
+      gdata_19 (>= 1.1.2)
+    gdata_19 (1.1.5)
     net-http-persistent (2.7)
     rack (1.4.1)
     rack-protection (1.2.0)
@@ -19,6 +22,8 @@ GEM
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
+    sinatra-partial (0.3.2)
+      sinatra
     terminal-table (1.4.5)
     tilt (1.3.3)
 
@@ -26,6 +31,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  fusion_tables (~> 0.3.1)
   rdiscount
   sequel-fusiontables (~> 0.0.3)
   sinatra
+  sinatra-partial (~> 0.3.2)
