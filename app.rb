@@ -6,39 +6,10 @@ require 'bundler'
 require "sinatra/base"
 require 'erb'
 require 'sinatra/partial'
-require "sequel"
 require 'fusion_tables'
 require "json"
 
 Tilt.register 'md', Tilt::RDiscountTemplate
-
-# Data source
-
-# Test-Connect to data source.
-#@db_barrios = Sequel.connect("fusiontables:///")[5355203]
-# Get a dataset for testing.
-#ds = db.select("NOMBRE DEL BARRIO").all
-
-#table = db[579353]
-#FusionTables::Connection::URL = URI.parse("http://www.google.com/fusiontables/DataSource?dsrcid=5355203")
-#puts table.select("NOMBRE DEL BARRIO").where("AÑO DE CONFORMACIÓN DEL BARRIO" => 2005).all
-
-DB = Sequel.connect("fusiontables:///")
-
-# New Google API, valid since June 2012!
-FusionTables::Connection::URL = URI.parse("https://www.googleapis.com/fusiontables/v1/query")
-
-#FusionTables::Connection::URL = URI.parse("http://www.google.com/fusiontables/DataSource?dsrcid=5355203")
-#http://www.google.com/fusiontables/DataSource?dsrcid=5355203
-
-# In Fusion, table IDs are numbers.
-TABLES = {
-  :barrios => 5355203,
-}
-
-Barrios = DB[TABLES[:barrios]]
-
-
 
 class NilClass
   def empty?; true; end
@@ -73,6 +44,13 @@ class Techo < Sinatra::Base
     def img name
       "<img src='/images/#{name}' alt='#{name}'/>"
     end
+
+    def number_with_delimeter(value)
+      #
+      # Add thousands separators to numbers.
+      #
+      value.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")
+    end
   end
 
   set :app_file, __FILE__
@@ -81,6 +59,21 @@ class Techo < Sinatra::Base
   COM = /^(https?:\/\/)(.+?)\.com\.ar/
 
   before do
+    # Application version
+    @version = "03/12/2012"
+
+    # Connect to service of fusion tables
+    @ft = GData::Client::FusionTables.new
+
+    # In Fusion, table IDs are numbers.
+    TABLES = {
+      :barrios => 2338632,
+    }
+
+    # Prepare queries.
+    @qry_total_barrios = "SELECT 'NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD' FROM #{TABLES[:barrios]} GROUP BY 'NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD';"
+    @qry_total_families = "SELECT sum('NRO DE FLIAS') as families, count('NOMBRE DEL BARRIO') FROM  #{TABLES[:barrios]};"
+
     if request.url =~ WWW
       redirect(request.url.sub(WWW, '\1'), 301)
     end
@@ -98,7 +91,7 @@ class Techo < Sinatra::Base
   enable :partial_underscores
   set :partial_template_engine, :erb
 
-### Controllers
+### Controller
   get '/' do
     navsidebar = partial :"partials/navsidebar"
     footer = partial :"partials/footer"
@@ -110,7 +103,7 @@ class Techo < Sinatra::Base
   end
 
   get "/barrio/:id" do |id|
-    @barrio = Barrios.where(:id => id).first
+    #@barrio = Barrios.where(:id => id).first
     erb(:"barrio")
   end
 

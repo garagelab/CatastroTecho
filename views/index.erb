@@ -1,9 +1,17 @@
+<!-- Inico
+================================================== -->
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12 bs-docs-sidebar">
       <h2>Las villas y los asentamientos</h2>
       <p class="lead">
-        En la región Metropolitana de Buenos Aires hay <strong><span id="number_of_barrios"></span></strong> villas y asentamientos, en los que residen <strong><span id="number_of_familias"></span></strong> familias.
+            <%
+                #@total_barrios = @ft.execute @qry_total_barrios
+                @total_families = @ft.execute @qry_total_families
+            %>
+        En la región Metropolitana de Buenos Aires hay
+        <strong><%= number_with_delimeter(@total_families[0][:"count()"].to_i) %></strong> villas y asentamientos, en los que residen <strong>
+        <%= number_with_delimeter(@total_families[0][:families].to_i) %></strong> familias.
       </p>
       <hr>
     </div>
@@ -52,5 +60,5 @@
 </div>
 <script type="text/javascript">
   // Set a callback to run when the Google Visualization library is loaded.
-  google.setOnLoadCallback(initializeIndexPage);
+  google.setOnLoadCallback(initIndexPage);
 </script>

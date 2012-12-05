@@ -39,13 +39,12 @@ var filter = {
   criteria : []
 };
 
-filter.criteria['region'] = { value: 'metropolitania' };
-filter.criteria['provincia'] = { value: 'buenos aires' };
-filter.criteria['municipio'] = { value: null };
-filter.criteria['partido'] = { value: null };
-filter.criteria['localidad'] = { value: null };
-filter.criteria['barrio'] = { value: null };
-filter.criteria['selected_area'] = { value: null };
+filter.criteria['region'] = { value: 'metropolitania'};
+filter.criteria['provincia'] = { value: 'buenos aires'};
+filter.criteria['municipio'] = { value: null};
+filter.criteria['partido'] = { value: null};
+filter.criteria['localidad'] = { value: null};
+filter.criteria['barrio'] = { value: null};
 
 var escala = {
   // region metropolitana
@@ -76,8 +75,6 @@ var locationColumn = "Poligono";
 
 var partidoFilter = false;
 var barrioFilter = false;
-
-var tmp_container;
 
 /////////////////////////////////////////////////////////////////////
 //  Initializers for web pages.
@@ -125,18 +122,6 @@ function initMapBarriosPage() {
   setViewToMetropolitana();
 }
 
-function initTableBarriosPage() {
-  //
-  // Initialize table page.
-  //
-  options = {'pageSize': 25};
-  changeTableData();
-}
-
-/////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////
-
 function setViewToMetropolitana() {
   //
   // Set/reset to Metropolitana data (all).
@@ -153,20 +138,22 @@ function setViewToMetropolitana() {
 
 function setViewToPartido() {
   //
-  // Set/reset to partido/localidad data.
   //
-  var result = findPartidoData();
-  if (result === true) {
-    drawSupplyCharts(escala["municipio"], "map_page");
-  }
+  //
+
 }
 
-function setViewToBarrio() {
+function initTableBarriosPage() {
   //
-  // Set/reset to barrio data.
+  // Initialize table page.
   //
-  var result = findBarrioData();
+  options = {'pageSize': 25};
+  changeTableData();
 }
+
+/////////////////////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////
 
 function initMapLayer() {
   //
@@ -194,7 +181,6 @@ function initMapLayer() {
   google.maps.event.addListener(initLayer, 'click', function(e) {
     placeMarker(map, e.latLng, techo_marker, techo_marker_shadow);
     showBarrioInfo(e);
-    drawSupplyCharts(escala["barrio"], "map_page");
   } );
 }
 
@@ -257,15 +243,6 @@ function findPartidoData() {
   // Check text search field for manually search first.
   choice = document.getElementById('search_part_txt').value;
 
-  // Search field is empty.
-  if (!choice) {
-    return false;
-  }
-
-  if (isEmpty(choice) || isBlank(choice)) {
-    return false;
-  }
-
   // Is there an entity in search field?
   if (choice && !isEmpty(choice) && !isBlank(choice)) {
     // Extract parentheses and prepare query.
@@ -312,7 +289,6 @@ function findPartidoData() {
           !isEmpty(response.getDataTable().getValue(0, 2)) &&
           !isBlank(response.getDataTable().getValue(0, 2))) {
         polygonBoundary = response.getDataTable().getValue(0, 2);
-        filter.criteria['partido'] = { value: response.getDataTable().getValue(0, 4) };
         // Evaluate the focus of a polygon in selected area for center map.
         if (polygonBoundary) {
           lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
@@ -326,25 +302,19 @@ function findPartidoData() {
      }
     } );
 
-    // Waitstate for callback
-    //var t=setTimeout(function(){alert("Hello")},3000)
-
     if (area_choice) {
       // Set where clause for map and get numbers for info text.
       var where_clause_area_map;
       switch(area_choice.toUpperCase()) {
         case 'P':
-          filter.criteria['municipio'] = { value: choice };
-          filter.criteria['partido'] = { value: choice };
-          filter.criteria['selected_area'] = { value: 'municipio' };
+          filter.criteria['municipio'] = { value: choice};
+          filter.criteria['partido'] = { value: choice};
           where_clause_area_map = "'PARTIDO' = " + "'" + choice + "'";
           queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
           getFamilyNumber(escala["municipio"], queryText);
           break;
         case 'L':
-          filter.criteria['municipio'] = { value: filter.criteria['partido'].value };
-          filter.criteria['localidad'] = { value: choice };
-          filter.criteria['selected_area'] = { value: 'localidad' };
+          filter.criteria['localidad'] = { value: choice};
           where_clause_area_map = "'LOCALIDAD' = " + "'" + choice + "'";
           queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
           getFamilyNumber(escala["localidad"], queryText);
@@ -354,7 +324,6 @@ function findPartidoData() {
       }
 
       // Reinit selection for 'Barrio' search field.
-      partidoFilter = true;
       delete queryText;
       queryText = encodeURIComponent(
         "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
@@ -383,7 +352,6 @@ function findPartidoData() {
       } );
       partidoFilter = true;
     }
-    return true;
   }
 }
 
@@ -400,16 +368,7 @@ function findBarrioData() {
   // Check text search field for manually search first.
   var barrio = document.getElementById('search_txt').value;
 
-  // Search field is empty.
-  if (!barrio) {
-    return false;
-  }
-
-  if (isEmpty(barrio) || isBlank(barrio)) {
-    return false;
-  }
-
-  if (barrio && !isEmpty(barrio) && !isBlank(barrio)) {
+  if (barrio) {
     // Extract parentheses, if necessary.
     if (barrio.indexOf("(") >= 0) {
       barrio = (barrio.substring(0, barrio.indexOf("(")-1)).trim();
@@ -429,8 +388,7 @@ function findBarrioData() {
       }
 
       // Get numbers for info text.
-      filter.criteria['barrio'] = { value: barrio };
-      filter.criteria['selected_area'] = { value: 'barrio' };
+      filter.criteria['barrio'] = { value: barrio};
 
       queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID +
                   " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'";
@@ -462,11 +420,10 @@ function findBarrioData() {
       e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 19) };
       e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 20) };
 
-      // // Triggering'click'-event listener to display barrio map marker and data.
+      // Triggering'click'-event listener to display barrio map marker and data.
       google.maps.event.trigger(initLayer, 'click', e);
       barrioFilter = true;
     } );
-  return true;
   }
 }
 
@@ -561,7 +518,6 @@ function removeAllPartidoSelections() {
   // Returns to starting position.
   //
   partidoFilter = false;
-
   deleteOverlays();
   initLayer.setMap(null);
   delete initLayer;
@@ -574,14 +530,9 @@ function removeAllPartidoSelections() {
   initSearchFieldBarrio();
   initSearchFieldPartido();
   clearThis(document.getElementById('search_part_txt'));
-
-  // Remove filter.
-  filter.criteria['municipio'] = { value: null };
-  filter.criteria['partido'] = { value: null };
-  filter.criteria['localidad'] = { value: null };
-  if (filter.criteria['selected_area'].value != 'barrio') {
-    filter.criteria['selected_area'] = { value: null };
-  }
+  filter.criteria['municipio'] = { value: null};
+  filter.criteria['partido'] = { value: null};
+  filter.criteria['localidad'] = { value: null};
 
   // Show metropolitana data (all data).
   setViewToMetropolitana();
@@ -612,22 +563,8 @@ function removeAllBarrioSelections() {
   else {
     initSearchFieldBarrio(queryText);
   }
-
+  filter.criteria['barrio'] = { value: null};
   clearThis(document.getElementById('search_txt'));
-
-  // Remove filter.
-  filter.criteria['barrio'] = { value: null };
-  if (filter.criteria['selected_area'].value == 'barrio') {
-    filter.criteria['selected_area'] = { value: null };
-  }
-
-  // Show selected partido/localidad data or metropolitana data (all data).
-  if (filter.criteria['selected_area'].value == 'municipio' || filter.criteria['selected_area'].value == 'localidad') {
-    setViewToPartido();
-  }
-  else {
-    setViewToMetropolitana();
-  }
 }
 
 function changeTableData(scorer) {
@@ -688,7 +625,7 @@ function removeBarrioInfo() {
   var missing = "-";
 
   var barrio_id = document.getElementById('barrio_id');
-  barrio_id.innerHTML = " ";
+  barrio_id.innerHTML = missing;
 
   var other_name_barrio_id = document.getElementById('other_name_barrio_id');
   other_name_barrio_id.innerHTML = missing;
@@ -850,7 +787,6 @@ function showBarrioInfo(e) {
   filter.criteria['partido'] = { value: partido};
   filter.criteria['localidad'] = { value: localidad};
   filter.criteria['barrio'] = { value: barrio};
-  filter.criteria['selected_area'] = { value: 'barrio'};
 
   queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID +
               " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'";
@@ -931,7 +867,7 @@ function deleteOverlays() {
 
 function drawSupplyCharts(view, page) {
   //
-  // Prepare charts with data.
+  //
   //
   // Init charts
   var charts = {
@@ -946,52 +882,22 @@ function drawSupplyCharts(view, page) {
   };
 
   // Prepare charts with values.
-  //
-  // Prepare queries in response of escala.
-  // Order of case-statement (switch) is important!!! From barrio to metropolitana!
-  var where_clause;
-
-  if (escala["barrio"] && filter.criteria['selected_area'].value == 'barrio') {
-    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "'";
-  }
-  else if(escala["localidad"] && filter.criteria['selected_area'].value == 'localidad') {
-    where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-  }
-  else if(escala["municipio"] && filter.criteria['selected_area'].value == 'municipio') {
-    where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
-  }
-  else if(escala["metropolitana"]) {
-    where_clause = null;
-  }
-  else {
-    where_clause = null;
-  }
-
-  if (where_clause) {
-    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceNumericID + where_clause };
-    charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceNumericID  + where_clause };
-    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceNumericID  + where_clause };
-    charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceNumericID  + where_clause };
-  }
-  else {
-    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceNumericID };
-    charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceNumericID };
-    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceNumericID };
-    charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceNumericID };
-  }
-
+  charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceNumericID };
   charts.sewage.chartType = { value: "PieChart" };
   charts.sewage.containerID = { value: "sewage_chart_div" };
   charts.sewage.dataSourceUrl = { value: dataSourceUrl };
 
+  charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceNumericID };
   charts.water.chartType = { value: "PieChart" };
   charts.water.containerID = { value: "water_chart_div" };
   charts.water.dataSourceUrl = { value: dataSourceUrl };
 
+  charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceNumericID };
   charts.electrical.chartType = { value: "PieChart" };
   charts.electrical.containerID = { value: "electrical_chart_div" };
   charts.electrical.dataSourceUrl = { value: dataSourceUrl };
 
+  charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceNumericID };
   charts.gas.chartType = { value: "PieChart" };
   charts.gas.containerID = { value: "gas_chart_div" };
   charts.gas.dataSourceUrl = { value: dataSourceUrl };
@@ -1037,7 +943,7 @@ function drawSupplyCharts(view, page) {
 
 function draw_chart(chartObject) {
   //
-  // Draws a chart on given page.
+  //
   //
   google.visualization.drawChart( {
     "containerId": chartObject["containerID"],
@@ -1045,6 +951,29 @@ function draw_chart(chartObject) {
     "query": chartObject["query"],
     "chartType": chartObject["chartType"],
     "options": chartObject["options"]
+  } );
+}
+
+function getPartidos() {
+  //
+  //
+  //
+  query = "SELECT 'PARTIDO', count() FROM " + dataSourceEncryptedID + " GROUP BY 'PARTIDO'";
+  queryEncoded = encodeURIComponent(query);
+
+  setQueryUrl();
+
+  // Send JSONP request using jQuery
+  $.ajax( {
+    url: queryUrl.join(''),
+    dataType: 'jsonp',
+    cache: false,
+    success: function (partido_data) {
+      var rows = partido_data['rows'];
+      var elements = rows.length;
+      var number_of_partidos = document.getElementById('number_of_partidos');
+      number_of_partidos.innerHTML = elements.format();
+    }
   } );
 }
 
@@ -1092,11 +1021,11 @@ function getFamilyNumber(escala, queryText) {
     var villa_text = "villas y asentamientos";
     var familia_text = "familias";
 
-    if (parseInt(results[1], 10).format() == '1') {
+    if (parseInt(results[1], 10).format() == 1) {
       villa_text = "villa y asentamiento";
     }
 
-    if (parseInt(results[0], 10).format() == '1') {
+    if (parseInt(results[0], 10).format() == 1) {
       familia_text = "familia";
     }
 
