@@ -1,3 +1,5 @@
+/.sass-cache
+/public/css/styles.css
 .sass-cache
 .DS_Store
 *.sublime-project
