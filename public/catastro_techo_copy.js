@@ -77,8 +77,6 @@ var locationColumn = "Poligono";
 var partidoFilter = false;
 var barrioFilter = false;
 
-var tmp_container;
-
 /////////////////////////////////////////////////////////////////////
 //  Initializers for web pages.
 /////////////////////////////////////////////////////////////////////
@@ -166,6 +164,9 @@ function setViewToBarrio() {
   // Set/reset to barrio data.
   //
   var result = findBarrioData();
+  if (result === true) {
+    drawSupplyCharts(escala["barrio"], "map_page");
+  }
 }
 
 function initMapLayer() {
@@ -194,7 +195,7 @@ function initMapLayer() {
   google.maps.event.addListener(initLayer, 'click', function(e) {
     placeMarker(map, e.latLng, techo_marker, techo_marker_shadow);
     showBarrioInfo(e);
-    drawSupplyCharts(escala["barrio"], "map_page");
+    //drawSupplyCharts(escala["barrio"], "map_page");
   } );
 }
 
@@ -257,8 +258,6 @@ function findPartidoData() {
   // Check text search field for manually search first.
   choice = document.getElementById('search_part_txt').value;
 
-  console.log("vor check choice: " + choice);
-
   // Search field is empty.
   if (!choice) {
     return false;
@@ -267,8 +266,6 @@ function findPartidoData() {
   if (isEmpty(choice) || isBlank(choice)) {
     return false;
   }
-
-  console.log("nach check choice: " + choice);
 
   // Is there an entity in search field?
   if (choice && !isEmpty(choice) && !isBlank(choice)) {
@@ -333,11 +330,6 @@ function findPartidoData() {
     if (area_choice) {
       // Set where clause for map and get numbers for info text.
       var where_clause_area_map;
-
-      // Reset barrio info.
-      removeBarrioInfo();
-      filter.criteria['barrio'] = { value: null };
-
       switch(area_choice.toUpperCase()) {
         case 'P':
           filter.criteria['municipio'] = { value: choice };
@@ -437,6 +429,7 @@ function findBarrioData() {
       // Get numbers for info text.
       filter.criteria['barrio'] = { value: barrio };
       filter.criteria['selected_area'] = { value: 'barrio' };
+      alert("TEST: " + filter.criteria['barrio'].value);
 
       queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID +
                   " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'";
@@ -468,7 +461,7 @@ function findBarrioData() {
       e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 19) };
       e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 20) };
 
-      // // Triggering'click'-event listener to display barrio map marker and data.
+      // Triggering'click'-event listener to display barrio map marker and data.
       google.maps.event.trigger(initLayer, 'click', e);
       barrioFilter = true;
     } );
@@ -619,25 +612,16 @@ function removeAllBarrioSelections() {
     initSearchFieldBarrio(queryText);
   }
 
-  clearThis(document.getElementById('search_txt'));
-
   // Remove filter.
   filter.criteria['barrio'] = { value: null };
   if (filter.criteria['selected_area'].value == 'barrio') {
     filter.criteria['selected_area'] = { value: null };
   }
 
-  console.log("filter.criteria['selected_area'].value :" + filter.criteria['selected_area'].value);
+  clearThis(document.getElementById('search_txt'));
 
-  // Show selected partido/localidad data or metropolitana data (all data).
-  // if (filter.criteria['selected_area'].value == 'municipio' || filter.criteria['selected_area'].value == 'localidad') {
-  //   console.log("setViewToPartido()");
-    setViewToPartido();
-//  }
-  // else {
-  //   setViewToMetropolitana();
-  //   console.log("setViewToMetropolitana()");
-  // }
+  // Show selected partido/localidad data.
+  setViewToPartido();
 }
 
 function changeTableData(scorer) {
@@ -679,8 +663,7 @@ function getData(response) {
   var table = new google.visualization.Table(document.getElementById('table_div') );
   //var tableQueryWrapper = new TableQueryWrapper(query, container, options);
   var view = new google.visualization.DataView(response.getDataTable());
-  //view.setColumns([0, 1, 4, 5, 6, 8, 9, 15, 16, 17, 18, 19, 20]);
-  view.hideColumns([2, 3]);
+  view.setColumns([0, 1, 4, 5, 6, 8, 9, 15, 16, 17, 18, 19, 20]);
   table.draw(view, { showRowNumber: true } );
   //table.draw(response.getDataTable(), { showRowNumber: false, 'view': { 'columns': [1, 2, 3, 4] } } );
 }
@@ -742,6 +725,7 @@ function showBarrioInfo(e) {
   //
   // Shows detailed information about a barrio.
   //
+
   var missing = "-";
   var no_info = "?";
 
@@ -860,7 +844,6 @@ function showBarrioInfo(e) {
   filter.criteria['partido'] = { value: partido};
   filter.criteria['localidad'] = { value: localidad};
   filter.criteria['barrio'] = { value: barrio};
-  filter.criteria['selected_area'] = { value: 'barrio'};
 
   queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID +
               " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'";
@@ -960,45 +943,27 @@ function drawSupplyCharts(view, page) {
   // Prepare queries in response of escala.
   // Order of case-statement (switch) is important!!! From barrio to metropolitana!
   var where_clause;
-  var chart_base;
+  alert("filter.criteria: " + filter.criteria['selected_area'].value);
 
-  if (escala["barrio"] && filter.criteria['selected_area'].value == 'barrio' && filter.criteria['localidad'].value !== null) {
-//    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "'";
-    where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    chart_base = filter.criteria['localidad'].value;
-    console.log("escala a barrio: " + where_clause);
-  }
-  else if (escala["barrio"] && filter.criteria['barrio'].value !== null && filter.criteria['selected_area'].value == 'localidad') {
-//    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "' AND 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    chart_base = filter.criteria['localidad'].value;
-    console.log("escala b barrio: " + where_clause);
-  }
-  else if (escala["barrio"] && filter.criteria['barrio'].value !== null && filter.criteria['selected_area'].value == 'municipio') {
-  //  where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "' AND 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
-    where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
-    chart_base = filter.criteria['partido'].value;
-    console.log("escala c barrio: " + where_clause);
+  if (escala["barrio"] && filter.criteria['selected_area'].value == 'barrio') {
+    alert("case escala['barrio'] " + filter.criteria['barrio'].value);
+    where_clause = " WHERE 'BARRIO' = '" + filter.criteria['barrio'].value + "'";
   }
   else if(escala["localidad"] && filter.criteria['selected_area'].value == 'localidad') {
+    alert("case escala['localidad'] " + filter.criteria['localidad'].value);
     where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    chart_base = filter.criteria['localidad'].value;
-    console.log("escala localidad: " + where_clause);
   }
   else if(escala["municipio"] && filter.criteria['selected_area'].value == 'municipio') {
+    alert("case escala['municipio'] " + filter.criteria['partido'].value);
     where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
-    chart_base = filter.criteria['partido'].value;
-    console.log("escala municipio: " + where_clause);
   }
   else if(escala["metropolitana"]) {
+    alert("case escala['metropolitana']");
     where_clause = null;
-    chart_base = "Metropolitana";
-    console.log("escala metropolitana: " + where_clause);
   }
   else {
+    alert("case escala['metropolitana']");
     where_clause = null;
-    chart_base = "Metropolitana";
-    console.log("default (metropolitana): " + where_clause);
   }
 
   if (where_clause) {
@@ -1017,32 +982,18 @@ function drawSupplyCharts(view, page) {
   charts.sewage.chartType = { value: "PieChart" };
   charts.sewage.containerID = { value: "sewage_chart_div" };
   charts.sewage.dataSourceUrl = { value: dataSourceUrl };
-  // Brown tones.
-  charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401', '#FF8000'] };
 
   charts.water.chartType = { value: "PieChart" };
   charts.water.containerID = { value: "water_chart_div" };
   charts.water.dataSourceUrl = { value: dataSourceUrl };
-  // Blue tones
-  charts.water.colors = { value: ['#2E9AFE', '#81BEF7', '#045FB4', '#0B3861', '#0000FF'] };
 
   charts.electrical.chartType = { value: "PieChart" };
   charts.electrical.containerID = { value: "electrical_chart_div" };
   charts.electrical.dataSourceUrl = { value: dataSourceUrl };
-  // Yellow/Orange tones
-  charts.electrical.colors = { value: ['#FFBF00', '#FFCC00', '#FF8000', '#FFD700', '#FFA500'] };
 
   charts.gas.chartType = { value: "PieChart" };
   charts.gas.containerID = { value: "gas_chart_div" };
   charts.gas.dataSourceUrl = { value: dataSourceUrl };
-  // Red tones.
-  charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E', '#F78181'] };
-
-  // Legend for charts only for map page.
-  if (page == 'map_page') {
-    var info_text_charts = document.getElementById('info_text_charts');
-    info_text_charts.innerHTML = "Diagrammas para " + chart_base;
-  }
 
   // Draw charts.
   var chartObject;
@@ -1057,7 +1008,6 @@ function drawSupplyCharts(view, page) {
           options: {
             width: 500,
             height: 240,
-            colors: charts[chart].colors.value,
             chartArea: {left:20,top:6,width:"100%",height:"85%"}
           }
         };
@@ -1070,10 +1020,9 @@ function drawSupplyCharts(view, page) {
           query: charts[chart].query.value,
           chartType: charts[chart].chartType.value,
           options: {
-            width: 350,
-            height: 130,
-            colors: charts[chart].colors.value,
-            chartArea: {left:10,top:6,width:"75%",height:"85%"}
+            width: 330,
+            height: 140,
+            chartArea: {left:20,top:6,width:"75%",height:"85%"}
           }
         };
         break;
@@ -1142,11 +1091,11 @@ function getFamilyNumber(escala, queryText) {
     var villa_text = "villas y asentamientos";
     var familia_text = "familias";
 
-    if (parseInt(results[1], 10).format() == '1') {
+    if (parseInt(results[1], 10).format() == 1) {
       villa_text = "villa y asentamiento";
     }
 
-    if (parseInt(results[0], 10).format() == '1') {
+    if (parseInt(results[0], 10).format() == 1) {
       familia_text = "familia";
     }
 

@@ -34,6 +34,9 @@
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
 
+<!--     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap-responsive.css">
+ -->
+
     <!-- Bootstrap special -->
 <!--     <link rel="stylesheet" href="/lib/bootstrap/css/docs.css">
  -->
@@ -79,8 +82,24 @@
           </a>
 
           <ul class="nav">
-<!--             <li><a href="/">Inicio</a></li>
- -->
+            <% if request.path_info == '/' %>
+              <li class="active">
+            <% else %>
+              <li>
+            <% end %>
+            <a href="/">Inicio</a></li>
+            <% if request.path_info == '/content/mapa-de-barrios' %>
+              <li class="active">
+            <% else %>
+              <li>
+            <% end %>
+            <a href="/content/mapa-de-barrios">Mapa</a></li>
+            <% if request.path_info == '/content/tabla-de-barrios' %>
+              <li class="active">
+            <% else %>
+              <li>
+            <% end %>
+            <a href="/content/tabla-de-barrios">Tabla</a></li>
           </ul>
 
           <ul class="nav pull-right">
@@ -97,27 +116,33 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span2 bs-docs-sidebar" id="aside">
-          <%= partial :"partials/navsidebar" %>
-          <br>
-          <span style="font-size: 80%; color: #999999;">&nbsp;&nbsp;Versi&oacute;n de <%= @version %></span>
-        </div>
-        <div class="span10">
+        <% if request.path_info == '/content/mapa-de-barrios' %>
+          <div class="span3" style="margin: 0px;">
+<!--         <div class="span2 bs-docs-sidebar" id="aside">
+ -->          <!%= partial :"partials/navsidebar" %>
+          <%= partial :"partials/choices" %>
+          </div>
+          <div class="span9" style="margin: 0px;">
+        <% else %>
+          <div class="span12">
+        <% end %>
+
           <!-- Código fuente individual.
           Depende de la página seleccionada.
           ================================================== -->
           <%= yield %>
         </div>
       </div>
-      <!--
-      <div class="row-fluid">
-        <div class="span12">
-          <hr>
-          <!%= partial :"partials/footer" %>
-        </div>
-      </div>
-      -->
-    </div>
 
+      <div class="row-fluid">
+        <% if request.path_info == '/content/mapa-de-barrios' %>
+          <div class="span9" style="margin: 0px;">
+        <% else %>
+          <div class="span12">
+        <% end %>
+          <%= partial :"partials/footer" %>
+          </div>
+      </div>
+    </div>
   </body>
 </html>
