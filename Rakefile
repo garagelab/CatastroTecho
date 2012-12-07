@@ -14,7 +14,7 @@ task :deploy do
     sh "git branch -D deploy || true"
     sh "git checkout -b deploy"
     sh "find . -name '*.scss' | xargs touch -m"
-    sh "compass compile . -c config/sass.rb --relative-assets -q -e production"
+#    sh "compass compile . -c config/sass.rb --relative-assets -q -e production"
     sh "git add -f public/css"
     sh "git commit -m 'Deploy.'"
     sh "git push -f #{origin} deploy:master"
