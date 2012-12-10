@@ -60,7 +60,7 @@ class Techo < Sinatra::Base
 
   before do
     # Application version
-    @version = "07/12/2012"
+    @version = "09/12/2012"
 
     # Connect to service of fusion tables
     @ft = GData::Client::FusionTables.new
@@ -94,9 +94,8 @@ class Techo < Sinatra::Base
 ### Controller
   get '/' do
     navsidebar = partial :"partials/navsidebar"
-    choices = partial :"partials/choices"
     footer = partial :"partials/footer"
-    erb :index, :locals => { :navsidebar => navsidebar, :choices => choices, :footer => footer }
+    erb :index, :locals => { :navsidebar => navsidebar, :footer => footer }
   end
 
   get "/content/:page" do |page|

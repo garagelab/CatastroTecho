@@ -155,9 +155,15 @@ function setViewToPartido() {
   //
   // Set/reset to partido/localidad data.
   //
+  // Clear old barrio data first.
+  removeAllBarrioSelections();
+  // Set partido data.
   var result = findPartidoData();
   if (result === true) {
     drawSupplyCharts(escala["municipio"], "map_page");
+  }
+  else {
+    setViewToMetropolitana();
   }
 }
 
@@ -257,8 +263,6 @@ function findPartidoData() {
   // Check text search field for manually search first.
   choice = document.getElementById('search_part_txt').value;
 
-  console.log("vor check choice: " + choice);
-
   // Search field is empty.
   if (!choice) {
     return false;
@@ -267,8 +271,6 @@ function findPartidoData() {
   if (isEmpty(choice) || isBlank(choice)) {
     return false;
   }
-
-  console.log("nach check choice: " + choice);
 
   // Is there an entity in search field?
   if (choice && !isEmpty(choice) && !isBlank(choice)) {
@@ -299,6 +301,8 @@ function findPartidoData() {
       where_clause = " WHERE 'PARTIDO' = '" + choice + "'";
       area_choice = 'P';
     }
+    console.log("findPartidoData() - area_choice :" + area_choice);
+
     queryText = encodeURIComponent("SELECT * FROM " + dataSourceNumericID + where_clause);
     query = new google.visualization.Query(dataSourceUrl + queryText);
 
@@ -511,7 +515,7 @@ function initSearchFieldBarrio(queryText) {
     $('#search_txt').autocomplete( {
       source: results,
       minLength: 1,
-      maxHeight:100,
+//      maxHeight:100,
       zIndex: 4000
     } );
   } );
@@ -554,11 +558,11 @@ function initSearchFieldPartido() {
     $('#search_part_txt').autocomplete( {
       source: unique_results,
       minLength: 2,
-      maxHeight:100,
+//      maxHeight: 100,
+      autoFill: true,
       zIndex: 4000
     } );
   } );
-
 }
 
 function removeAllPartidoSelections() {
@@ -576,8 +580,11 @@ function removeAllPartidoSelections() {
   map.setCenter(barrios_bsas);
   map.setZoom(10);
   delete queryText;
-  removeBarrioInfo();
-  initSearchFieldBarrio();
+
+  //removeBarrioInfo();
+  //initSearchFieldBarrio();
+  removeAllBarrioSelections();
+
   initSearchFieldPartido();
   clearThis(document.getElementById('search_part_txt'));
 
@@ -600,10 +607,6 @@ function removeAllBarrioSelections() {
   //
   barrioFilter = false;
   deleteOverlays();
-  //initLayer.setMap(null);
-  //delete initLayer;
-  //initMapLayer();
-  //initLayer.setMap(map);
 
   if (partidoFilter == false) {
     map.setCenter(barrios_bsas);
@@ -628,16 +631,6 @@ function removeAllBarrioSelections() {
   }
 
   console.log("filter.criteria['selected_area'].value :" + filter.criteria['selected_area'].value);
-
-  // Show selected partido/localidad data or metropolitana data (all data).
-  // if (filter.criteria['selected_area'].value == 'municipio' || filter.criteria['selected_area'].value == 'localidad') {
-  //   console.log("setViewToPartido()");
-    setViewToPartido();
-//  }
-  // else {
-  //   setViewToMetropolitana();
-  //   console.log("setViewToMetropolitana()");
-  // }
 }
 
 function changeTableData(scorer) {
@@ -681,6 +674,11 @@ function getData(response) {
   var view = new google.visualization.DataView(response.getDataTable());
   //view.setColumns([0, 1, 4, 5, 6, 8, 9, 15, 16, 17, 18, 19, 20]);
   view.hideColumns([2, 3]);
+
+  console.log("getNumberOfRows(): " + view.getNumberOfRows());
+
+  //view.setRows(501, 800);
+
   table.draw(view, { showRowNumber: true } );
   //table.draw(response.getDataTable(), { showRowNumber: false, 'view': { 'columns': [1, 2, 3, 4] } } );
 }
@@ -872,9 +870,11 @@ function setYesNoHTMLMarker(bool) {
   // Show different images in response to good/bad criteria.
   //
   if (bool)
-    result = '<img src="/images/up.png"/>';
+//    result = '<img src="/images/up.png"/>';
+    result = '<i class="icon-thumbs-up"></i>';
   else
-    result = '<img src="/images/down.png"/>';
+//    result = '<img src="/images/down.png"/>';
+    result = '<i class="icon-thumbs-down"></i>';
   return result;
 }
 
@@ -1030,7 +1030,8 @@ function drawSupplyCharts(view, page) {
   charts.electrical.containerID = { value: "electrical_chart_div" };
   charts.electrical.dataSourceUrl = { value: dataSourceUrl };
   // Yellow/Orange tones
-  charts.electrical.colors = { value: ['#FFBF00', '#FFCC00', '#FF8000', '#FFD700', '#FFA500'] };
+//  charts.electrical.colors = { value: ['#FFBF00', '#FFCC00', '#FF8000', '#FFD700', '#FFA500'] };
+  charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33', '#ff9900'] };
 
   charts.gas.chartType = { value: "PieChart" };
   charts.gas.containerID = { value: "gas_chart_div" };
@@ -1041,7 +1042,7 @@ function drawSupplyCharts(view, page) {
   // Legend for charts only for map page.
   if (page == 'map_page') {
     var info_text_charts = document.getElementById('info_text_charts');
-    info_text_charts.innerHTML = "Diagrammas para " + chart_base;
+    info_text_charts.innerHTML = "Diagrammas para <strong>" + chart_base + "</strong>";
   }
 
   // Draw charts.
@@ -1070,6 +1071,8 @@ function drawSupplyCharts(view, page) {
           query: charts[chart].query.value,
           chartType: charts[chart].chartType.value,
           options: {
+            areaOpacity: 0.0,
+            backgroundColor: { fill:'transparent' },
             width: 350,
             height: 130,
             colors: charts[chart].colors.value,

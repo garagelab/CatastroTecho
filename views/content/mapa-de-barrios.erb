@@ -1,69 +1,110 @@
 <!-- Mapa de Barrios
 ================================================== -->
 <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span12">
-        <p class="lead">
-          <span id="info_text_escala" style="font-size: 80%;"></span>
-        </p>
+  <div class="row-fluid">
+    <!-- Selections container -->
+    <div id="selector">
+      <form>
+        <!-- Municipio/Localidad Search -->
+        <fieldset>
+          <label><i class="icon-filter"></i>&nbsp;municipio o localidad</label>
+          <div class="input-append">
+            <input class="span10" id="search_part_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)">
+            <button class="btn disabled" id="clear_search_txt" type="button" onclick="removeAllPartidoSelections()"><i class="icon-remove"></i>
+            </button>
+          </div>
+          <div>
+            <button class="span10 btn btn-small" id="search_part" type="button" onclick="setViewToPartido()">
+              muestra el municipio o la localidad
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- Barrio Search -->
+        <fieldset>
+          <label><i class="icon-map-marker"></i>&nbsp;mi barrio</label>
+          <div class="input-append">
+            <input class="span10" id="search_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)">
+            <button class="btn disabled" id="clear_search_txt" type="button" onclick="setViewToPartido()"><i class="icon-remove"></i>
+            </button>
+          </div>
+          <div>
+            <button class="span10 btn btn-small" id="search" type="button" onclick="setViewToBarrio()">
+              muestra el barrio
+            </button>
+          </div>
+        </fieldset>
+      </form>
+
+      <!-- Barrio Info -->
+      <div id="info_barrio" class="breadcrumb"
+        style="height: 505px; padding: 0px; margin: 0px; border: 0px solid #ccc; background-color: #ffffff;">
+        <ul class="breadcrumb" style="text-align: center; padding: 0px 15px; margin: 0px;">
+          <li><span id="barrio_id"></span></li>
+        </ul>
+        <dl class="dl-horizontal" style="font-size: 80%;">
+          <dt>Otro nombre:</dt><dd id="other_name_barrio_id">-</dd>
+          <dt>Municipio:</dt><dd id="partido_id">-</dd>
+          <dt>Localidad:</dt><dd id="localidad_id">-</dd>
+          <dt>Cantidad de Familias:</dt><dd id="families_id">-</dd>
+          <dt>A&ntilde;o de inicio:</dt><dd id="start_year_id">-</dd>
+          <hr>
+          <dt>Desag&uuml;es cloacales:</dt><dd id="sewage_id">-</dd>
+          <dt>Agua potable:</dt><dd id="water_id">-</dd>
+          <dt>Sistema el&eacute;ctrico:</dt><dd id="electrical_id">-</dd>
+          <dt>Red de gas:</dt><dd id="gas_id">-</dd>
+          <dt>Desag&uuml;es pluviales:</dt><dd id="drains_id">-</dd>
+          <dt>Alumbrado p&uacute;blico:</dt><dd id="street_lighting_id">-</dd>
+          <dt>Recolecci&oacute;n de residuos:</dt><dd id="waste_collection_id">-</dd>
+        </dl>
       </div>
     </div>
 
-    <div class="row-fluid">
-      <div class="span12">
-        <!-- Alert message box -->
-        <div class="span8">
-          <div id ="alert_placeholder"></div>
-        </div>
-
-        <div class="span4">
-          <div id ="info_text_charts" style="font-size: 90%;"></div>
-        </div>
-      </div>
+    <!-- Info text container -->
+    <div id="info_text_container">
+      <span id="info_text_escala" style="font-size: 90%;"></span>
     </div>
 
-    <div class="row-fluid">
-      <div class="span8">
-        <!-- Map container -->
-        <div id="map_canvas" style="height: 620px; margin: 0px; border: 1px solid #ccc;">
-        </div>
+    <!-- Map container -->
+    <div id="canvas_container">
+      <div id="map_canvas"></div>
+    </div>
+
+    <!-- Chart container -->
+    <div id="chart_container">
+      <div id ="info_text_charts" style="font-size: 90%;"></div>
+
+      <div style="height: 160px; margin: 0px; border: 0px solid #ccc;">
+        <ul class="breadcrumb" style="padding: 2px 15px; margin: 1px;">
+          <li style="font-size: 75%;">Cuenta con <strong><em>desag&uuml;es cloacales</em></strong>:</li>
+        </ul>
+<!--           <div class="well well-small" style="background-color:rgba(245,245,245,0.6);" id="sewage_chart_div"></div>
+-->
+        <div id="sewage_chart_div"></div>
       </div>
 
-      <div class="span4" style="margin: 0px;">
-        <!-- Chart container -->
-        <div style="height: 180px; margin: 0px; border: 0px solid #ccc;">
-          <ul class="breadcrumb" style="padding: 2px 15px;">
-            <li style="font-size: 75%;">Cuenta con <strong><em>desag&uuml;es cloacales</em></strong>:</li>
-          </ul>
-          <div id="sewage_chart_div"></div>
-        </div>
-
-        <!-- Chart container -->
-        <div style="height: 180px; margin: 0px; border: 0px solid #ccc;">
-          <ul class="breadcrumb" style="padding: 2px 15px;">
-            <li style="font-size: 75%;">Acceso al <strong><em>agua potable</em></strong> a trav&eacute;s de la red p&uacute;blica:</li>
-          </ul>
+      <div style="height: 160px; margin: 0px; border: 0px solid #ccc;">
+        <ul class="breadcrumb" style="padding: 2px 15px; margin: 1px;">
+          <li style="font-size: 75%;">Acceso al <strong><em>agua potable</em></strong> a trav&eacute;s de la red p&uacute;blica:</li>
+        </ul>
         <div id="water_chart_div"></div>
       </div>
 
-        <!-- Chart container -->
-        <div style="height: 180px; margin: 0px; border: 0px solid #ccc;">
-          <ul class="breadcrumb" style="padding: 2px 15px;">
-            <li style="font-size: 75%;">Conexi&oacute;n regular al <strong><em>sistema el&eacute;ctrico</em></strong>:</li>
-          </ul>
-          <div id="electrical_chart_div"></div>
-        </div>
-
-        <!-- Chart container -->
-        <div style="height: 180px; margin: 0px; border: 0px solid #ccc;">
-          <ul class="breadcrumb" style="padding: 2px 15px;">
-            <li style="font-size: 75%;">Acceso a la <strong><em>red de gas</em></strong>:</li>
-          </ul>
-        <div id="gas_chart_div"></div>
+      <div style="height: 160px; margin: 0px; border: 0px solid #ccc;">
+        <ul class="breadcrumb" style="padding: 2px 15px; margin: 1px;">
+          <li style="font-size: 75%;">Conexi&oacute;n regular al <strong><em>sistema el&eacute;ctrico</em></strong>:</li>
+        </ul>
+        <div id="electrical_chart_div"></div>
       </div>
-    </div>
 
-</div><!-- end container-fluid -->
+      <div style="height: 160px; margin: 0px; border: 0px solid #ccc;">
+        <ul class="breadcrumb" style="padding: 2px 15px; margin: 1px;">
+          <li style="font-size: 75%;">Acceso a la <strong><em>red de gas</em></strong>:</li>
+        </ul>
+      <div id="gas_chart_div"></div>
+    </div>
+  </div> <!-- row-fluid -->
+</div><!-- container-fluid -->
 <script type="text/javascript">
   // Set a callback to run when the Google Visualization library is loaded.
   google.setOnLoadCallback(initMapBarriosPage);
