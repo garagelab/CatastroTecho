@@ -34,6 +34,9 @@ var queryText;
 var queryUrl = ['https://www.googleapis.com/fusiontables/v1/query'];
 var queryEncoded;
 
+var queryUrlHead = 'https://fusiontables.googleusercontent.com/fusiontables/api/query?sql=';
+var queryUrlTail = '&jsonCallback=?'; // ? could be a function name
+
 // Filter criteria
 var filter = {
   criteria : []
@@ -129,8 +132,7 @@ function initTableBarriosPage() {
   //
   // Initialize table page.
   //
-  options = {'pageSize': 25};
-  changeTableData();
+  getDataSourceData();
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -301,7 +303,6 @@ function findPartidoData() {
       where_clause = " WHERE 'PARTIDO' = '" + choice + "'";
       area_choice = 'P';
     }
-    console.log("findPartidoData() - area_choice :" + area_choice);
 
     queryText = encodeURIComponent("SELECT * FROM " + dataSourceNumericID + where_clause);
     query = new google.visualization.Query(dataSourceUrl + queryText);
@@ -324,6 +325,18 @@ function findPartidoData() {
         // Evaluate the focus of a polygon in selected area for center map.
         if (polygonBoundary) {
           lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
+
+          // var circle = new google.maps.Circle({
+          //   center: lat_lng,
+          //   map: map,
+          // //  fillColor: '#0000FF',
+          // //  fillOpacity: 0.5,
+          //   strokeColor: '#1e90ff',
+          //   strokeOpacity: 1.0,
+          //   strokeWeight: 2,
+          //   radius: 1836.55489862987
+          // });
+          // map.fitBounds(circle.getBounds());
         }
         else {
           // set default
@@ -608,7 +621,7 @@ function removeAllBarrioSelections() {
   barrioFilter = false;
   deleteOverlays();
 
-  if (partidoFilter == false) {
+  if (partidoFilter === false) {
     map.setCenter(barrios_bsas);
     map.setZoom(10);
   }
@@ -629,58 +642,76 @@ function removeAllBarrioSelections() {
   if (filter.criteria['selected_area'].value == 'barrio') {
     filter.criteria['selected_area'] = { value: null };
   }
-
-  console.log("filter.criteria['selected_area'].value :" + filter.criteria['selected_area'].value);
 }
 
-function changeTableData(scorer) {
-  // Set the query using the parameter
-//  var whereClause = "";
-//  if ( scorer ) {
-//    whereClause =  " WHERE 'Scoring Team' = '" + scorer + "'";
-//  }
+function getDataSourceData() {
+  //
+  // getDataSourceData()
+  // Get all rows from underlying fusion table.
+  // Hint: Google visualization api has a limit of 500 rows here!
+  // Therefore we cannot use it. A so-called 'trusted tester' google-user
+  // would be possible but we use another workaround - the method of
+  // a direct 'Ajax' call - and 'bypassing' this restriction.
+  //
+  var queryText = "SELECT * FROM " + dataSourceNumericID;
+  var queryUrl = encodeURI(queryUrlHead + queryText + queryUrlTail);
 
-/*
-                                     'NOMBRE DEL BARRIO', \
-                                     'OTRO NOMBRE DEL BARRIO', \
-                                     'PARTIDO', \
-                                     'LOCALIDAD', \
-                                     'AÑO DE CONFORMACIÓN DEL BARRIO', \
-                                     'MODALIDAD EN LA QUE SE CONSTITUYÓ EL BARRIO', \
-                                     'AÑO DE MAYOR CRECIMIENTO', \
-                                     'NRO DE FLIAS', \
-                                     'AGUA', \
-                                     'PROVISIÓN DE AGUA', \
-                                     'GAS', \
-                                     'DESAGÜES PLUVIALES', \
-                                     'ALUMBRADO PÚBLICO', \
-                                     'RECOLECCIÓN DE RESIDUOS' \
-
-*/
-  var queryText = encodeURIComponent("SELECT * \
-                                     FROM " + dataSourceNumericID );
-  query = new google.visualization.Query(dataSourceUrl + queryText);
-
-  //set the callback function
-  query.send(getData);
+  $.ajax({
+    type: "GET",
+    url:  queryUrl,
+    dataType: "jsonp",  // return CSV FustionTable response as JSON
+    success: dataTableHandler, // callback function
+    error: function () {alert("getDataSourceData(): Error in query: " + queryUrl ); }
+  });
 }
 
-function getData(response) {
+function dataTableHandler(d) {
   //
-  // Callback function, this is called when the results are returned
+  // View data table.
   //
-  var table = new google.visualization.Table(document.getElementById('table_div') );
-  //var tableQueryWrapper = new TableQueryWrapper(query, container, options);
-  var view = new google.visualization.DataView(response.getDataTable());
-  //view.setColumns([0, 1, 4, 5, 6, 8, 9, 15, 16, 17, 18, 19, 20]);
-  view.hideColumns([2, 3]);
+  //var cols = {};
+  var cols = d.table.cols;
+  var rows = d.table.rows;
+  var thead;
 
-  console.log("getNumberOfRows(): " + view.getNumberOfRows());
+  thead = '<thead>';
+  for (var i=0; i<cols.length; i++) {
+    thead += '<th>' + cols[i] + '</th>';
+  }
+  thead += '</thead>';
+  document.getElementById("table_id").innerHTML = thead;
 
-  //view.setRows(501, 800);
-
-  table.draw(view, { showRowNumber: true } );
-  //table.draw(response.getDataTable(), { showRowNumber: false, 'view': { 'columns': [1, 2, 3, 4] } } );
+  $(document).ready(function() {
+    $('#table_id').dataTable( {
+      "oLanguage": {
+        "sLengthMenu": "Mostrar _MENU_ registros por página",
+        "sZeroRecords": "No he encontrado nada - lo siento",
+        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+        "sInfoFiltered": "(filtrado de los registros totales _MAX_)",
+        "sSearch": "Búsqueda:",
+        "oPaginate": {
+          "sFirst": "primero",
+          "sPrevious": "anterior",
+          "sNext": "próximo",
+          "sLast": "último"
+        }
+      },
+      "bJQueryUI": true,
+      "sPaginationType": "full_numbers",
+      "bAutoWidth": false,
+      "bProcessing": true,
+//      "sScrollY": "200px",
+      "sScrollX": "100%",
+      "aoData": cols,
+      "aaData": rows,
+      "aoColumnDefs": [
+        { "bVisible": false, "aTargets": [ 2 ] },
+        { "bVisible": false, "aTargets": [ 3 ] }
+      ],
+      "bAutoWidth": false
+    } );
+  } );
 }
 
 function removePartidoInfo() {
@@ -966,39 +997,32 @@ function drawSupplyCharts(view, page) {
 //    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "'";
     where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
     chart_base = filter.criteria['localidad'].value;
-    console.log("escala a barrio: " + where_clause);
   }
   else if (escala["barrio"] && filter.criteria['barrio'].value !== null && filter.criteria['selected_area'].value == 'localidad') {
 //    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "' AND 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
     where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
     chart_base = filter.criteria['localidad'].value;
-    console.log("escala b barrio: " + where_clause);
   }
   else if (escala["barrio"] && filter.criteria['barrio'].value !== null && filter.criteria['selected_area'].value == 'municipio') {
   //  where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "' AND 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
     where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
     chart_base = filter.criteria['partido'].value;
-    console.log("escala c barrio: " + where_clause);
   }
   else if(escala["localidad"] && filter.criteria['selected_area'].value == 'localidad') {
     where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
     chart_base = filter.criteria['localidad'].value;
-    console.log("escala localidad: " + where_clause);
   }
   else if(escala["municipio"] && filter.criteria['selected_area'].value == 'municipio') {
     where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
     chart_base = filter.criteria['partido'].value;
-    console.log("escala municipio: " + where_clause);
   }
   else if(escala["metropolitana"]) {
     where_clause = null;
     chart_base = "Metropolitana";
-    console.log("escala metropolitana: " + where_clause);
   }
   else {
     where_clause = null;
     chart_base = "Metropolitana";
-    console.log("default (metropolitana): " + where_clause);
   }
 
   if (where_clause) {
