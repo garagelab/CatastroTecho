@@ -2,61 +2,41 @@
 ================================================== -->
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span12 bs-docs-sidebar">
-      <h2>Las villas y los asentamientos</h2>
-      <p class="lead">
+    <div class="span12">
+      <div class="row-fluid">
+        <!-- Text container Techo description-->
+        <div class="span6">
+          <h3 class="lead" id="techo_style">QUÉ ES TECHO</h3>
+          <p>
+            <strong>TECHO</strong> es una organizaci&oacute;n presente en Latinoam&eacute;rica y el Caribe, que busca superar la situaci&oacute;n de pobreza que viven miles de personas en asentamientos precarios, con la participaci&oacute;n de vecinos y voluntarios.
+          </p>
+          <p>
+            <strong>TECHO</strong> tiene la convicci&oacute;n de que la pobreza se puede superar definitivamente si la sociedad en su conjunto logra reconocer que &eacute;ste es un problema prioritario y trabaja activamente por resolverlo.
+          </p>
+          </br>
+          <h4 class="lead" id="missing">
+            Por qu&eacute; y para qu&eacute; un Catastro y resultados 2011
+          </h4>
+          <p>
             <%
-                #@total_barrios = @ft.execute @qry_total_barrios
-                @total_families = @ft.execute @qry_total_families
+              #@total_barrios = @ft.execute @qry_total_barrios
+              @total_families = @ft.execute @qry_total_families
             %>
-        En la región Metropolitana de Buenos Aires hay
-        <strong><%= number_with_delimeter(@total_families[0][:"count()"].to_i) %></strong> villas y asentamientos, en los que residen <strong>
-        <%= number_with_delimeter(@total_families[0][:families].to_i) %></strong> familias.
-      </p>
-      <hr>
-    </div>
-  </div>
-  <div class="row-fluid">
-    <div class="span6">
-      <!-- Chart container -->
-      <div style="height: 300px; margin: 0px; border: 1px solid #ccc;">
-        <ul class="breadcrumb">
-          <li>Cuenta con <strong><em>desag&uuml;es cloacales</em></strong>:</li>
-        </ul>
-        <div id="sewage_chart_div"></div>
+            En las provincias de Buenos Aires hay
+            <strong><%= number_with_delimeter(@total_families[0][:"count()"].to_i) %></strong> villas y asentamientos, en los que residen <strong>
+            <%= number_with_delimeter(@total_families[0][:families].to_i) %></strong> familias.
+          </p>
+          <p>
+            Conoce información sobre cada una de las villas y asentamientos relevados. Haga clic en los marcadores <i class="icon-map-marker"></i> en el mapa.
+          </p>
+        </div>
+        <!-- Map container Argentina -->
+        <div class="span6">
+          <div id="map_index_page"></div>        
+        </div>
       </div>
     </div>
-    <div class="span6">
-      <!-- Chart container -->
-      <div style="height: 300px; margin: 0px; border: 1px solid #ccc;">
-        <ul class="breadcrumb">
-          <li>Acceso al <strong><em>agua potable</em></strong> a trav&eacute;s de la red p&uacute;blica:</li>
-        </ul>
-        <div id="water_chart_div"></div>
-      </div>
-    </div>
-  </div>
-  <hr>
-  <div class="row-fluid">
-    <div class="span6">
-      <!-- Chart container -->
-      <div style="height: 300px; margin: 0px; border: 1px solid #ccc;">
-        <ul class="breadcrumb">
-          <li>Conexi&oacute;n regular al <strong><em>sistema el&eacute;ctrico</em></strong>:</li>
-        </ul>
-        <div id="electrical_chart_div"></div>
-      </div>
-    </div>
-    <div class="span6">
-      <!-- Chart container -->
-      <div style="height: 300px; margin: 0px; border: 1px solid #ccc;">
-        <ul class="breadcrumb">
-          <li>Acceso a la <strong><em>red de gas</em></strong>:</li>
-        </ul>
-        <div id="gas_chart_div"></div>
-      </div>
-    </div>
-  </div>
+  </div>    
 </div>
 <script type="text/javascript">
   // Set a callback to run when the Google Visualization library is loaded.

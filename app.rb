@@ -60,7 +60,7 @@ class Techo < Sinatra::Base
 
   before do
     # Application version
-    @version = "09/12/2012"
+    @version = "20/01/2013"
 
     # Connect to service of fusion tables
     @ft = GData::Client::FusionTables.new

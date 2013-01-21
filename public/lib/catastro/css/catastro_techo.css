@@ -1,0 +1,192 @@
+/* Sidenav for Docs
+-------------------------------------------------- */
+
+.bs-docs-sidenav {
+  width: 228px;
+  margin: 30px 0 0;
+  padding: 0;
+  background-color: #fff;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+     -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+          box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+.bs-docs-sidenav > li > a {
+  display: block;
+  *width: 190px;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+}
+.bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+}
+.bs-docs-sidenav > .active > a {
+  position: relative;
+  z-index: 2;
+  padding: 9px 15px;
+  border: 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+     -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+          box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+
+/* Chevrons */
+
+.bs-docs-sidenav .icon-chevron-right {
+  float: right;
+  margin-top: 2px;
+  margin-right: -6px;
+  opacity: .25;
+}
+.bs-docs-sidenav > li > a:hover {
+  background-color: #f5f5f5;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+  background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+.bs-docs-sidenav.affix {
+  top: 40px;
+}
+.bs-docs-sidenav.affix-bottom {
+  position: absolute;
+  top: auto;
+  bottom: 270px;
+}
+
+#techo_style {
+  color: #0092dd;
+}
+
+#missing {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+#barrio_id {
+  color: #0092dd;
+  font-weight: bold;
+  font-size: 22px;
+  text-align: center;
+}
+
+#canvas_container {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width:100%;
+  height:100%;
+  z-index: 0;
+}
+
+#map_index_page {
+  width:570px;
+  height:650px;
+  margin: 0;
+  border: 1px solid #ccc;
+}
+
+#map_canvas {
+  width:100%;
+  height:100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: "hidden";
+}
+
+#selector {
+  width: 300px;
+  background: rgba(220,220,220,0.8);
+  top: 60px;
+  left: 85px;
+  z-index: 1100;
+  position: absolute;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -o-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -ms-border-radius: 10px;
+}
+
+#info_text_container {
+  width: 550px;
+  background: rgba(220,220,220,0.8);
+  top: 60px;
+  left: 420px;
+  z-index: 1100;
+  position: absolute;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -o-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -ms-border-radius: 10px;
+}
+
+#chart_container {
+  width: 300px;
+  background: rgba(220,220,220,0.8);
+  top: 80px;
+  left: 1000px;
+  z-index: 1100;
+  position: absolute;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -o-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -ms-border-radius: 10px;
+}
+
+/*.ac_results {
+       background-color:white;
+       border:1px solid #C5DBEC;
+       overflow:hidden;
+       padding:0;
+       z-index:99999;
+       position: fixed;
+       top: 0px;
+    /*   margin: 20px 0px 0px 0px; /* The top margin defines the offset of textbox */
+/*    }
+
+.ui-menu .ui-menu-item { margin:0; padding: 0; zoom: 0; float: left; clear: left; width: 100%; }
+
+*/
+
+/* For autocomlete function of JQuery */
+.ui-autocomplete {
+  position: absolute;
+  cursor: default;
+  max-height: 400px;
+  font-size: 12px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 4000 !important
+}
+
+/*.ui-autocomplete
+{
+max-height: 300px !important;
+}
+
+*/
