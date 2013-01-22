@@ -709,19 +709,20 @@ function dataTableHandler(d) {
   document.getElementById("table_id").innerHTML = thead;
 
   $(document).ready(function() {
-    $('#table_id').dataTable( {
-      "sDom": 'T<"clear">lfrtip',
+    var oTable = $('#table_id').dataTable( {
+      //"sDom": 'T<"clear">lfrtip',
+      "sDom": '<"top"T<"clear">lfip<"clear">>rt<"bottom"ip<"clear">>',
       "oTableTools": {
         "sSwfPath": "/lib/DataTables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf",
         "aButtons": [
-          {
-            "sExtends": "copy",
-            "sButtonText": "Copiar al clipboard"
-          },
+          // {
+          //   "sExtends": "copy",
+          //   "sButtonText": "Copiar al clipboard"
+          // },
           {
             "sExtends": "csv",
             "sButtonText": "Guardar como CSV archivo",
-            "sFileName": "catastro_techo.csv",
+            "sFileName": "techo_catastro_argentina.csv",
             "sFieldSeperator": ";"
           }
         ]
@@ -744,8 +745,9 @@ function dataTableHandler(d) {
       "sPaginationType": "full_numbers",
       "bAutoWidth": false,
       "bProcessing": true,
-//      "sScrollY": "200px",
       "sScrollX": "100%",
+//      "bScrollCollapse": true,
+//      "sScrollY": "200px",
       "aoData": cols,
       "aaData": rows,
       "aoColumnDefs": [
@@ -1301,6 +1303,26 @@ function clearThis(target) {
   // Clears text in a text field, when the user clicks on it.
   //
   target.value= "";
+}
+
+function doAction(e, obj) {
+  var keyCode = e ? (e.which ? e.which : e.keyCode) : event.keyCode;
+  // For enter...
+  if (keyCode == 13) {
+    if (obj == "part") {
+      setViewToPartido();
+      return false;
+    }
+    if (obj == "barrio") {
+      setViewToBarrio();
+      return false;
+    }
+  }
+  return true;
+
+//        var tb = document.getElementById("scriptBox");
+//        eval(tb.value);
+        
 }
 
 /////////////////////////////////////////////////////////////////////

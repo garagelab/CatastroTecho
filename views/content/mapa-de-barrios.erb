@@ -9,7 +9,7 @@
         <fieldset>
           <label><i class="icon-filter"></i>&nbsp;municipio o localidad</label>
           <div class="input-append">
-            <input class="span10" id="search_part_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)">
+            <input class="span10" id="search_part_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)" onkeydown="doAction(event, 'part')">
             <button class="btn disabled" id="clear_search_txt" type="button" onclick="removeAllPartidoSelections()"><i class="icon-remove"></i>
             </button>
           </div>
@@ -24,7 +24,7 @@
         <fieldset>
           <label><i class="icon-map-marker"></i>&nbsp;mi barrio</label>
           <div class="input-append">
-            <input class="span10" id="search_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)">
+            <input class="span10" id="search_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)" onkeydown="doAction(event, 'barrio')">
             <button class="btn disabled" id="clear_search_txt" type="button" onclick="setViewToPartido()"><i class="icon-remove"></i>
             </button>
           </div>
@@ -42,17 +42,20 @@
         <ul class="breadcrumb" style="text-align: center; padding: 0px 15px; margin: 0px;">
           <li><span id="barrio_id"></span></li>
         </ul>
-        <dl class="dl-horizontal" style="font-size: 80%;">
-          <dt>Otro nombre:</dt><dd id="other_name_barrio_id">-</dd>
+        <dl class="dl-horizontal" style="font-size: 80%; margin-left:-20px;">
+          <dt>Otro denominaci&oacute;n:</dt><dd id="other_name_barrio_id">-</dd>
           <dt>Municipio:</dt><dd id="partido_id">-</dd>
           <dt>Localidad:</dt><dd id="localidad_id">-</dd>
           <dt>Cantidad de Familias:</dt><dd id="families_id">-</dd>
           <dt>A&ntilde;o de inicio:</dt><dd id="start_year_id">-</dd>
-          <hr>
-          <dt>Desag&uuml;es cloacales:</dt><dd id="sewage_id">-</dd>
-          <dt>Agua potable:</dt><dd id="water_id">-</dd>
-          <dt>Sistema el&eacute;ctrico:</dt><dd id="electrical_id">-</dd>
-          <dt>Red de gas:</dt><dd id="gas_id">-</dd>
+          <dt></dt><dd>&nbsp;</dd>
+          <span style="font-size:110%; margin-left:70px;">
+            Situaci&oacute;n de los Servicios B&aacute;sicos:
+          </span>
+          <dt>&nbsp;Desag&uuml;es cloacales:</dt><dd id="sewage_id">-</dd>
+          <dt>&nbsp;Agua potable:</dt><dd id="water_id">-</dd>
+          <dt>&nbsp;Sistema el&eacute;ctrico:</dt><dd id="electrical_id">-</dd>
+          <dt>&nbsp;Red de gas:</dt><dd id="gas_id">-</dd>
           <dt>Desag&uuml;es pluviales:</dt><dd id="drains_id">-</dd>
           <dt>Alumbrado p&uacute;blico:</dt><dd id="street_lighting_id">-</dd>
           <dt>Recolecci&oacute;n de residuos:</dt><dd id="waste_collection_id">-</dd>

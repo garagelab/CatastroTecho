@@ -95,10 +95,11 @@
 }
 
 #map_index_page {
-  width:570px;
+/*  width:570px;
   height:650px;
   margin: 0;
   border: 1px solid #ccc;
+*/
 }
 
 #map_canvas {
