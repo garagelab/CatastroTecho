@@ -8,7 +8,7 @@
   Code type:  Business coding
   Copyright:  2012 - 2013 Techo http://www.techo.org/ All Rights Reserved.
   Author:     Written by Andreas Hempfling <andreas.hempfling@gmail.com>.
-              from 09/2012 to 01/2013.
+              from 09/2012 to 03/2013.
 */
 
 /////////////////////////////////////////////////////////////////////
@@ -65,6 +65,7 @@ var shortcut_municipio = "Mpio.";
 var shortcut_localidad = "Loc.";
 
 var where_clause;
+var where_clause_area_map;
 var barrio;
 var map;
 var initLayer;
@@ -107,6 +108,20 @@ function initMapIndexPage() {
     streetViewControl: false
   } );
 
+  // Add a Circle overlay to the map.
+  var circle = new google.maps.Circle({
+    //center: buenos_aires_lat_lng,
+    map: map,
+    fillColor: '#0000FF',
+    fillOpacity: 0.5,
+    strokeColor: '#1e90ff',
+    strokeOpacity: 0.5,
+    strokeWeight: 1,
+    //radius: 1836.55489862987
+    radius: 200000 // 200 km
+  });
+  //map.fitBounds(circle.getBounds());
+
   // google.maps.event.addListener(map, 'zoom_changed', function() {
   //   setTimeout(moveToBuenosAires, 3000);
   // });
@@ -117,12 +132,24 @@ function initMapIndexPage() {
   //     title:"Conoce información sobre cada una de las villas y asentamientos relevados."
   // });
   
-  placeMarker(map, buenos_aires_lat_lng, techo_marker, techo_marker_shadow);
+  // Create a marker.
+  var marker = placeMarker(map, buenos_aires_lat_lng, techo_marker, techo_marker_shadow);
+  marker.setTitle('Buenos Aires');
+
+  // Bind marker to cirlce.
+  // We're binding the Circle's center to the Marker's position.
+  circle.bindTo('center', marker, 'position');
 
   google.maps.event.addListener(marker, 'click', function() {
     // Show map page of Buenos Aires...
     window.location.href = "/content/mapa-de-barrios";
   });
+
+  google.maps.event.addListener(circle, 'click', function() {
+    // Show map page of Buenos Aires...
+    window.location.href = "/content/mapa-de-barrios";
+  });
+
 }
 
 function moveToBuenosAires() {
@@ -144,14 +171,14 @@ function initMapBarriosPage() {
   initMapLayer();
   initLayer.setMap(map);
 
+  // Show metropolitana data (all data).
+  setViewToMetropolitana();
+
   // Init 'Barrio' search field.
   initSearchFieldBarrio();
 
   // Init 'Partido' search field.
   initSearchFieldPartido();
-
-  // Show metropolitana data (all data).
-  setViewToMetropolitana();
 }
 
 function initTableBarriosPage() {
@@ -162,7 +189,7 @@ function initTableBarriosPage() {
 }
 
 /////////////////////////////////////////////////////////////////////
-//
+// User interactions 
 /////////////////////////////////////////////////////////////////////
 
 function setViewToMetropolitana() {
@@ -351,18 +378,6 @@ function findPartidoData() {
         // Evaluate the focus of a polygon in selected area for center map.
         if (polygonBoundary) {
           lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
-
-          // var circle = new google.maps.Circle({
-          //   center: lat_lng,
-          //   map: map,
-          // //  fillColor: '#0000FF',
-          // //  fillOpacity: 0.5,
-          //   strokeColor: '#1e90ff',
-          //   strokeOpacity: 1.0,
-          //   strokeWeight: 2,
-          //   radius: 1836.55489862987
-          // });
-          // map.fitBounds(circle.getBounds());
         }
         else {
           // set default
@@ -375,7 +390,7 @@ function findPartidoData() {
 
     if (area_choice) {
       // Set where clause for map and get numbers for info text.
-      var where_clause_area_map;
+      where_clause_area_map = null;
 
       // Reset barrio info.
       removeBarrioInfo();
@@ -404,13 +419,14 @@ function findPartidoData() {
 
       // Reinit selection for 'Barrio' search field.
       partidoFilter = true;
-      delete queryText;
-      queryText = encodeURIComponent(
-        "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
-        "FROM " + dataSourceNumericID +
-        " WHERE " + where_clause_area_map +
-        " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO'");
-      initSearchFieldBarrio(queryText);
+      // delete queryText;
+      // queryText = encodeURIComponent(
+      //   "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
+      //   "FROM " + dataSourceNumericID +
+      //   " WHERE " + where_clause_area_map +
+      //   " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO'");
+      // initSearchFieldBarrio(queryText);
+      initSearchFieldBarrio();
 
       // Reinit layer.
       initLayer.setOptions({
@@ -519,45 +535,50 @@ function findBarrioData() {
   }
 }
 
-function initSearchFieldBarrio(queryText) {
+function initSearchFieldBarrio() {
   //
   // Autocompletition via jQuery for Barrio search field.
   //
-  if (partidoFilter == false) {
-    queryText = encodeURIComponent(
-            "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
-            'FROM ' + dataSourceNumericID + " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO'");
-  }
+  $('#search_txt').autocomplete({
+    source: function(request, response) {
+//      console.log("request = %s", request.term);
+      var queryText;
+      var queryUrl;
 
-  query = new google.visualization.Query(dataSourceUrl + queryText);
-
-  query.send(function(response) {
-    if (response.isError()) {
-      alert('initSearchFieldBarrio(): Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-      return;
-    }
-
-    var numRows = response.getDataTable().getNumberOfRows();
-    // Create the list of results for display of autocomplete.
-    var results = [];
-    for(var i=0; i<numRows; i++) {
-      // Check for an 'Barrio' alias.
-      if (response.getDataTable().getValue(i, 1)) {
-        results.push(response.getDataTable().getValue(i, 0) + " (" +response.getDataTable().getValue(i, 1) +")");
+      if (partidoFilter === false) {
+        queryText = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
+                    "FROM " + dataSourceNumericID +
+                    " WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
+                    " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
       }
       else {
-        results.push(response.getDataTable().getValue(i, 0));
+        queryText = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
+                    "FROM " + dataSourceNumericID +
+                    " WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
+                    " AND " + where_clause_area_map +
+                    " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
       }
-    }
+      queryUrl = encodeURI(queryUrlHead + queryText + queryUrlTail);
 
-    // Use the results to create the autocomplete options.
-    $('#search_txt').autocomplete( {
-      source: results,
-      minLength: 1,
-//      maxHeight:100,
-      zIndex: 4000
-    } );
-  } );
+      $.ajax({
+        url: queryUrl,
+        dataType: "jsonp",
+        error: function() {alert("initSearchFieldBarrio(): Error in query: " + queryUrl ); },
+        success: function(data) {
+          response( $.map(data.table.rows, function(row) {
+            //console.log("row = %s", row[1]);
+            return {
+              // Total query information for barrio.
+              label: row[0] + (row[1] ? ", " + row[1] : "") + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : ""),
+              // Barrio name only for search/autocomplete.
+              value: row[0]
+            };
+          }));
+        }
+      });
+    },
+    minLength: function() { if (partidoFilter === false) return 2; else return 1; }
+  });
 }
 
 function initSearchFieldPartido() {
@@ -654,12 +675,14 @@ function removeAllBarrioSelections() {
 
   removeBarrioInfo();
 
-  if (queryText === undefined) {
-    initSearchFieldBarrio();
-  }
-  else {
-    initSearchFieldBarrio(queryText);
-  }
+  initSearchFieldBarrio();
+
+  // if (queryText === undefined) {
+  //   initSearchFieldBarrio();
+  // }
+  // else {
+  //   initSearchFieldBarrio(queryText);
+  // }
 
   clearThis(document.getElementById('search_txt'));
 
@@ -694,24 +717,19 @@ function getDataSourceData() {
 function dataTableHandler(d) {
   //
   // View data table.
+  // Currently, a jQuery table is used with a 'dataTables' extension.
   // For details see: http://www.datatables.net/index
   //
-  //var cols = {};
   var cols = d.table.cols;
   var rows = d.table.rows;
-  var thead;
-
-  thead = '<thead>';
-  for (var i=0; i<cols.length; i++) {
-    thead += '<th>' + cols[i] + '</th>';
-  }
-  thead += '</thead>';
-  document.getElementById("table_id").innerHTML = thead;
-
+  
   $(document).ready(function() {
-    var oTable = $('#table_id').dataTable( {
-      //"sDom": 'T<"clear">lfrtip',
-      "sDom": '<"top"T<"clear">lfip<"clear">>rt<"bottom"ip<"clear">>',
+    var oTable = $('#table_container').dataTable( {
+      //
+      // Positions of various controls end elements.
+      "sDom": 'T<"clear">lfip<"clear">rtS<"clear">ip<"clear">',
+      //
+      // Menu buttons
       "oTableTools": {
         "sSwfPath": "/lib/DataTables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf",
         "aButtons": [
@@ -727,6 +745,8 @@ function dataTableHandler(d) {
           }
         ]
       },
+      //
+      // Translations
       "oLanguage": {
         "sLengthMenu": "Mostrar _MENU_ registros por página",
         "sZeroRecords": "No he encontrado nada - lo siento",
@@ -735,27 +755,106 @@ function dataTableHandler(d) {
         "sInfoFiltered": "(filtrado de los registros totales _MAX_)",
         "sSearch": "Búsqueda:",
         "oPaginate": {
-          "sFirst": "primero",
-          "sPrevious": "anterior",
-          "sNext": "próximo",
-          "sLast": "último"
+          "sFirst": "&Lt;",
+          //"sFirst": "primero",
+          "sPrevious": "&lt;",
+          //"sPrevious": "anterior",
+          "sNext": "&gt;",
+          //"sNext": "próximo",
+          "sLast": "&Gt;"
+          //"sLast": "último"
         }
       },
-      "bJQueryUI": true,
+      // Enable jQuery UI ThemeRoller support.
+      //"bJQueryUI": true,
+      //
+      // DataTables features different built-in pagination interaction
+      // methods which present different page controls to the end user.
       "sPaginationType": "full_numbers",
+      //
+      // Enable or disable automatic column width calculation.
       "bAutoWidth": false,
+      //
+      // Enable or disable the display of a 'processing' indicator
+      // when the table is being processed.
       "bProcessing": true,
+      //
+      // Enable horizontal scrolling.
       "sScrollX": "100%",
-//      "bScrollCollapse": true,
-//      "sScrollY": "200px",
-      "aoData": cols,
-      "aaData": rows,
+      //
+      // This property can be used to force a DataTable to use more
+      // width than it might otherwise do when x-scrolling is enabled.
+      //"sScrollXInner": "150%",
+      //
+      // Deferred rendering can provide DataTables with a huge speed
+      // boost when you are using an Ajax or JS data source for the
+      // table. This option, when set to true, will cause DataTables
+      // to defer the creation of the table elements for each row until
+      // they are needed for a draw - saving a significant amount of time.
+      "bDeferRender": true,
+      //
+      // Changing the Show XXXX items per page drop-down - by default,
+      // in the drop-down list are placed 10, 25, 50, and 100 items.
+      "aLengthMenu": [[10, 15, 25, 50, 75, 100, 125, 150], [10, 15, 25, 50, 75, 100, 125, 150]],
+      //
+      // Define initial pagination settings
+      "iDisplayLength": 15,
+      "iDisplayStart": 0,
+      //
+      // Table columns
       "aoColumnDefs": [
-        { "bVisible": false, "aTargets": [ 2 ] },
-        { "bVisible": false, "aTargets": [ 3 ] }
-      ]
+        { "bVisible": true, "sTitle": "BARRIO", "aTargets": [0] },
+        { "bVisible": true, "sTitle": "OTRO DENOMINACI&Oacute;N", "aTargets": [1] },
+        { "bVisible": false, "aTargets": [2] },
+        { "bVisible": false, "aTargets": [3] },
+        { "bVisible": true, "sTitle": cols[4], "aTargets": [4] },
+        { "bVisible": true, "sTitle": cols[5], "aTargets": [5] },
+        { "bVisible": true, "sTitle": cols[6], "aTargets": [6] },
+        { "bVisible": true, "sTitle": cols[7], "aTargets": [7] },
+        { "bVisible": true, "sTitle": cols[8], "aTargets": [8] },
+        { "bVisible": true, "sTitle": cols[9], "aTargets": [9] },
+        { "bVisible": true, "sTitle": cols[10], "aTargets": [10] },
+        { "bVisible": true, "sTitle": cols[11], "aTargets": [11] },
+        { "bVisible": true, "sTitle": cols[12], "aTargets": [12] },
+        { "bVisible": true, "sTitle": cols[13], "aTargets": [13] },
+        { "bVisible": true, "sTitle": cols[14], "aTargets": [14] },
+        { "bVisible": true, "sTitle": cols[15], "aTargets": [15] },
+        { "bVisible": true, "sTitle": cols[16], "aTargets": [16] },
+        { "bVisible": true, "sTitle": cols[17], "aTargets": [17] },
+        { "bVisible": true, "sTitle": cols[18], "aTargets": [18] },
+        { "bVisible": true, "sTitle": cols[19], "aTargets": [19] },
+        { "bVisible": true, "sTitle": cols[20], "aTargets": [20] },
+        { "bVisible": true, "sTitle": cols[21], "aTargets": [21] },
+        { "bVisible": true, "sTitle": cols[22], "aTargets": [22] },
+        { "bVisible": true, "sTitle": cols[23], "aTargets": [23] },
+        { "bVisible": true, "sTitle": cols[24], "aTargets": [24] },
+        { "bVisible": true, "sTitle": cols[25], "aTargets": [25] },
+        { "bVisible": true, "sTitle": cols[26], "aTargets": [26] }
+      ],
+      //
+      // Table rows
+      "aaData": rows,
+      //
+      // Setting 1st column to a fixed position.
+      "oColReorder": {
+        "iFixedColumns": 1
+      }
+
+    } ); // end dataTable()
+
+    // Fixed column get an absolute width in pixels.
+    new FixedColumns(oTable, {
+      "iLeftWidth": 180
     } );
-  } );
+    
+    // This function will make DataTables recalculate the column sizes.
+    // This can be useful when the width of the table's parent element
+    // changes (for example a window resize).
+    // $(window).bind('resize', function () {
+    //   oTable.fnAdjustColumnSizing();
+    // } );
+
+  } ); // end ready()
 }
 
 function removePartidoInfo() {
@@ -990,7 +1089,7 @@ function placeMarker(map, location, marker_icon, marker_shadow) {
   // Delete current ('old') marker.
   deleteOverlays();
   // Create new marker.
-  marker = new google.maps.Marker( {
+  var marker = new google.maps.Marker( {
     position: location,
     icon: image,
     shadow: shadow,
@@ -1001,6 +1100,8 @@ function placeMarker(map, location, marker_icon, marker_shadow) {
   markers.push(marker);
   // Set marker to the map's center.
   map.setCenter(location);
+
+  return marker;
 }
 
 function deleteOverlays() {
@@ -1009,7 +1110,7 @@ function deleteOverlays() {
   //
   var i;
   if (markers) {
-    for (var i=0; i<markers.length; i++) {
+    for (i=0; i<markers.length; i++) {
       markers[i].setMap(null);
     }
     markers.length = 0;
@@ -1309,20 +1410,34 @@ function doAction(e, obj) {
   var keyCode = e ? (e.which ? e.which : e.keyCode) : event.keyCode;
   // For enter...
   if (keyCode == 13) {
-    if (obj == "part") {
+    if (obj.id == 'search_part_txt') {
       setViewToPartido();
       return false;
     }
-    if (obj == "barrio") {
+    if (obj.id == 'search_txt') {
       setViewToBarrio();
       return false;
     }
   }
   return true;
+}
 
-//        var tb = document.getElementById("scriptBox");
-//        eval(tb.value);
-        
+function techoBtnOnMouseOver(obj) {
+  var id = obj.id;
+  if (id == 'clear_search_part_txt' || id == 'clear_search_barrio_txt') {
+    document.getElementById(id).style.backgroundColor='#0092dd';
+    document.getElementById(id).style.cursor='pointer';
+  }
+  return false;
+}
+
+function techoBtnOnMouseOut(obj) {
+  var id = obj.id;
+  if (id == 'clear_search_part_txt' || id == 'clear_search_barrio_txt') {
+    document.getElementById(id).style.backgroundColor='transparent';
+    document.getElementById(id).style.cursor='default';
+  }
+  return false;
 }
 
 /////////////////////////////////////////////////////////////////////

@@ -6,22 +6,21 @@ table.dataTable {
 	margin: 0 auto;
 	clear: both;
 	width: 100%;
+	font-size: 85%;
 }
-
 table.dataTable thead th {
 	padding: 3px 18px 3px 10px;
 	border-bottom: 1px solid black;
 	font-weight: bold;
 	cursor: pointer;
 	*cursor: hand;
+  	white-space: nowrap;
 }
-
 table.dataTable tfoot th {
 	padding: 3px 18px 3px 10px;
 	border-top: 1px solid black;
 	font-weight: bold;
 }
-
 table.dataTable td {
 	padding: 3px 10px;
 }

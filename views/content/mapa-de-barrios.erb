@@ -9,37 +9,56 @@
         <fieldset>
           <label><i class="icon-filter"></i>&nbsp;municipio o localidad</label>
           <div class="input-append">
-            <input class="span10" id="search_part_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)" onkeydown="doAction(event, 'part')">
-            <button class="btn disabled" id="clear_search_txt" type="button" onclick="removeAllPartidoSelections()"><i class="icon-remove"></i>
+            <input class="span10" id="search_part_txt" size="10" type="text" 
+                    placeholder="ingresa el nombre y pulse enter..." 
+                    onfocus="clearThis(this)" 
+                    onkeydown="doAction(event, this)">
+            <button class="btn disabled" id="clear_search_part_txt" 
+                    type="button" 
+                    rel="tooltip" title="Eliminar selecci&oacute;n" 
+                    onclick="removeAllPartidoSelections()" 
+                    onmouseover="techoBtnOnMouseOver(this)" 
+                    onmouseout="techoBtnOnMouseOut(this)">
+                    <i class="icon-remove"></i>
             </button>
           </div>
-          <div>
+<!--           <div>
             <button class="span10 btn btn-small" id="search_part" type="button" onclick="setViewToPartido()">
               muestra el municipio o la localidad
             </button>
           </div>
-        </fieldset>
+ -->        </fieldset>
 
         <!-- Barrio Search -->
         <fieldset>
-          <label><i class="icon-map-marker"></i>&nbsp;mi barrio</label>
+          <label>
+            <i class="icon-map-marker"></i>&nbsp;Villa o Asentamiento</label>
           <div class="input-append">
-            <input class="span10" id="search_txt" size="10" type="text" placeholder="ingresa el nombre..." onfocus="clearThis(this)" onkeydown="doAction(event, 'barrio')">
-            <button class="btn disabled" id="clear_search_txt" type="button" onclick="setViewToPartido()"><i class="icon-remove"></i>
+            <input class="span10" id="search_txt" size="10" type="text" 
+                    placeholder="ingresa el nombre y pulse enter..." 
+                    onfocus="clearThis(this)" 
+                    onkeydown="doAction(event, this)">
+            <button class="btn disabled" id="clear_search_barrio_txt" 
+                    type="button" 
+                    rel="tooltip" title="Eliminar selecci&oacute;n" 
+                    onclick="setViewToPartido()" 
+                    onmouseover="techoBtnOnMouseOver(this)" 
+                    onmouseout="techoBtnOnMouseOut(this)">
+                    <i class="icon-remove"></i>
             </button>
           </div>
-          <div>
+<!--           <div>
             <button class="span10 btn btn-small" id="search" type="button" onclick="setViewToBarrio()">
               muestra el barrio
             </button>
           </div>
-        </fieldset>
+ -->        </fieldset>
       </form>
 
       <!-- Barrio Info -->
       <div id="info_barrio" class="breadcrumb"
-        style="height: 505px; padding: 0px; margin: 0px; border: 0px solid #ccc; background-color: #ffffff;">
-        <ul class="breadcrumb" style="text-align: center; padding: 0px 15px; margin: 0px;">
+        style="height: 480px; padding: 0px; margin: 0px; border: 0px solid #ccc; background-color: #ffffff;">
+        <ul class="breadcrumb" style="text-align: center; padding: 4px 15px; margin: 0px;">
           <li><span id="barrio_id"></span></li>
         </ul>
         <dl class="dl-horizontal" style="font-size: 80%; margin-left:-20px;">

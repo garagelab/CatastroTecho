@@ -13,11 +13,11 @@
     <link href='/css/demo_table_jui.css' rel='stylesheet'>
 
     <!-- jQuery library 1.7.2 -->
-    <script src="/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="/lib/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
 
-    
     <!-- jQuery libary 1.8.2 -->
-    <!-- <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+    <!--
+    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
     -->
 
     <!-- DataTables CSS -->
@@ -29,17 +29,35 @@
       src="/lib/DataTables/media/js/jquery.dataTables.min.js">
     </script>
 
-    <!-- TableTools CSS -->
+    <!-- DataTables - TableTools CSS -->
     <link rel="stylesheet" type="text/css" 
     href="/lib/DataTables/extras/TableTools/media/css/TableTools.css">
   
-    <!-- TableTools JavaScript -->
+    <!-- DataTables - TableTools JavaScript -->
     <script type="text/javascript" charset="utf8" 
       src="/lib/DataTables/extras/TableTools/media/js/TableTools.min.js">
     </script>
 
+    <!-- DataTables - ZeroClipboard JavaScript -->
     <script type="text/javascript" charset="utf-8" 
       src="/lib/DataTables/extras/TableTools/media/js/ZeroClipboard.js">
+    </script>
+
+    <!-- DataTables - ColReorderWithResize JavaScript -->
+    <script type="text/javascript" charset="utf8" 
+      src="/lib/DataTables/extras/ColReorder/media/js/ColReorderWithResize.js">
+    </script>
+
+    <!-- DataTables - FixedColumns JavaScript -->
+    <script type="text/javascript" charset="utf8" 
+      src="/lib/DataTables/extras/FixedColumns/media/js/FixedColumns.min.js">
+    </script>
+
+    <!-- Bootstrap css and javascript library -->
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
+
+    <script type='text/javascript' 
+      src="/lib/bootstrap/js/bootstrap.min.js">
     </script>
     
     <!-- Google Maps and Places API -->
@@ -49,12 +67,6 @@
 
     <!-- Google AJAX API -->
     <script type='text/javascript' src='https://www.google.com/jsapi'>
-    </script>
-
-    <!-- Bootstrap css and javascript library -->
-    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
-    <script type='text/javascript' 
-      src="/lib/bootstrap/js/bootstrap.min.js">
     </script>
 
     <!-- Business code (Visualization functions, routines, etc.) -->
@@ -103,7 +115,7 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="http://www.techo.org.ar" target="_blank">
-            <img src="/images/logo_techo3.png" width="67" height="19" />&nbsp;Catastro Argentina
+            <img src="/images/logo_techo_trans1.png" width="67" height="19" />&nbsp;Catastro Argentina
           </a>
 
           <ul class="nav">
@@ -134,8 +146,8 @@
           </ul>
 
           <ul class="nav pull-right">
-            <li><a href="http://garagelab.tumblr.com/" target="_blank">
-              Con el apoyo de&nbsp;<%=img("logo_garagelab3.png")%></a>
+            <li><a href="http://www.garagelab.cc/" target="_blank">
+            Con el apoyo de&nbsp;<img src="/images/logo_garagelab_trans1.png" width="103" height="20" /></a>
             </li>
 <!--             <li><a href="#">
               <span style="font-size: 80%; color: #999999;">&nbsp;&nbsp;Versi&oacute;n de <%= @version %></span></a>
