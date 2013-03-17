@@ -60,19 +60,20 @@ class Techo < Sinatra::Base
 
   before do
     # Application version
-    @version = "20/01/2013"
+    @version = "16/03/2013"
 
     # Connect to service of fusion tables
     @ft = GData::Client::FusionTables.new
 
     # In Fusion, table IDs are numbers.
     TABLES = {
-      :barrios => 2338632,
+#      :barrios => 2338632,
+      :barrios => '1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY',
     }
 
     # Prepare queries.
     @qry_total_barrios = "SELECT 'NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD' FROM #{TABLES[:barrios]} GROUP BY 'NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD';"
-    @qry_total_families = "SELECT sum('NRO DE FLIAS') as families, count('NOMBRE DEL BARRIO') FROM  #{TABLES[:barrios]};"
+    @qry_total_families = "SELECT sum('NRO DE FLIAS') as families, count('NOMBRE DEL BARRIO') FROM #{TABLES[:barrios]};"
 
     if request.url =~ WWW
       redirect(request.url.sub(WWW, '\1'), 301)

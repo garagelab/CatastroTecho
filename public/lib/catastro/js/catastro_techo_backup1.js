@@ -24,6 +24,7 @@ google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'langua
 var dataSourceUrl = 'http://www.google.com/fusiontables/gvizdata?tq=';
 // Numeric ID - Notice: Table have to be 'public'.
 //var dataSourceNumericID = '2338632';
+var dataSourceNumericID = '2338632';
 // Encrypted ID
 //var dataSourceEncryptedID ='1ePInQ8wuWBsfXcXczd0j3bp7qFFw2v-tXn_g_Rw';
 var dataSourceEncryptedID ='1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY';
@@ -238,7 +239,7 @@ function initMapLayer() {
     suppressInfoWindows: true, // Because we have a separate listener for that.
     query: {
       select: 'Poligon',
-      from: dataSourceEncryptedID
+      from: dataSourceNumericID
     },
     styles: [ {
       polygonOptions: {
@@ -358,7 +359,7 @@ function findPartidoData() {
       area_choice = 'P';
     }
 
-    queryText = encodeURIComponent("SELECT * FROM " + dataSourceEncryptedID + where_clause);
+    queryText = encodeURIComponent("SELECT * FROM " + dataSourceNumericID + where_clause);
     query = new google.visualization.Query(dataSourceUrl + queryText);
 
     query.send(function(response) {
@@ -423,7 +424,7 @@ function findPartidoData() {
       // delete queryText;
       // queryText = encodeURIComponent(
       //   "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
-      //   "FROM " + dataSourceEncryptedID +
+      //   "FROM " + dataSourceNumericID +
       //   " WHERE " + where_clause_area_map +
       //   " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO'");
       // initSearchFieldBarrio(queryText);
@@ -434,7 +435,7 @@ function findPartidoData() {
         suppressInfoWindows: true, // Because we have a separate listener for that.
         query: {
           select: 'Poligon',
-          from: dataSourceEncryptedID
+          from: dataSourceNumericID
         },
         styles: [ {
           polygonOptions: {
@@ -481,7 +482,7 @@ function findBarrioData() {
       barrio = (barrio.substring(0, barrio.indexOf("(")-1)).trim();
     }
     queryText = encodeURIComponent(
-            "SELECT * FROM " + dataSourceEncryptedID + " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'");
+            "SELECT * FROM " + dataSourceNumericID + " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'");
     query = new google.visualization.Query(dataSourceUrl + queryText);
 
     query.send(function(response) {
@@ -542,20 +543,20 @@ function initSearchFieldBarrio() {
   //
   $('#search_txt').autocomplete({
     source: function(request, response) {
-      //console.log("request = %s", request.term);
+//      console.log("request = %s", request.term);
       var queryText;
       var queryUrl;
 
       if (partidoFilter === false) {
         queryText = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
-                    "FROM " + dataSourceEncryptedID +
+                    "FROM " + dataSourceNumericID +
                     " WHERE 'NOMBRE DEL BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
 //                    " WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
                     " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
       }
       else {
         queryText = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
-                    "FROM " + dataSourceEncryptedID +
+                    "FROM " + dataSourceNumericID +
                     " WHERE 'NOMBRE DEL BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
 //                    " WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
                     " AND " + where_clause_area_map +
@@ -569,13 +570,12 @@ function initSearchFieldBarrio() {
         error: function() {alert("initSearchFieldBarrio(): Error in query: " + queryUrl ); },
         success: function(data) {
           response( $.map(data.table.rows, function(row) {
-            //console.log("row = %s", row[0]);
+//            console.log("row = %s", row[0]);
             return {
               // Total query information for barrio.
               label: row[0] + (row[1] ? ", " + row[1] : "") + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : ""),
               // Barrio name only for search/autocomplete.
-//              value: row[0].toLowerCase()
-              value: row[0]
+              value: row[0].toLowerCase()
             };
           }));
         }
@@ -592,7 +592,7 @@ function initSearchFieldPartido() {
   // Retrieve the unique names of 'municipios' using GROUP BY workaround.
  queryText = encodeURIComponent(
             "SELECT 'PARTIDO', 'LOCALIDAD' " +
-            'FROM ' + dataSourceEncryptedID + " GROUP BY 'PARTIDO', 'LOCALIDAD'");
+            'FROM ' + dataSourceNumericID + " GROUP BY 'PARTIDO', 'LOCALIDAD'");
   query = new google.visualization.Query(dataSourceUrl + queryText);
 
   query.send(function(response) {
@@ -706,7 +706,7 @@ function getDataSourceData() {
   // would be possible but we use another workaround - the method of
   // a direct 'Ajax' call - and 'bypassing' this restriction.
   //
-  var queryText = "SELECT * FROM " + dataSourceEncryptedID;
+  var queryText = "SELECT * FROM " + dataSourceNumericID;
   var queryUrl = encodeURI(queryUrlHead + queryText + queryUrlTail);
 
   $.ajax({
@@ -1177,16 +1177,16 @@ function drawSupplyCharts(view, page) {
   }
 
   if (where_clause) {
-    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceEncryptedID + where_clause };
-    charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceEncryptedID  + where_clause };
-    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceEncryptedID  + where_clause };
-    charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceEncryptedID  + where_clause };
+    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceNumericID + where_clause };
+    charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceNumericID  + where_clause };
+    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceNumericID  + where_clause };
+    charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceNumericID  + where_clause };
   }
   else {
-    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceEncryptedID };
-    charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceEncryptedID };
-    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceEncryptedID };
-    charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceEncryptedID };
+    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + dataSourceNumericID };
+    charts.water.query = { value: "SELECT 'AGUA' FROM " + dataSourceNumericID };
+    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + dataSourceNumericID };
+    charts.gas.query = { value: "SELECT 'GAS' FROM " + dataSourceNumericID };
   }
 
   charts.sewage.chartType = { value: "PieChart" };

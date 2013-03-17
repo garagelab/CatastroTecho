@@ -24,8 +24,10 @@
               @total_families = @ft.execute @qry_total_families
             %>
             En las provincias de Buenos Aires hay
-            <strong><%= number_with_delimeter(@total_families[0][:"count()"].to_i) %></strong> villas y asentamientos, en los que residen <strong>
-            <%= number_with_delimeter(@total_families[0][:families].to_i) %></strong> familias.
+            <strong><%= number_with_delimeter(@total_families[0][:"count()"].to_i) %></strong>
+            villas y asentamientos, en los que residen&nbsp;
+            <strong><%= number_with_delimeter(@total_families[0][:families].to_i) %></strong>
+            familias.
           </p>
           <p>
             Conoce información sobre cada una de las villas y asentamientos relevados. Haga clic en los marcadores <i class="icon-map-marker"></i> en el mapa.
