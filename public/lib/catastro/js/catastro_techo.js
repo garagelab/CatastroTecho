@@ -215,12 +215,6 @@ function setViewToPartido() {
   removeAllBarrioSelections();
   // Set partido data.
   var result = findPartidoData();
-  if (result === true) {
-    drawSupplyCharts(escala["municipio"], "map_page");
-  }
-  else {
-    setViewToMetropolitana();
-  }
 }
 
 function setViewToBarrio() {
@@ -318,7 +312,7 @@ function findPartidoData() {
 
   // Check text search field for manually search first.
   choice = document.getElementById('search_part_txt').value;
-
+	
   // Search field is empty.
   if (!choice) {
     return false;
@@ -361,95 +355,156 @@ function findPartidoData() {
     queryText = encodeURIComponent("SELECT * FROM " + dataSourceEncryptedID + where_clause);
     query = new google.visualization.Query(dataSourceUrl + queryText);
 
-    query.send(function(response) {
-      var numRows = response.getDataTable().getNumberOfRows();
-      // Partido or Localidad not found in data source.
-      if (!numRows) {
-        var msg = "La selecci&oacute;n " + "'" + choice + "'" + " no se pudo encontrar.";
-        bootstrap_alert.warning(msg);
-        clearThis(document.getElementById("search_part_txt"));
-        return;
-      }
+	query.send(function(response) {
+    	var numRows = response.getDataTable().getNumberOfRows();
+      	// Partido or Localidad not found in data source.
+      	if (!numRows) {
+        	var msg = "La selecci&oacute;n " + "'" + choice + "'" + " no se pudo encontrar.";
+        	bootstrap_alert.warning(msg);
+        	clearThis(document.getElementById("search_part_txt"));
+        	return;
+      	}
 
-      if (response.getDataTable().getValue(0, 2) &&
-          !isEmpty(response.getDataTable().getValue(0, 2)) &&
-          !isBlank(response.getDataTable().getValue(0, 2))) {
-        polygonBoundary = response.getDataTable().getValue(0, 2);
-        filter.criteria['partido'] = { value: response.getDataTable().getValue(0, 4) };
-        // Evaluate the focus of a polygon in selected area for center map.
-        if (polygonBoundary) {
-          lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
-        }
-        else {
-          // set default
-          lat_lng = barrios_bsas;
-        }
-        map.setCenter(lat_lng);
-        map.setZoom(11);
-     }
+      	if (response.getDataTable().getValue(0, 2) &&
+          	!isEmpty(response.getDataTable().getValue(0, 2)) &&
+          	!isBlank(response.getDataTable().getValue(0, 2))) {
+        	polygonBoundary = response.getDataTable().getValue(0, 2);
+        	filter.criteria['partido'] = { value: response.getDataTable().getValue(0, 4) };
+        	// Evaluate the focus of a polygon in selected area for center map.
+        	if (polygonBoundary) {
+          		lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
+        	}
+        	else {
+          	// set default
+          		lat_lng = barrios_bsas;
+        	}
+        	map.setCenter(lat_lng);
+        	map.setZoom(11);
+      	}
+     
+		if (area_choice) {
+      		// Set where clause for map and get numbers for info text.
+      		where_clause_area_map = null;
+
+      		// Reset barrio info.
+      		removeBarrioInfo();
+      		filter.criteria['barrio'] = { value: null };
+
+      		switch(area_choice.toUpperCase()) {
+        		case 'P':
+          			filter.criteria['municipio'] = { value: choice };
+          			filter.criteria['partido'] = { value: choice };
+          			filter.criteria['selected_area'] = { value: 'municipio' };
+          			where_clause_area_map = "'PARTIDO' = " + "'" + choice + "'";
+          			queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
+          			getFamilyNumber(escala["municipio"], queryText);
+          		break;
+        	
+        		case 'L':
+          			filter.criteria['municipio'] = { value: filter.criteria['partido'].value };
+          			filter.criteria['localidad'] = { value: choice };
+          			filter.criteria['selected_area'] = { value: 'localidad' };
+          			where_clause_area_map = "'LOCALIDAD' = " + "'" + choice + "'";
+          			queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
+          			getFamilyNumber(escala["localidad"], queryText);
+          		break;
+      		}
+
+      		// Reinit selection for 'Barrio' search field.
+      		partidoFilter = true;
+      		initSearchFieldBarrio();
+
+      		// Reinit layer.
+      		initLayer.setOptions( {
+        		suppressInfoWindows: true, // Because we have a separate listener for that.
+        		query: {
+          			select: 'Poligon',
+          			from: dataSourceEncryptedID
+        		},
+        		styles: [ {
+          			polygonOptions: {
+            			fillColor: "#1e90ff",     // Color del plano - #ff0000 rojo de Google.
+            			fillOpacity: 0.5,         // Opacidad del plano
+            			strokeColor: "#000000",   // Color del margen
+            			strokeOpacity: 0.5,       // Opacidad del margen
+            			strokeWeight: 1           // Grosor del margen
+          			},
+          		where: where_clause_area_map, polygonOptions: { fillColor: "#1e90ff" }
+        		} ]
+      		} );
+      		partidoFilter = true;
+    	}
+  		
+  		if (partidoFilter === true) {
+    		drawSupplyCharts(escala["municipio"], "map_page");
+  		}
+  		else {
+    		setViewToMetropolitana();
+  		}
     } );
 
-    if (area_choice) {
-      // Set where clause for map and get numbers for info text.
-      where_clause_area_map = null;
+//     if (area_choice) {
+//       // Set where clause for map and get numbers for info text.
+//       where_clause_area_map = null;
+// 
+//       // Reset barrio info.
+//       removeBarrioInfo();
+//       filter.criteria['barrio'] = { value: null };
+// 
+//       switch(area_choice.toUpperCase()) {
+//         case 'P':
+//           filter.criteria['municipio'] = { value: choice };
+//           filter.criteria['partido'] = { value: choice };
+//           filter.criteria['selected_area'] = { value: 'municipio' };
+//           where_clause_area_map = "'PARTIDO' = " + "'" + choice + "'";
+//           queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
+//           getFamilyNumber(escala["municipio"], queryText);
+//           break;
+//         case 'L':
+//           filter.criteria['municipio'] = { value: filter.criteria['partido'].value };
+//           filter.criteria['localidad'] = { value: choice };
+//           filter.criteria['selected_area'] = { value: 'localidad' };
+//           where_clause_area_map = "'LOCALIDAD' = " + "'" + choice + "'";
+//           queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
+//           getFamilyNumber(escala["localidad"], queryText);
+//           break;
+//         //default:
+//         // not set...
+//       }
+// 
+//       // Reinit selection for 'Barrio' search field.
+//       partidoFilter = true;
+//       // delete queryText;
+//       // queryText = encodeURIComponent(
+//       //   "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
+//       //   "FROM " + dataSourceEncryptedID +
+//       //   " WHERE " + where_clause_area_map +
+//       //   " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO'");
+//       // initSearchFieldBarrio(queryText);
+//       initSearchFieldBarrio();
+// 
+//       // Reinit layer.
+//       initLayer.setOptions({
+//         suppressInfoWindows: true, // Because we have a separate listener for that.
+//         query: {
+//           select: 'Poligon',
+//           from: dataSourceEncryptedID
+//         },
+//         styles: [ {
+//           polygonOptions: {
+//             fillColor: "#1e90ff",     // Color del plano - #ff0000 rojo de Google.
+//             fillOpacity: 0.5,         // Opacidad del plano
+//             strokeColor: "#000000",   // Color del margen
+//             strokeOpacity: 0.5,       // Opacidad del margen
+//             strokeWeight: 1           // Grosor del margen
+//           },
+//           where: where_clause_area_map, polygonOptions: { fillColor: "#1e90ff" }
+//         } ]
+//       } );
+//       partidoFilter = true;
+//     }
 
-      // Reset barrio info.
-      removeBarrioInfo();
-      filter.criteria['barrio'] = { value: null };
-
-      switch(area_choice.toUpperCase()) {
-        case 'P':
-          filter.criteria['municipio'] = { value: choice };
-          filter.criteria['partido'] = { value: choice };
-          filter.criteria['selected_area'] = { value: 'municipio' };
-          where_clause_area_map = "'PARTIDO' = " + "'" + choice + "'";
-          queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
-          getFamilyNumber(escala["municipio"], queryText);
-          break;
-        case 'L':
-          filter.criteria['municipio'] = { value: filter.criteria['partido'].value };
-          filter.criteria['localidad'] = { value: choice };
-          filter.criteria['selected_area'] = { value: 'localidad' };
-          where_clause_area_map = "'LOCALIDAD' = " + "'" + choice + "'";
-          queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID + " WHERE " + where_clause_area_map;
-          getFamilyNumber(escala["localidad"], queryText);
-          break;
-        //default:
-        // not set...
-      }
-
-      // Reinit selection for 'Barrio' search field.
-      partidoFilter = true;
-      // delete queryText;
-      // queryText = encodeURIComponent(
-      //   "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO' " +
-      //   "FROM " + dataSourceEncryptedID +
-      //   " WHERE " + where_clause_area_map +
-      //   " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO'");
-      // initSearchFieldBarrio(queryText);
-      initSearchFieldBarrio();
-
-      // Reinit layer.
-      initLayer.setOptions({
-        suppressInfoWindows: true, // Because we have a separate listener for that.
-        query: {
-          select: 'Poligon',
-          from: dataSourceEncryptedID
-        },
-        styles: [ {
-          polygonOptions: {
-            fillColor: "#1e90ff",     // Color del plano - #ff0000 rojo de Google.
-            fillOpacity: 0.5,         // Opacidad del plano
-            strokeColor: "#000000",   // Color del margen
-            strokeOpacity: 0.5,       // Opacidad del margen
-            strokeWeight: 1           // Grosor del margen
-          },
-          where: where_clause_area_map, polygonOptions: { fillColor: "#1e90ff" }
-        } ]
-      } );
-      partidoFilter = true;
-    }
-    return true;
+//    return true;
   }
 }
 
@@ -1144,18 +1199,26 @@ function drawSupplyCharts(view, page) {
   var where_clause;
   var chart_base;
 
-  if (escala["barrio"] && filter.criteria['selected_area'].value == 'barrio' && filter.criteria['localidad'].value !== null) {
-//    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "'";
-    where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    chart_base = filter.criteria['localidad'].value;
+// 	console.log("filter.criteria['selected_area'].value = " + filter.criteria['selected_area'].value);
+// 	console.log("filter.criteria['municipio'].value = " + filter.criteria['municipio'].value);
+// 	console.log("filter.criteria['partido'].value = " + filter.criteria['partido'].value);
+// 	console.log("filter.criteria['localidad'].value = " + filter.criteria['localidad'].value);
+	
+  if (escala["barrio"] && filter.criteria['selected_area'].value == 'barrio' && filter.criteria['partido'].value !== null) {
+//   	where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
+//   	chart_base = filter.criteria['localidad'].value;
+	// changed 21/03/13 13:00
+    where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
+    chart_base = filter.criteria['partido'].value;
   }
   else if (escala["barrio"] && filter.criteria['barrio'].value !== null && filter.criteria['selected_area'].value == 'localidad') {
-//    where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "' AND 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
-    chart_base = filter.criteria['localidad'].value;
+// 	where_clause = " WHERE 'LOCALIDAD' = '" + filter.criteria['localidad'].value + "'";
+// 	chart_base = filter.criteria['localidad'].value;
+	// changed 21/03/13 12:56
+    where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
+    chart_base = filter.criteria['partido'].value;
   }
   else if (escala["barrio"] && filter.criteria['barrio'].value !== null && filter.criteria['selected_area'].value == 'municipio') {
-  //  where_clause = " WHERE 'NOMBRE DEL BARRIO' = '" + filter.criteria['barrio'].value + "' AND 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
     where_clause = " WHERE 'PARTIDO' = '" + filter.criteria['partido'].value + "'";
     chart_base = filter.criteria['partido'].value;
   }
@@ -1217,7 +1280,7 @@ function drawSupplyCharts(view, page) {
   // Legend for charts only for map page.
   if (page == 'map_page') {
     var info_text_charts = document.getElementById('info_text_charts');
-    info_text_charts.innerHTML = "Diagrammas para <strong>" + chart_base + "</strong>";
+    info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
   }
 
   // Draw charts.
