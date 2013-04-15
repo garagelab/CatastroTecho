@@ -8,7 +8,7 @@
  Code type:	Business coding
  Copyright:	2012 - 2013 Techo http://www.techo.org/ All Rights Reserved.
  Author:	Written by Andreas Hempfling <andreas.hempfling@gmail.com>.
- 			from 09/2012 to 03/2013.	
+ 			from 09/2012 to 04/2013.	
 */
 
 /////////////////////////////////////////////////////////////////////
@@ -81,6 +81,16 @@ var locationColumn = "Poligono";
 
 var partidoFilter = false;
 var barrioFilter = false;
+
+// Selected barrio (is selected) in fusion table
+var barrio_issel = {
+  attr : []
+};
+barrio_issel.attr['rowid'] = { value: ' ' };
+barrio_issel.attr['nombre'] = { value: ' ' };
+barrio_issel.attr['nombre2'] = { value: ' ' };
+barrio_issel.attr['localidad'] = { value: ' ' };
+barrio_issel.attr['partido'] = { value: ' ' };
 
 var tmp_container;
 
@@ -255,46 +265,46 @@ function initMapLayer() {
 }
 
 function getLatLngFocusFromPolygonBoundary(polygonBoundary) {
-  //
-  // Evaluate focus (midpoint) from a given polygon boundary.
-  //
-  var result;
+	//
+  	// Evaluate focus (midpoint) from a given polygon boundary.
+  	//
+  	var result;
 
-  var latlngArr = [];
-  var lat_lng, lat, lng;
-  var comma1, comma2;
+  	var latlngArr = [];
+  	var lat_lng, lat, lng;
+  	var comma1, comma2;
 
-  // Extract polygon coordinates from xml structure.
-  polygonBoundary = $(polygonBoundary).find("coordinates").text();
-  polygonBoundary = polygonBoundary.replace(/\\n/g, " ");
-  polygonBoundary = polygonBoundary.trim();
+  	// Extract polygon coordinates from xml structure.
+  	polygonBoundary = $(polygonBoundary).find("coordinates").text();
+  	polygonBoundary = polygonBoundary.replace(/\\n/g, " ");
+  	polygonBoundary = polygonBoundary.trim();
 
-  // Each pair of coordinates is stored in an array element.
-  latlngArr = polygonBoundary.split(' ');
-
-  var bounds = new google.maps.LatLngBounds();
-    for(var i=0; i<latlngArr.length; i++) {
-      comma1 = latlngArr[i].indexOf(',');
-      comma2 = latlngArr[i].lastIndexOf(',');
-      lat = latlngArr[i].substring(0, comma1-1);
-      lng = latlngArr[i].substring(comma1+1, comma2-1);
-      bounds.extend(new google.maps.LatLng(lat, lng));
+  	// Each pair of coordinates is stored in an array element.
+  	latlngArr = polygonBoundary.split(' ');
+	
+	var bounds = new google.maps.LatLngBounds();
+	
+	for(var i=0; i<latlngArr.length; i++) {    	
+      	comma1 = latlngArr[i].indexOf(',');
+      	comma2 = latlngArr[i].lastIndexOf(',');
+      	lat = latlngArr[i].substring(0, comma1-1);
+      	lng = latlngArr[i].substring(comma1+1);
+      	//lng = latlngArr[i].substring(comma1+1, comma2-1);      
+      	bounds.extend(new google.maps.LatLng(lat, lng));
     }
 
-  lat_lng = bounds.getCenter();
+	lat_lng = bounds.getCenter();
 
-  // CHECK !!!!!!!!!!!!!!!!!!!!!!!! - NOT YET CORRECT !!!!!!!!!!!!
-  // CHECK !!!!!!!!!!!!!!!!!!!!!!!! - NOT YET CORRECT !!!!!!!!!!!!
-  // CHECK !!!!!!!!!!!!!!!!!!!!!!!! - NOT YET CORRECT !!!!!!!!!!!!
-  // Workaround - changes of coordinates lat to lng and vice versa.
-  // Otherwise we get a wrong position here.
-  latlngArr = polygonBoundary.split(',');
-  lat = latlngArr[1];
-  lng = latlngArr[0];
-  lat_lng = new google.maps.LatLng(lat, lng);
-  result = lat_lng;
+	// Changes of coordinates lat to lng and vice versa.
+  	// Otherwise we get a wrong position here.
+	var focus = lat_lng.toString();
+  	latlngArr = focus.split(',');
+  	lat = latlngArr[1].substring(1, latlngArr[1].indexOf(')')-1);
+  	lng = latlngArr[0].substring(latlngArr[0].indexOf('(')+1);
 
-  return result;
+  	result = new google.maps.LatLng(lat, lng);
+
+  	return result;
 }
 
 function findPartidoData() {
@@ -351,7 +361,7 @@ function findPartidoData() {
       where_clause = " WHERE 'PARTIDO' = '" + choice + "'";
       area_choice = 'P';
     }
-
+    
     queryText = encodeURIComponent("SELECT * FROM " + dataSourceEncryptedID + where_clause);
     query = new google.visualization.Query(dataSourceUrl + queryText);
 
@@ -365,11 +375,11 @@ function findPartidoData() {
         	return;
       	}
 
-      	if (response.getDataTable().getValue(0, 2) &&
-          	!isEmpty(response.getDataTable().getValue(0, 2)) &&
-          	!isBlank(response.getDataTable().getValue(0, 2))) {
-        	polygonBoundary = response.getDataTable().getValue(0, 2);
-        	filter.criteria['partido'] = { value: response.getDataTable().getValue(0, 4) };
+      	if (response.getDataTable().getValue(0, 3) &&
+          	!isEmpty(response.getDataTable().getValue(0, 3)) &&
+          	!isBlank(response.getDataTable().getValue(0, 3))) {
+        	polygonBoundary = response.getDataTable().getValue(0, 3);
+        	filter.criteria['partido'] = { value: response.getDataTable().getValue(0, 5) };
         	// Evaluate the focus of a polygon in selected area for center map.
         	if (polygonBoundary) {
           		lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
@@ -558,7 +568,7 @@ function findBarrioData() {
       getFamilyNumber(escala["barrio"], queryText);
 
       // Extract polygon data from table.
-      var polygonBoundary = response.getDataTable().getValue(0, 2);
+      var polygonBoundary = response.getDataTable().getValue(0, 3);
       lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
 
       // e only has four properties, "infoWindowHtml", "latLng", "pixelOffset" and "row".
@@ -569,19 +579,19 @@ function findBarrioData() {
         row : []
       };
 
-      e.row['NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 0) };
-      e.row['OTRO NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 1) };
-      e.row['PARTIDO'] = { value: response.getDataTable().getValue(0, 4) };
-      e.row['LOCALIDAD'] = { value: response.getDataTable().getValue(0, 5) };
-      e.row['NRO DE FLIAS'] = { value: response.getDataTable().getValue(0, 9) };
-      e.row['AÑO DE CONFORMACIÓN DEL BARRIO'] = { value: response.getDataTable().getValue(0, 6) };
-      e.row['RED CLOACAL'] = { value: response.getDataTable().getValue(0, 14) };
-      e.row['AGUA'] = { value: response.getDataTable().getValue(0, 15) };
-      e.row['ACCESO A LA ENERGÍA'] = { value: response.getDataTable().getValue(0, 13) };
-      e.row['GAS'] = { value: response.getDataTable().getValue(0, 17) };
-      e.row['DESAGÜES PLUVIALES'] = { value: response.getDataTable().getValue(0, 18) };
-      e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 19) };
-      e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 20) };
+      e.row['NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 1) };
+      e.row['OTRO NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 2) };
+      e.row['PARTIDO'] = { value: response.getDataTable().getValue(0, 5) };
+      e.row['LOCALIDAD'] = { value: response.getDataTable().getValue(0, 6) };
+      e.row['NRO DE FLIAS'] = { value: response.getDataTable().getValue(0, 10) };
+      e.row['AÑO DE CONFORMACIÓN DEL BARRIO'] = { value: response.getDataTable().getValue(0, 7) };
+      e.row['RED CLOACAL'] = { value: response.getDataTable().getValue(0, 15) };
+      e.row['AGUA'] = { value: response.getDataTable().getValue(0, 16) };
+      e.row['ACCESO A LA ENERGÍA'] = { value: response.getDataTable().getValue(0, 14) };
+      e.row['GAS'] = { value: response.getDataTable().getValue(0, 18) };
+      e.row['DESAGÜES PLUVIALES'] = { value: response.getDataTable().getValue(0, 19) };
+      e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 20) };
+      e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 21) };
 
       // // Triggering'click'-event listener to display barrio map marker and data.
       google.maps.event.trigger(initLayer, 'click', e);
@@ -624,6 +634,10 @@ function initSearchFieldBarrio() {
         error: function() {alert("initSearchFieldBarrio(): Error in query: " + queryUrl ); },
         success: function(data) {
           response( $.map(data.table.rows, function(row) {
+          
+			barrio_issel.attr['nombre'] = { value: row[0] };
+            //console.log("barrio_issel.attr['nombre'] = %s", barrio_issel.attr['nombre'].value);
+
             //console.log("row = %s", row[0]);
             return {
               // Total query information for barrio.
@@ -736,14 +750,6 @@ function removeAllBarrioSelections() {
 
   initSearchFieldBarrio();
 
-  // if (queryText === undefined) {
-  //   initSearchFieldBarrio();
-  // }
-  // else {
-  //   initSearchFieldBarrio(queryText);
-  // }
-
-  clearThis(document.getElementById('search_txt'));
 
   // Remove filter.
   filter.criteria['barrio'] = { value: null };
@@ -860,13 +866,16 @@ function dataTableHandler(d) {
       "iDisplayLength": 15,
       "iDisplayStart": 0,
       //
+      // Default sorting for 1st view.
+      "aaSorting": [[ 1, "asc" ]],
+      //
       // Table columns
       "aoColumnDefs": [
-        { "bVisible": true, "sTitle": "BARRIO", "aTargets": [0] },
-        { "bVisible": true, "sTitle": "OTRO DENOMINACI&Oacute;N", "aTargets": [1] },
-        { "bVisible": false, "aTargets": [2] },
+        { "bVisible": false, "sTitle": "CÓDIGO", "aTargets": [0] },
+        { "bVisible": true, "sTitle": "BARRIO", "aTargets": [1] },
+        { "bVisible": true, "sTitle": "OTRO DENOMINACI&Oacute;N", "aTargets": [2] },
         { "bVisible": false, "aTargets": [3] },
-        { "bVisible": true, "sTitle": cols[4], "aTargets": [4] },
+        { "bVisible": false, "aTargets": [4] },
         { "bVisible": true, "sTitle": cols[5], "aTargets": [5] },
         { "bVisible": true, "sTitle": cols[6], "aTargets": [6] },
         { "bVisible": true, "sTitle": cols[7], "aTargets": [7] },
@@ -888,7 +897,8 @@ function dataTableHandler(d) {
         { "bVisible": true, "sTitle": cols[23], "aTargets": [23] },
         { "bVisible": true, "sTitle": cols[24], "aTargets": [24] },
         { "bVisible": true, "sTitle": cols[25], "aTargets": [25] },
-        { "bVisible": true, "sTitle": cols[26], "aTargets": [26] }
+        { "bVisible": true, "sTitle": cols[26], "aTargets": [26] },
+        { "bVisible": true, "sTitle": cols[27], "aTargets": [27] }
       ],
       //
       // Table rows
@@ -903,7 +913,8 @@ function dataTableHandler(d) {
 
     // Fixed column get an absolute width in pixels.
     new FixedColumns(oTable, {
-      "iLeftWidth": 180
+    	"iLeftColumns": 2,
+      	"iLeftWidth": 210 // 180
     } );
     
     // This function will make DataTables recalculate the column sizes.
