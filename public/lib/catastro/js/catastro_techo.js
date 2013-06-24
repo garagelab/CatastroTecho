@@ -1,41 +1,63 @@
-/*
- Project:	Catastro Techo
- Subject:	Geographic Information System
- Objective:	Establish an interactive, web-based platform with information
-			and analysis for the comprehensive description of the geometric
-			location, structures, people and infrastructure of all the poor
-			districts of the Buenos Aires province.
- Code type:	Business coding
- Copyright:	2012 - 2013 Techo http://www.techo.org/ All Rights Reserved.
- Author:	Written by Andreas Hempfling <andreas.hempfling@gmail.com>.
- 			from 09/2012 to 04/2013.	
-*/
+/**
+ * Project:		Catastro Techo
+ *
+ * Subject:		Geographic Information System
+ * Objective:	Establish an interactive, web-based platform with information
+ *				and analysis for the comprehensive description of the geometric
+ *				location, structures, people and infrastructure of all the poor
+ *				districts of the Buenos Aires province.
+ * Code type:	Business coding
+ * Copyright:	2012 - 2013 Techo http://www.techo.org/ All Rights Reserved.
+ * @author		Andreas Hempfling <andreas.hempfling@gmail.com>
+ *
+ */
 
 /////////////////////////////////////////////////////////////////////
 // Init all necessary stuff.
 /////////////////////////////////////////////////////////////////////
 
+// Preventing older browser problems with "console" in source code.
+// Lastly older browsers will crash when using console.log or something similar.
+// This checks to see if the console is present, and if not it sets it to an 
+// object with a blank function called in names array. This way window.console.*
+// is never truely undefined.
+if (!window.console) { 
+ 	var names = [
+ 					"log", "debug", "info", "warn", "error", "assert", "dir", 
+ 					"dirxml", "group", "groupEnd", "time", "timeEnd", "count", 
+ 					"trace", "profile", "profileEnd" 
+ 				];
+ 	window.console = {};
+ 	for (var i=0, len=names.length; i<len; ++i) {
+ 		window.console[names[i]] = function(){};
+ 	}
+} 
+
 // Load the Visualization API library and the chart libraries using 'Spanish' locale.
 google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'language': 'es' } );
 
-// Data source
-// Google Fusion Table
-// Url
+
 var dataSourceUrl = 'http://www.google.com/fusiontables/gvizdata?tq=';
+//var queryUrlHead = 'https://fusiontables.googleusercontent.com/fusiontables/api/query?sql=';
+
+//var dataSourceUrl = 'https://www.googleapis.com/fusiontables/v1/query?key=' + API_KEY + '&sql=';
+
 // Numeric ID - Notice: Table have to be 'public'.
-//var dataSourceNumericID = '2338632';
-// Encrypted ID
-//var dataSourceEncryptedID ='1ePInQ8wuWBsfXcXczd0j3bp7qFFw2v-tXn_g_Rw';
-var dataSourceEncryptedID ='1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY';
-// API key to identify the project. User data access is not need therefor.
-var apiKey = 'AIzaSyCWCIwiL5K8HWRhsaxQtHJ6dKRoojCv7ig';
+/// Encrypted ID
+//var dataSourceEncryptedID ='1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY';
+
+//     queryText = encodeURIComponent("SELECT * FROM " + dataSourceEncryptedID + where_clause);
+//     query = new google.visualization.Query(dataSourceUrl + queryText);
+
+var dataSourceEncryptedID = datasources.table['buenos_aires_2013'].id;
+
 // Query components
 var query;
 var queryText;
 var queryUrl = ['https://www.googleapis.com/fusiontables/v1/query'];
 var queryEncoded;
 
-var queryUrlHead = 'https://fusiontables.googleusercontent.com/fusiontables/api/query?sql=';
+var queryUrlHead = 'https://www.googleapis.com/fusiontables/v1/query?key=' + API_KEY + '&sql=';
 var queryUrlTail = '&jsonCallback=?'; // ? could be a function name
 
 // Filter criteria
@@ -98,105 +120,108 @@ var tmp_container;
 //  Initializers for web pages.
 /////////////////////////////////////////////////////////////////////
 
+/**
+ * Initialize index.html page when it is called.
+ * by function setOnLoadCallback() at the page.
+ */
 function initIndexPage() {
-  //
-  // Initialize index.html page when it is called.
-  // by function setOnLoadCallback() at the page.
-  initMapIndexPage();
+	initMapIndexPage();
 }
 
+/**
+ * Initialize map page (overview) at index page for first use.
+ *
+ */
 function initMapIndexPage() {
-  //
-  // Initialize map page for index page for first use.
-  //
-  var argentina = new google.maps.LatLng(-38.416097, -63.616672);
+	var argentina = new google.maps.LatLng(-38.416097, -63.616672);
 
-  map = new google.maps.Map(document.getElementById('map_index_page'), {
-    center: argentina,
-    zoom: 4,
-    minZoom: 2,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    streetViewControl: false
-  } );
+  	map = new google.maps.Map(document.getElementById('map_index_page'), {
+    	center: argentina,
+    	zoom: 4,
+    	minZoom: 2,
+    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+    	streetViewControl: false
+  	} );
 
-  // Add a Circle overlay to the map.
-  var circle = new google.maps.Circle({
-    //center: buenos_aires_lat_lng,
-    map: map,
-    fillColor: '#0000FF',
-    fillOpacity: 0.5,
-    strokeColor: '#1e90ff',
-    strokeOpacity: 0.5,
-    strokeWeight: 1,
-    //radius: 1836.55489862987
-    radius: 200000 // 200 km
-  });
-  //map.fitBounds(circle.getBounds());
+  	// Add a Circle overlay to the map.
+  	var circle = new google.maps.Circle({
+    	//center: buenos_aires_lat_lng,
+    	map: map,
+    	fillColor: '#0000FF',
+    	fillOpacity: 0.5,
+    	strokeColor: '#1e90ff',
+    	strokeOpacity: 0.5,
+    	strokeWeight: 1,
+    	//radius: 1836.55489862987
+    	radius: 200000 // 200 km
+  	});
+  	//map.fitBounds(circle.getBounds());
 
-  // google.maps.event.addListener(map, 'zoom_changed', function() {
-  //   setTimeout(moveToBuenosAires, 3000);
-  // });
+  	// google.maps.event.addListener(map, 'zoom_changed', function() {
+  	//   setTimeout(moveToBuenosAires, 3000);
+  	// });
   
-  // var marker = new google.maps.Marker({
-  //     position: buenos_aires_lat_lng,
-  //     map: map,
-  //     title:"Conoce información sobre cada una de las villas y asentamientos relevados."
-  // });
+  	// var marker = new google.maps.Marker({
+  	//     position: buenos_aires_lat_lng,
+  	//     map: map,
+  	//     title:"Conoce información sobre cada una de las villas y asentamientos relevados."
+  	// });
   
-  // Create a marker.
-  var marker = placeMarker(map, buenos_aires_lat_lng, techo_marker, techo_marker_shadow);
-  marker.setTitle('Buenos Aires');
+  	// Create a marker.
+  	var marker = placeMarker(map, buenos_aires_lat_lng, techo_marker, techo_marker_shadow);
+  	marker.setTitle('Buenos Aires');
 
-  // Bind marker to cirlce.
-  // We're binding the Circle's center to the Marker's position.
-  circle.bindTo('center', marker, 'position');
+  	// Bind marker to cirlce.
+  	// We're binding the Circle's center to the Marker's position.
+  	circle.bindTo('center', marker, 'position');
 
-  google.maps.event.addListener(marker, 'click', function() {
-    // Show map page of Buenos Aires...
-    window.location.href = "/content/mapa-de-barrios";
-  });
+  	google.maps.event.addListener(marker, 'click', function() {
+    	// Show map page of Buenos Aires...
+    	window.location.href = "/content/mapa-de-barrios";
+  	});
 
-  google.maps.event.addListener(circle, 'click', function() {
-    // Show map page of Buenos Aires...
-    window.location.href = "/content/mapa-de-barrios";
-  });
-
+  	google.maps.event.addListener(circle, 'click', function() {
+    	// Show map page of Buenos Aires...
+    	window.location.href = "/content/mapa-de-barrios";
+  	});
 }
 
 function moveToBuenosAires() {
-  map.setCenter(buenos_aires_lat_lng);
+	map.setCenter(buenos_aires_lat_lng);
 }
 
-function initMapBarriosPage() {
-  //
-  // Initialize map page with barrios for first use.
-  //
-  map = new google.maps.Map(document.getElementById('map_canvas'), {
-    center: barrios_bsas,
-    zoom: 10,
-    minZoom: 9,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    streetViewControl: false
-  } );
+/**
+ * Initialize map page with barrios for first use.
+ *
+ */
+function initMapBarriosPage() {    
+  	map = new google.maps.Map(document.getElementById('map_canvas'), {
+    	center: barrios_bsas,
+    	zoom: 10,
+    	minZoom: 9,
+    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+    	streetViewControl: false
+  	} );
 
-  initMapLayer();
-  initLayer.setMap(map);
+  	initMapLayer();
+  	initLayer.setMap(map);
 
-  // Show metropolitana data (all data).
-  setViewToMetropolitana();
+  	// Show metropolitana data (all data).
+  	setViewToMetropolitana();
 
-  // Init 'Barrio' search field.
-  initSearchFieldBarrio();
+  	// Init 'Barrio' search field.
+  	initSearchFieldBarrio();
 
-  // Init 'Partido' search field.
-  initSearchFieldPartido();
+  	// Init 'Partido' search field.
+  	initSearchFieldPartido();
 }
 
+/**
+ * Initialize table page.
+ *
+ */
 function initTableBarriosPage() {
-  //
-  // Initialize table page.
-  //
-  getDataSourceData();
+	getFusionTableData('select * from ' + dataSourceEncryptedID, dataTableHandler);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -238,6 +263,7 @@ function initMapLayer() {
   //
   // Updating Fusion Table Layer.
   //
+  
   initLayer = new google.maps.FusionTablesLayer( {
     suppressInfoWindows: true, // Because we have a separate listener for that.
     query: {
@@ -312,7 +338,7 @@ function findPartidoData() {
   // Find Partido/Localidad via text search.
   //
   // Init - alert message box should be closed.
-  $(".alert").alert('close');
+  $(".alert").alert('clos	e');
   var latlngArr = [];
   var lat_lng, lat, lng;
   var comma1, comma2;
@@ -389,7 +415,7 @@ function findPartidoData() {
           		lat_lng = barrios_bsas;
         	}
         	map.setCenter(lat_lng);
-        	map.setZoom(11);
+        	map.setZoom(12); // antes era 11
       	}
      
 		if (area_choice) {
@@ -423,7 +449,7 @@ function findPartidoData() {
       		// Reinit selection for 'Barrio' search field.
       		partidoFilter = true;
       		initSearchFieldBarrio();
-
+			
       		// Reinit layer.
       		initLayer.setOptions( {
         		suppressInfoWindows: true, // Because we have a separate listener for that.
@@ -518,140 +544,150 @@ function findPartidoData() {
   }
 }
 
+/*
+ * Find Barrio data via text search.
+ *
+ */
 function findBarrioData() {
-  //
-  // Find Barrio via text search.
-  //
-  // Init - alert message box should be closed.
-  $(".alert").alert('close');
-  var latlngArr = [];
-  var lat_lng, lat, lng;
-  var comma1, comma2;
+	// Init - alert message box should be closed.
+  	$(".alert").alert('close');
+  	var latlngArr = [];
+  	var lat_lng, lat, lng;
+  	var comma1, comma2;
 
-  // Check text search field for manually search first.
-  var barrio = document.getElementById('search_txt').value;
+  	// Check text search field for manually search first.
+  	var barrio = document.getElementById('search_barrio_txt').value;
 
-  // Search field is empty.
-  if (!barrio) {
-    return false;
-  }
+  	// Is search field empty?
+  	if (!barrio) { return false; }
+  	if (isEmpty(barrio) || isBlank(barrio)) { return false; }
 
-  if (isEmpty(barrio) || isBlank(barrio)) {
-    return false;
-  }
+	// Seems to be we have data to view...
+  	if (barrio && !isEmpty(barrio) && !isBlank(barrio)) {
+    	// Extract parentheses, if necessary.
+    	if (barrio.indexOf("(") >= 0) {
+      		barrio = (barrio.substring(0, barrio.indexOf("(")-1)).trim();
+    	}
+    	queryText = encodeURIComponent("SELECT * FROM " + dataSourceEncryptedID + " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'");
+    	query = new google.visualization.Query(dataSourceUrl + queryText);
 
-  if (barrio && !isEmpty(barrio) && !isBlank(barrio)) {
-    // Extract parentheses, if necessary.
-    if (barrio.indexOf("(") >= 0) {
-      barrio = (barrio.substring(0, barrio.indexOf("(")-1)).trim();
-    }
-    queryText = encodeURIComponent(
-            "SELECT * FROM " + dataSourceEncryptedID + " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'");
-    query = new google.visualization.Query(dataSourceUrl + queryText);
+		// Callback
+    	query.send( function(response) {
+      		var numRows = response.getDataTable().getNumberOfRows();
+      		// Barrio not found in data source.
+      		if (!numRows) {
+        		var msg = "El barrio " + "'" + barrio + "'" + " no se pudo encontrar.";
+        		bootstrap_alert.warning(msg);
+        		clearThis(document.getElementById("search_barrio_txt"));
+        		return;
+      		}
 
-    query.send(function(response) {
-      var numRows = response.getDataTable().getNumberOfRows();
-      // Barrio not found in data source.
-      if (!numRows) {
-        var msg = "El barrio " + "'" + barrio + "'" + " no se pudo encontrar.";
-        bootstrap_alert.warning(msg);
-        clearThis(document.getElementById("search_txt"));
-        return;
-      }
+      		// Get numbers for info text.
+      		filter.criteria['barrio'] = { value: barrio };
+      		filter.criteria['selected_area'] = { value: 'barrio' };
 
-      // Get numbers for info text.
-      filter.criteria['barrio'] = { value: barrio };
-      filter.criteria['selected_area'] = { value: 'barrio' };
+      		queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID +
+                  		" WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'";
+      		getFamilyNumber(escala["barrio"], queryText);
 
-      queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + dataSourceEncryptedID +
-                  " WHERE 'NOMBRE DEL BARRIO' = '" + barrio + "'";
-      getFamilyNumber(escala["barrio"], queryText);
+      		// Extract polygon data from table.
+      		var polygonBoundary = response.getDataTable().getValue(0, 3);
+      		lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
 
-      // Extract polygon data from table.
-      var polygonBoundary = response.getDataTable().getValue(0, 3);
-      lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
+      		// e only has four properties, "infoWindowHtml", "latLng", "pixelOffset" and "row".
+      		var e = {
+        		infoWindowHtml: null,
+        		latLng: lat_lng,
+        		pixelOffset: null,
+        		row : []
+      		};
 
-      // e only has four properties, "infoWindowHtml", "latLng", "pixelOffset" and "row".
-      var e = {
-        infoWindowHtml: null,
-        latLng: lat_lng,
-        pixelOffset: null,
-        row : []
-      };
+			e.row['NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 1) };
+      		e.row['OTRO NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 2) };
+      		e.row['PARTIDO'] = { value: response.getDataTable().getValue(0, 5) };
+      		e.row['LOCALIDAD'] = { value: response.getDataTable().getValue(0, 6) };
+      		e.row['NRO DE FLIAS'] = { value: response.getDataTable().getValue(0, 10) };
+      		e.row['AÑO DE CONFORMACIÓN DEL BARRIO'] = { value: response.getDataTable().getValue(0, 7) };
+      		e.row['RED CLOACAL'] = { value: response.getDataTable().getValue(0, 15) };
+      		e.row['AGUA'] = { value: response.getDataTable().getValue(0, 16) };
+      		e.row['ACCESO A LA ENERGÍA'] = { value: response.getDataTable().getValue(0, 14) };
+      		e.row['GAS'] = { value: response.getDataTable().getValue(0, 18) };
+      		e.row['DESAGÜES PLUVIALES'] = { value: response.getDataTable().getValue(0, 19) };
+      		e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 20) };
+      		e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 21) };
 
-      e.row['NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 1) };
-      e.row['OTRO NOMBRE DEL BARRIO'] = { value: response.getDataTable().getValue(0, 2) };
-      e.row['PARTIDO'] = { value: response.getDataTable().getValue(0, 5) };
-      e.row['LOCALIDAD'] = { value: response.getDataTable().getValue(0, 6) };
-      e.row['NRO DE FLIAS'] = { value: response.getDataTable().getValue(0, 10) };
-      e.row['AÑO DE CONFORMACIÓN DEL BARRIO'] = { value: response.getDataTable().getValue(0, 7) };
-      e.row['RED CLOACAL'] = { value: response.getDataTable().getValue(0, 15) };
-      e.row['AGUA'] = { value: response.getDataTable().getValue(0, 16) };
-      e.row['ACCESO A LA ENERGÍA'] = { value: response.getDataTable().getValue(0, 14) };
-      e.row['GAS'] = { value: response.getDataTable().getValue(0, 18) };
-      e.row['DESAGÜES PLUVIALES'] = { value: response.getDataTable().getValue(0, 19) };
-      e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 20) };
-      e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 21) };
-
-      // // Triggering'click'-event listener to display barrio map marker and data.
-      google.maps.event.trigger(initLayer, 'click', e);
-      barrioFilter = true;
-    } );
-  return true;
-  }
+      		// Triggering'click'-event listener to display barrio map marker and data.
+      		google.maps.event.trigger(initLayer, 'click', e);
+      		barrioFilter = true;
+    	} );
+		return true;
+	}
 }
 
 function initSearchFieldBarrio() {
-  //
-  // Autocompletition via jQuery for Barrio search field.
-  //
-  $('#search_txt').autocomplete({
-    source: function(request, response) {
-      //console.log("request = %s", request.term);
-      var queryText;
-      var queryUrl;
+  	//
+  	// Autocompletition via jQuery for Barrio search field.
+  	//
+	$('#search_barrio_txt').autocomplete( {
+	    //minLength: function() { if (partidoFilter === false) return 2; else return 1; },
+		source: function(request, response) {
+    		//console.log("request = %s", request.term);
 
-      if (partidoFilter === false) {
-        queryText = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
-                    "FROM " + dataSourceEncryptedID +
-                    " WHERE 'NOMBRE DEL BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
-//                    " WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
-                    " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
-      }
-      else {
-        queryText = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
-                    "FROM " + dataSourceEncryptedID +
-                    " WHERE 'NOMBRE DEL BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
-//                    " WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
-                    " AND " + where_clause_area_map +
-                    " GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
-      }
-      queryUrl = encodeURI(queryUrlHead + queryText + queryUrlTail);
+      		if (partidoFilter === false) {
+        		var query = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
+            		        "FROM " + dataSourceEncryptedID +
+                		    " WHERE 'NOMBRE DEL BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
+// 	                    	" WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
+                    		" GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
+      		}
+      		else {
+        		var query = "SELECT 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'" +
+            		        "FROM " + dataSourceEncryptedID +
+                		    " WHERE 'NOMBRE DEL BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
+//	                      	" WHERE 'NOMBRE DEL BARRIO' like '%" + request.term + "%'"+
+                    		" AND " + where_clause_area_map +
+                    		" GROUP BY 'NOMBRE DEL BARRIO', 'OTRO NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD'";
+      		}
+      		
+			// Prepare query string.
+			var encodedQuery = encodeURIComponent(query);
 
-      $.ajax({
-        url: queryUrl,
-        dataType: "jsonp",
-        error: function() {alert("initSearchFieldBarrio(): Error in query: " + queryUrl ); },
-        success: function(data) {
-          response( $.map(data.table.rows, function(row) {
+    		// Construct the URL.
+    		var url = [urlEndpoint];
+    		url.push('?sql=' + encodedQuery);
+    		url.push('&key=' + API_KEY);
+    		url.push('&callback=?');
+
+    		$.ajax( {
+    			type: "GET",
+    			url: url.join(''),
+    			dataType: 'jsonp',
+				contentType: "application/json",
+    			error: function () { 
+    				console.error("initSearchFieldBarrio(): Error in json-p call. Query was " + queryUrl);
+    			},
+        		success: function(data) {
+          			var result = $.map(data.rows, function(row) {
           
-			barrio_issel.attr['nombre'] = { value: row[0] };
-            //console.log("barrio_issel.attr['nombre'] = %s", barrio_issel.attr['nombre'].value);
+ 						//console.log(row[0].length);
+// 						console.log("row = %s", row[0]);
+          				
+						barrio_issel.attr['nombre'] = { value: row[0] };
+            			//console.log("barrio_issel.attr['nombre'] = %s", barrio_issel.attr['nombre'].value);
 
-            //console.log("row = %s", row[0]);
-            return {
-              // Total query information for barrio.
-              label: row[0] + (row[1] ? ", " + row[1] : "") + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : ""),
-              // Barrio name only for search/autocomplete.
-//              value: row[0].toLowerCase()
-              value: row[0]
-            };
-          }));
-        }
-      });
-    },
-    minLength: function() { if (partidoFilter === false) return 2; else return 1; }
-  });
+            			return {
+              				// Total query information for barrio.
+              				label: row[0] + (row[1] ? ", " + row[1] : "") + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : ""),
+              				// and Barrio name only for search/autocomplete.
+        					//value: row[0].toLowerCase()
+              				value: row[0]
+            			};
+          			}); // $.map...
+          			response (result);
+        		} // success...
+      		}); // $.ajax...
+    	} // source...
+	}); // $().autocomplete...
 }
 
 function initSearchFieldPartido() {
@@ -703,6 +739,7 @@ function removeAllPartidoSelections() {
   // Remove all selection criterias from objects.
   // Returns to starting position.
   //
+
   partidoFilter = false;
 
   deleteOverlays();
@@ -738,7 +775,9 @@ function removeAllBarrioSelections() {
   // Remove all selection criterias from objects.
   // Returns to starting position.
   //
+  
   barrioFilter = false;
+
   deleteOverlays();
 
   if (partidoFilter === false) {
@@ -749,7 +788,7 @@ function removeAllBarrioSelections() {
   removeBarrioInfo();
 
   initSearchFieldBarrio();
-
+  clearThis(document.getElementById('search_barrio_txt'));
 
   // Remove filter.
   filter.criteria['barrio'] = { value: null };
@@ -758,40 +797,22 @@ function removeAllBarrioSelections() {
   }
 }
 
-function getDataSourceData() {
-  //
-  // getDataSourceData()
-  // Get all rows from underlying fusion table.
-  // Hint: Google visualization api has a limit of 500 rows here!
-  // Therefore we cannot use it. A so-called 'trusted tester' google-user
-  // would be possible but we use another workaround - the method of
-  // a direct 'Ajax' call - and 'bypassing' this restriction.
-  //
-  var queryText = "SELECT * FROM " + dataSourceEncryptedID;
-  var queryUrl = encodeURI(queryUrlHead + queryText + queryUrlTail);
-
-  $.ajax({
-    type: "GET",
-    url:  queryUrl,
-    dataType: "jsonp",  // return CSV FustionTable response as JSON
-    success: dataTableHandler, // callback function
-    error: function () {alert("getDataSourceData(): Error in query: " + queryUrl ); }
-  });
-}
-
-function dataTableHandler(d) {
-  //
-  // View data table.
-  // Currently, a jQuery table is used with a 'dataTables' extension.
-  // For details see: http://www.datatables.net/index
-  //
-  var cols = d.table.cols;
-  var rows = d.table.rows;
+/**
+ * Callback for filling data table.
+ *
+ * Currently, a jQuery table is used with a 'dataTables' extension.
+ * For details see: http://www.datatables.net/index
+ */
+function dataTableHandler(response) {
+	// get columns and rows
+  	var cols = response.columns;
+  	var rows = response.rows;
   
   $(document).ready(function() {
     var oTable = $('#table_container').dataTable( {
       //
       // Positions of various controls end elements.
+
       "sDom": 'T<"clear">lfip<"clear">rtS<"clear">ip<"clear">',
       //
       // Menu buttons
@@ -1492,7 +1513,7 @@ function doAction(e, obj) {
       setViewToPartido();
       return false;
     }
-    if (obj.id == 'search_txt') {
+    if (obj.id == 'search_barrio_txt') {
       setViewToBarrio();
       return false;
     }

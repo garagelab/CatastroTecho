@@ -14,7 +14,8 @@ class FusionTables
   Error = Class.new(RuntimeError)
 
   class Connection
-    URL = URI.parse("https://tables.googlelabs.com/api/query")
+    URL = URI.parse("https://www.googleapis.com/fusiontables/v1/query")
+    API_URL = "tu api"
 
     def http
       @http ||= Net::HTTP::Persistent.new("fusiontables").tap do |http|
@@ -89,17 +90,18 @@ class FusionTables
     # Takes SQL and queries the Fusion Tables API.
     def process_sql(sql)
       url = URL.dup
+      api_key = API_URL
 
       if @token
         http.headers["Authorization"] = "GoogleLogin auth=#{@token}"
       end
 
       if sql =~ /^select/i
-        url.query = "sql=#{URI.escape(sql)}"
+        url.query = "sql=#{URI.escape(sql)}&key=#{api_key}&alt=csv"
         res = http.request(url)
       else
         req = Net::HTTP::Post.new(url.path)
-        req.set_form_data(:sql => sql)
+        req.set_form_data({:sql => sql, :key => api_key, :alt => csv})
         res = http.request(url, req)
       end
 
