@@ -91,8 +91,8 @@ class Techo < Sinatra::Base
 		}
 
     	# Prepare queries.
-    	@qry_total_barrios = "SELECT 'NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD' FROM #{TABLES[:buenos_aires]} GROUP BY 'NOMBRE DEL BARRIO', 'PARTIDO', 'LOCALIDAD';"
-		@qry_total_families = "SELECT sum('NRO DE FLIAS') as families, count('NOMBRE DEL BARRIO') FROM #{TABLES[:buenos_aires]};"
+    	@qry_total_barrios = "SELECT 'BARRIO', 'PARTIDO', 'LOCALIDAD' FROM #{TABLES[:buenos_aires]} GROUP BY 'BARRIO', 'PARTIDO', 'LOCALIDAD';"
+		@qry_total_families = "SELECT sum('NRO DE FLIAS') as families, count('BARRIO') FROM #{TABLES[:buenos_aires]};"
 
     	if request.url =~ WWW
       		redirect(request.url.sub(WWW, '\1'), 301)
@@ -113,10 +113,10 @@ class Techo < Sinatra::Base
 
 	## HTTP authentication
 	# We protect all requests (for all directories, etc.) in the application.
-# 	userinfo = "Por favor, ingrese para tener acceso a la información.".encode(Encoding::ISO_8859_1)
-# 	use Rack::Auth::Basic, userinfo do |username, password|
-#   		username == 'catastro' and password == 'utpmp'
-# 	end
+ 	userinfo = "Por favor, ingrese para tener acceso a la información.".encode(Encoding::ISO_8859_1)
+ 	use Rack::Auth::Basic, userinfo do |username, password|
+   		username == 'catastro' and password == 'utpmp'
+ 	end
 
 	#################################################################
 	### Controller

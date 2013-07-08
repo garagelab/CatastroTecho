@@ -90,7 +90,7 @@
 
     <!-- Info text container -->
     <div id="info_text_container">
-      <span id="info_text_escala" style="font-size: 90%;"></span>
+      <span id="info_text_view_level" style="font-size: 90%;"></span>
     </div>
 
     <!-- Map container -->
@@ -134,6 +134,12 @@
   </div> <!-- row-fluid -->
 </div><!-- container-fluid -->
 <script type="text/javascript">
+  // Cookie Check...
+  if (!supportsCookies()) { 
+  	alert ("Por favor habilite las cookies en su navegador\n" + 
+  			"o actualice a uno que las permita.\n" + 
+  			"La aplicación no puede funcionar correctamente");
+  } 
   // Set a callback to run when the Google Visualization library is loaded.
   google.setOnLoadCallback(initMapBarriosPage);
 </script>

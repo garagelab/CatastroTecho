@@ -57,9 +57,13 @@
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
 
     <script type='text/javascript' 
-      src="/lib/bootstrap/js/bootstrap.min.js">
+    	src="/lib/bootstrap/js/bootstrap.min.js">
     </script>
-    
+
+    <script type='text/javascript' 
+    	src="/lib/bootstrap/js/bootstrap-dropdown.js">
+    </script>
+
     <!-- Google Maps and Places API -->
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js'></script>
 
@@ -68,6 +72,9 @@
     <!-- Google AJAX API -->
     <script type='text/javascript' src='https://www.google.com/jsapi'>
     </script>
+
+    <!-- Google javascripts -->
+    <script type='text/javascript' charset='utf-8' src='/lib/google/maplabel-compiled.js'></script>
 
     <!-- Business code (Visualization functions, routines, etc.) -->
     <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
@@ -125,6 +132,21 @@
               <li>
             <% end %>
             <a href="/">Inicio</a></li>
+
+			<li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Vista <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li class="nav-header">Argentina</li>
+            		<li onclick="setViewToDatasource('buenos_aires_2011')"><a href="#">Buenos Aires</a></li>
+                    <li onclick="setViewToDatasource('cordoba_2011')"><a href="#">C&oacute;rdoba</a></li>
+<!-- 
+                    <li class="divider"></li>
+                    <li class="nav-header">Chile</li>
+                    <li><a href="#">Santiago</a></li>
+ -->
+            	</ul>
+            </li>
+
             <% if request.path_info == '/content/mapa-de-barrios' %>
               <li class="active">
             <% else %>

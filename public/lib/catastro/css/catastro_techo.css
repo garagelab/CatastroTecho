@@ -117,7 +117,7 @@
   background: rgba(220,220,220,0.8);
   top: 60px;
   left: 78px;
-  z-index: 1100;
+  z-index: 110;
   position: absolute;
   color: black;
   padding: 10px;
@@ -133,7 +133,7 @@
   background: rgba(220,220,220,0.8);
   top: 60px;
   left: 408px;
-  z-index: 1100;
+  z-index: 110;
   position: absolute;
   color: black;
   padding: 10px;
@@ -149,7 +149,7 @@
   background: rgba(220,220,220,0.8);
   top: 80px;
   left: 988px;
-  z-index: 1100;
+  z-index: 110;
   position: absolute;
   color: black;
   padding: 10px;
