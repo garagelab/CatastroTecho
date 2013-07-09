@@ -13,7 +13,7 @@
  */
 
 /////////////////////////////////////////////////////////////////////
-// Init all necessary stuff.
+// ºnit all necessary stuff.
 /////////////////////////////////////////////////////////////////////
 
 // Preventing older browser problems with "console" in source code.
@@ -75,7 +75,6 @@ google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'langua
 //
 
 var dataSourceUrl = 'http://www.google.com/fusiontables/gvizdata?tq=';
-//var queryUrlHead = 'https://fusiontables.googleusercontent.com/fusiontables/api/query?sql=';
 //var dataSourceUrl = 'https://www.googleapis.com/fusiontables/v1/query?key=' + API_KEY + '&sql=';
 
 // Query components
@@ -83,10 +82,6 @@ var query;
 var queryText;
 var queryUrl = ['https://www.googleapis.com/fusiontables/v1/query'];
 var queryEncoded;
-
-var queryUrlHead = 'https://www.googleapis.com/fusiontables/v1/query?key=' + API_KEY + '&sql=';
-var queryUrlTail = '&jsonCallback=?'; // ? could be a function name
-
 
 var where_clause;
 var where_clause_area_map;
@@ -101,16 +96,6 @@ var locationColumn = "Poligono";
 
 var partidoFilter = false;
 var barrioFilter = false;
-
-// Selected barrio (is selected) in fusion table
-var barrio_issel = {
-  attr : []
-};
-barrio_issel.attr['rowid'] = { value: ' ' };
-barrio_issel.attr['nombre'] = { value: ' ' };
-barrio_issel.attr['nombre2'] = { value: ' ' };
-barrio_issel.attr['localidad'] = { value: ' ' };
-barrio_issel.attr['partido'] = { value: ' ' };
 
 
 /////////////////////////////////////////////////////////////////////
@@ -234,7 +219,10 @@ function setViewToDatasource(datasource_key) {
  */
 function initMapBarriosPage() {    
 	getCurrentDatasource();
-
+	var search_part_txt_label = document.getElementById('search_part_txt_label');
+  	search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
+  		current_datasource.search_part_txt_label;
+  	
   	map = new google.maps.Map(document.getElementById('map_canvas'), {
     	center: current_datasource.center_lat_lng,
     	zoom: current_datasource.startZoom,
@@ -538,10 +526,12 @@ function findBarrioData() {
   	var latlngArr = [];
   	var lat_lng, lat, lng;
   	var comma1, comma2;
+  	var codigo;
+  	var has_codigo = false;
 
   	// Check text search field for manually search first.
   	var barrio = document.getElementById('search_barrio_txt').value;
-  	
+  	  	
   	// Is search field empty?
   	if (!barrio) { return false; }
   	if (isEmpty(barrio) || isBlank(barrio)) { return false; }
@@ -550,9 +540,16 @@ function findBarrioData() {
   	if (barrio && !isEmpty(barrio) && !isBlank(barrio)) {
     	// Extract parentheses, if necessary.
     	if (barrio.indexOf("(") >= 0) {
+      		codigo = (barrio.substring(barrio.indexOf("(")+1, barrio.indexOf(")"))).trim();
+      		has_codigo = true;
       		barrio = (barrio.substring(0, barrio.indexOf("(")-1)).trim();
     	}
-    	queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + " WHERE 'BARRIO' = '" + barrio + "'");
+    	if (has_codigo) {
+    		queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + " WHERE 'CÓDIGO' = '" + codigo + "'");
+    	}
+    	else {
+    		queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + " WHERE 'BARRIO' = '" + barrio + "'");
+    	}
     	query = new google.visualization.Query(dataSourceUrl + queryText);
 
 		// Callback
@@ -570,8 +567,14 @@ function findBarrioData() {
       		current_datasource.filter['barrio'] = barrio;
       		reporting_level = 'barrio';
 
-      		queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + current_datasource.id +
-                  		" WHERE 'BARRIO' = '" + barrio + "'";
+    		if (has_codigo) {
+      			queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + current_datasource.id +
+                  			" WHERE 'CÓDIGO' = '" + codigo + "'";
+    		}
+    		else {
+      			queryText = "SELECT sum('NRO DE FLIAS') as familias, count() FROM " + current_datasource.id +
+                  			" WHERE 'BARRIO' = '" + barrio + "'";
+      		}
       		getFamilyNumber(view_level["barrio"], queryText);
 
       		// Extract polygon data from table.
@@ -613,22 +616,22 @@ function initSearchFieldBarrio() {
   	// Autocompletition via jQuery for Barrio search field.
   	//
 	$('#search_barrio_txt').autocomplete( {
-	    //minLength: function() { if (partidoFilter === false) return 2; else return 1; },
+	    minLength: function() { if (partidoFilter === false) return 2; else return 1; },
 		source: function(request, response) {
-    		//console.log("request = %s", request.term);
+    		//console.debug("request = %s", request.term);
 
       		if (partidoFilter === false) {
-        		var query = "SELECT " + current_datasource.sql_main_grp +
+        		var query = "SELECT " + current_datasource.sql_barrio_search_grp +
             		        "FROM " + current_datasource.id +
                 		    " WHERE 'BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
-                    		" GROUP BY " + current_datasource.sql_main_grp;
+                    		" GROUP BY " + current_datasource.sql_barrio_search_grp;
       		}
       		else {
-        		var query = "SELECT " + current_datasource.sql_main_grp +
+        		var query = "SELECT " + current_datasource.sql_barrio_search_grp +
             		        "FROM " + current_datasource.id +
                 		    " WHERE 'BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
                     		" AND " + where_clause_area_map +
-                    		" GROUP BY " + current_datasource.sql_main_grp;
+                    		" GROUP BY " + current_datasource.sql_barrio_search_grp;
       		}
       		
 			// Prepare query string.
@@ -651,19 +654,14 @@ function initSearchFieldBarrio() {
     			},
         		success: function(data) {
           			var result = $.map(data.rows, function(row) {
-          
- 						//console.log(row[0].length);
-// 						console.log("row = %s", row[0]);
-          				
-						barrio_issel.attr['nombre'] = { value: row[0] };
-            			//console.log("barrio_issel.attr['nombre'] = %s", barrio_issel.attr['nombre'].value);
-
+// 						console.debug($);
+            			
             			return {
               				// Total query information for barrio.
-              				label: row[0] + (row[1] ? ", " + row[1] : "") + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : ""),
-              				// and Barrio name only for search/autocomplete.
-        					//value: row[0].toLowerCase()
-              				value: row[0]
+              				label: row[1] + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : "") + (row[4] ? ", " + row[4] : "") + (row[0] ? ", " + row[0] : ""),
+              				// Barrio name and Código (unique key) only for search/autocomplete.
+        					//value: Código (unique key) for selection.
+              				value: row[1] + " (" + row[0] + ")"
             			};
           			}); // $.map...
           			response (result);
