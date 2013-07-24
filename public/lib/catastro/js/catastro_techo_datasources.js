@@ -14,13 +14,16 @@ var API_KEY = 'AIzaSyCQ3Kiec1Vz_flwDFJxqahORuIES0WVxmw';
 // Google API V1.0 URL Endpoint
 var urlEndpoint = 'https://www.googleapis.com/fusiontables/v1/';
 
+// Google Visualization API Query Language URL
+var urlVizData = 'http://www.google.com/fusiontables/gvizdata?tq=';
+
 var center_lat_lng;
 
 // Table columns (header information: id, name, type).
 var tbl_cols = {};
 
 // Datasources - fusion tablas de google
-var datasources = { table : [] };
+var datasources = { table: [] };
 
 // Actually used datasource.
 var current_datasource;
@@ -33,10 +36,85 @@ var view_level = { provincia: 1, municipio: 2, localidad: 3, barrio: 4 };
 
 var reporting_level = null;
 
+var municipios_cache = { data: [] };
+var barrios_cache = { data: [] };
+
 /////////////////////////////////////////////////////////////////////
 // TABLE SECTION BEGIN >>>
 // ADD NEW TABLES HERE...
 /////////////////////////////////////////////////////////////////////
+
+//*******************************************************************
+// Rosario, Santa Fe 2013
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-32.943576,-60.665869);
+datasources.table['rosario_2013'] = {
+	key:	'rosario_2013',
+	id:		'1kq6OYlRQRZGH1rEI6I4wx8BVQl99K7uhdDiQ_pU',
+	type:	'fusion_table',
+	name:	'Catastro Rosario',
+	year:	'2013',
+	provincia:	'Santa Fe',
+	startZoom:  12,
+	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
+	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_municipio:	"'Departamento'",
+	sql_codigo: "'#'",
+	sql_barrio: "'1. Nombre del barrio'",
+	sql_other_name_barrio: "'2. Otros nombres del barrio'",
+	sql_partido: "'Municipio/Partido/Comuna'",
+	sql_localidad: "'Localidad'",
+	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	col_no_barrio: 29,
+	col_no_other_name_barrio: 30, 
+	col_no_partido: 25,
+	col_no_localidad: 26,
+	col_no_families: 32,
+	col_no_municipio: 25,
+	col_no_polygon: 196,
+	alias_municipio: 'partido',
+	search_part_txt_label: 'municipio o localidad',
+	shortcut_municipio: 'mpio.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
+
+//*******************************************************************
+// Salta 2013
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-24.775517,-65.410246);
+datasources.table['salta_2013'] = {
+	key:	'salta_2013',
+	id:		'10rvyZWQVl9lUvPm2BGalAIDMd2Xioc87cu5rl_A',
+	type:	'fusion_table',
+	name:	'Catastro Salta',
+	year:	'2013',
+	provincia:	'Salta',
+	startZoom:  12,
+	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
+	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_municipio:	"'Municipio/Partido/Comuna'",
+	sql_codigo: "'#'",
+	sql_barrio: "'1. Nombre del barrio'",
+	sql_other_name_barrio: "'2. Otros nombres del barrio'",
+	sql_partido: "'Municipio/Partido/Comuna'",
+	sql_localidad: "'Localidad'",
+	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	col_no_barrio: 29,
+	col_no_other_name_barrio: 30, 
+	col_no_partido: 25,
+	col_no_localidad: 26,
+	col_no_families: 32,
+	col_no_municipio: 25,
+	col_no_polygon: 196,
+	alias_municipio: 'partido',
+	search_part_txt_label: 'municipio o localidad',
+	shortcut_municipio: 'mpio.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
 
 //*******************************************************************
 // Córdoba 2011
@@ -51,9 +129,21 @@ datasources.table['cordoba_2011'] = {
 	provincia:	'Córdoba',
 	startZoom:  12,
 	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD'",
-	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD'",
+	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD', 'PROVINCIA'",
 	sql_municipio:	"'DEPARTAMENTO'",
+	sql_codigo: "'CÓDIGO'",
+	sql_barrio: "'BARRIO'",
+	sql_other_name_barrio: "'OTRA DENOMINACIÓN'",
+	sql_partido: "'DEPARTAMENTO'",
+	sql_localidad: "'LOCALIDAD'",
+	sql_families: "'NRO DE FLIAS'",
+	col_no_barrio: 1,
+	col_no_other_name_barrio: 2, 
+	col_no_partido: 5,
+	col_no_localidad: 6,
+	col_no_families: 10,
 	col_no_municipio: 4,
+	col_no_polygon: 7,
 	alias_municipio: 'departamento',
 	search_part_txt_label: 'departamento o localidad',
 	shortcut_municipio: 'dpto.',
@@ -75,9 +165,21 @@ datasources.table['buenos_aires_2011'] = {
 	provincia:	'Buenos Aires',
 	startZoom:	10,
 	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD'",
-	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD'",
+	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD', 'PROVINCIA'",
 	sql_municipio:	"'PARTIDO'",
+	sql_codigo: "'CÓDIGO'",
+	sql_barrio: "'BARRIO'",
+	sql_other_name_barrio: "'OTRA DENOMINACIÓN'",
+	sql_partido: "'PARTIDO'",
+	sql_localidad: "'LOCALIDAD'",
+	sql_families: "'NRO DE FLIAS'",
+	col_no_barrio: 1,
+	col_no_other_name_barrio: 2, 
+	col_no_partido: 5,
+	col_no_localidad: 6,
+	col_no_families: 10,
 	col_no_municipio: 5,
+	col_no_polygon: 7,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
@@ -115,7 +217,7 @@ function setCurrentDatasource(datasource) {
 	
 	// Set datasource cookie.
 	document.cookie = "datasource=" + current_datasource.key + ";" + " path=/";
-	
+		
 //	console.debug("setCurrentDatasource() => " + current_datasource.name + " (" + current_datasource.key + ")"); 
  }
 
@@ -136,7 +238,11 @@ function getCurrentDatasource() {
 		setCurrentDatasource();
 	}
 
+	// Get all table columns.
 	getFusionTableColumns(current_datasource.id, columnTableHandler);
+
+	// Filling data cache.
+	getFusionTableData("select " + current_datasource.sql_barrio_search_grp + " from " + current_datasource.id, setDataCache);	
 
  	current_datasource.filter['provincia'] = current_datasource.provincia;
 
@@ -225,9 +331,7 @@ function getFusionTableColumns(tbl_id, callback) {
     		console.error("getFusionTableColumns(): Error in json-p call. Query was " + url);
     	}
   	});
-
 }
-
 
 /**
  * Callback: Lists all columns in a given table.
@@ -237,9 +341,32 @@ function columnTableHandler(response) {
 	// Get column list.
 //	console.debug("totalItems: " + response.totalItems);
 	tbl_cols = response.items;
-//   	for(var i=0; i<tbl_cols.length; i++) {
-// 		console.debug("column[" + i + "] = " + tbl_cols[i].name);  		
-//   	}	
+//    	for(var i=0; i<tbl_cols.length; i++) {
+//  		console.debug("column[" + i + "] = " + tbl_cols[i].name);  		
+//    	}	
+}
+
+/**
+ * Callback: Gets and stores selected data in an array for faster access. 
+ *
+ */
+function setDataCache(response) {
+	var data_cache = response.rows;
+
+	for (var i in data_cache) {
+		if(data_cache.hasOwnProperty(i)) {
+			var entry = data_cache[i];
+			barrios_cache.data[i] = { 
+				key: 		entry[0], 
+				value: 		entry[1],	// Barrio
+				name2:		entry[2],
+				municipio:	entry[3],
+				localidad:	entry[4],
+				provincia:	entry[5],
+				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4]  + ', ' + entry[0] 
+			};
+		}
+	}
 }
 
 /**

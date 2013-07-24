@@ -109,6 +109,13 @@
     </style>
   </head>
 
+
+<style>
+.navbar-inner > .container{
+	width:1000px;
+}
+</style>
+
   <body style="padding-top: 50px;">
 
     <!-- Navbar
@@ -117,8 +124,9 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="http://www.techo.org.ar" target="_blank">
-            <img src="/images/logo_techo_trans1.png" width="67" height="19" />&nbsp;Catastro Argentina
+            <img src="/images/logo_techo_trans1.png" width="67" height="19" />
           </a>
+          <a class="brand" href="/">Catastro Argentina</a>
 
           <ul class="nav">
             <% if request.path_info == '/' %>
@@ -131,14 +139,13 @@
 			<li class="dropdown">
             	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Vista <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li class="nav-header">Argentina</li>
+                    <li class="nav-header">2011</li>
             		<li onclick="setViewToDatasource('buenos_aires_2011')"><a href="#">Buenos Aires</a></li>
                     <li onclick="setViewToDatasource('cordoba_2011')"><a href="#">C&oacute;rdoba</a></li>
-<!-- 
                     <li class="divider"></li>
-                    <li class="nav-header">Chile</li>
-                    <li><a href="#">Santiago</a></li>
- -->
+                    <li class="nav-header">2013</li>
+                    <li onclick="setViewToDatasource('salta_2013')"><a href="#">Salta</a></li>
+                    <li onclick="setViewToDatasource('rosario_2013')"><a href="#">Rosario</a></li>
             	</ul>
             </li>
 
@@ -160,6 +167,14 @@
               <li>
             <% end %>
             <a href="/content/methodology">Metodolog&iacute;a</a></li>
+
+			<li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Informes <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+            		<li><a href="/downloads/Informe_Relevamiento_Buenos_Aires_2011.pdf" target="_blank">Informe Relevamiento Buenos Aires 2011</a></li>
+                    <li><a href="/downloads/Informe_Relevamiento_C&oacute;rdoba_2011.pdf" target="_blank">Informe Relevamiento Córdoba 2011</a></li>
+            	</ul>
+            </li>
           </ul>
 
           <ul class="nav pull-right">
