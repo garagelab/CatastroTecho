@@ -329,6 +329,102 @@ datasources.table['salta_2013'] = {
 	filter: data_filter
 };
 
+//*******************************************************************
+// Río Negro y Neuquén 2013
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-38.945795,-68.063444);
+datasources.table['rio_negro_neuquen_2013'] = {
+	key:	'rio_negro_neuquen_2013',
+	id:		'1rSuFqqgGtywBw_Hw_qHBwTjXeNUY4LrY2SEkYhU',
+	type:	'fusion_table',
+	name:	'Catastro Río Negro y Neuquén',
+	year:	'2013',
+	provincia:	'Río Negro y Neuquén',
+	startZoom:  12,
+	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
+	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_municipio:	"'Municipio/Partido/Comuna'",
+	sql_codigo: "'#'",
+	sql_barrio: "'1. Nombre del barrio'",
+	sql_other_name_barrio: "'2. Otros nombres del barrio'",
+	sql_partido: "'Municipio/Partido/Comuna'",
+	sql_localidad: "'Localidad'",
+	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	cols: {},
+	col_no_barrio: 29,
+	col_no_other_name_barrio: 30,
+	col_no_provincia: 23,
+	col_no_departamento: 24,
+	col_no_municipio_partido_comuna: 25,
+	col_no_municipio: 25,
+	col_no_partido: 25,
+	col_no_localidad: 26,
+	col_no_families: 32,
+	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 61, // RED CLOACAL
+	col_no_water: 66, // AGUA
+	col_no_electrical: 54, // ACCESO A LA ENERGÍA
+	col_no_gas: 79, // GAS
+	col_no_drains: 85, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_polygon: 196,
+	alias_municipio: 'partido',
+	search_part_txt_label: 'municipio o localidad',
+	shortcut_municipio: 'mpio.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
+
+//*******************************************************************
+// Posadas 2013
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-27.370195,-55.896122);
+datasources.table['posadas_2013'] = {
+	key:	'posadas_2013',
+	id:		'1IrVpWor4zkUSv3nY8VMuM4Vaq6WSinBnFRzndhE',
+	type:	'fusion_table',
+	name:	'Catastro Posadas',
+	year:	'2013',
+	provincia:	'Misiones',
+	startZoom:  12,
+	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
+	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_municipio:	"'Municipio/Partido/Comuna'",
+	sql_codigo: "'#'",
+	sql_barrio: "'1. Nombre del barrio'",
+	sql_other_name_barrio: "'2. Otros nombres del barrio'",
+	sql_partido: "'Municipio/Partido/Comuna'",
+	sql_localidad: "'Localidad'",
+	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	cols: {},
+	col_no_barrio: 29,
+	col_no_other_name_barrio: 30,
+	col_no_provincia: 23,
+	col_no_departamento: 24,
+	col_no_municipio_partido_comuna: 25,
+	col_no_municipio: 25,
+	col_no_partido: 25,
+	col_no_localidad: 26,
+	col_no_families: 32,
+	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 61, // RED CLOACAL
+	col_no_water: 66, // AGUA
+	col_no_electrical: 54, // ACCESO A LA ENERGÍA
+	col_no_gas: 79, // GAS
+	col_no_drains: 85, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_polygon: 196,
+	alias_municipio: 'partido',
+	search_part_txt_label: 'municipio o localidad',
+	shortcut_municipio: 'mpio.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
+
 /////////////////////////////////////////////////////////////////////
 // <<< END OF TABLE SECTION
 /////////////////////////////////////////////////////////////////////
@@ -344,7 +440,7 @@ function setCurrentDatasource(datasource) {
 	if (datasource === undefined) {
  		// Set the default datasource.
 //		console.debug("setCurrentDatasource() => Setting Buenos Aires as default.");
- 		current_datasource = datasources.table['buenos_aires_2011'];
+ 		current_datasource = datasources.table['buenos_aires_2013'];
  	}
  	else {
  		current_datasource = datasource;
@@ -548,7 +644,7 @@ function dataTableHandler(response) {
           {
             "sExtends": "csv",
             "sButtonText": "Guardar como CSV archivo",
-            "sFileName": "techo_catastro_argentina.csv",
+            "sFileName": "techo_catastro_" + current_datasource.key + ".csv",
             "sFieldSeperator": ";"
           }
         ]

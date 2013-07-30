@@ -218,7 +218,7 @@ function initMapBarriosPage() {
   	map = new google.maps.Map(document.getElementById('map_canvas'), {
     	center: current_datasource.center_lat_lng,
     	zoom: current_datasource.startZoom,
-    	minZoom: 9,
+    	minZoom: 2, // 9
     	mapTypeId: google.maps.MapTypeId.ROADMAP,
     	streetViewControl: false
   	} );
@@ -244,7 +244,7 @@ function initTableBarriosPage() {
 	getCurrentDatasource();
 	var header = document.getElementById('header_table_barrio_page');
   	header.innerHTML = "Informaci&oacute;n completa de cada villa y asentamiento de " + 
-  		current_datasource.provincia;
+  		current_datasource.provincia + " " + current_datasource.year;
 	getFusionTableData('select * from ' + current_datasource.id, dataTableHandler);
 }
 
