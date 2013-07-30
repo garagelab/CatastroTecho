@@ -19,9 +19,6 @@ var urlVizData = 'http://www.google.com/fusiontables/gvizdata?tq=';
 
 var center_lat_lng;
 
-// Table columns (header information: id, name, type).
-var tbl_cols = {};
-
 // Datasources - fusion tablas de google
 var datasources = { table: [] };
 
@@ -41,8 +38,200 @@ var barrios_cache = { data: [] };
 
 /////////////////////////////////////////////////////////////////////
 // TABLE SECTION BEGIN >>>
-// ADD NEW TABLES HERE...
+// ADD NEW TABLES HERE => AT BOTTOM !!!!
 /////////////////////////////////////////////////////////////////////
+
+//*******************************************************************
+// Buenos Aires 2011
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-34.672747, -58.41774);
+datasources.table['buenos_aires_2011'] = {
+	key:	'buenos_aires_2011',
+	id:		'1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY',
+	type:	'fusion_table',
+	name:	'Catastro Buenos Aires',
+	year:	'2011',
+	provincia:	'Buenos Aires',
+	startZoom:	10,
+	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD'",
+	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD', 'PROVINCIA'",
+	sql_municipio:	"'PARTIDO'",
+	sql_codigo: "'CÓDIGO'",
+	sql_barrio: "'BARRIO'",
+	sql_other_name_barrio: "'OTRA DENOMINACIÓN'",
+	sql_partido: "'PARTIDO'",
+	sql_localidad: "'LOCALIDAD'",
+	sql_families: "'NRO DE FLIAS'",
+	cols: {},
+	col_no_barrio: 1,
+	col_no_other_name_barrio: 2, 
+	col_no_provincia: 3,
+	col_no_departamento: 4,
+	col_no_municipio_partido_comuna: 5,
+	col_no_municipio: 5,
+	col_no_partido: 5,
+	col_no_localidad: 6,
+	col_no_families: 10,
+	col_no_start_year: 9, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 17, // RED CLOACAL
+	col_no_water: 18, // AGUA
+	col_no_electrical: 16, // ACCESO A LA ENERGÍA
+	col_no_gas: 19, // GAS
+	col_no_drains: 20, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 21, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 22, // RECOLECCIÓN DE RESIDUOS
+	col_no_polygon: 7,
+	alias_municipio: 'partido',
+	search_part_txt_label: 'municipio o localidad',
+	shortcut_municipio: 'mpio.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
+
+//*******************************************************************
+// Córdoba 2011
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-31.396439, -64.179486);
+datasources.table['cordoba_2011'] = {
+	key:	'cordoba_2011',
+	id:		'17P_q8RIm8-T2iW0Nij_6dIBhnL50z2O-UicNVaU',
+	type:	'fusion_table',
+	name:	'Catastro Córdoba',
+	year:	'2011',
+	provincia:	'Córdoba',
+	startZoom:  12,
+	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD'",
+	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD', 'PROVINCIA'",
+	sql_municipio:	"'DEPARTAMENTO'",
+	sql_codigo: "'CÓDIGO'",
+	sql_barrio: "'BARRIO'",
+	sql_other_name_barrio: "'OTRA DENOMINACIÓN'",
+	sql_partido: "'DEPARTAMENTO'",
+	sql_localidad: "'LOCALIDAD'",
+	sql_families: "'NRO DE FLIAS'",
+	cols: {},
+	col_no_barrio: 1,
+	col_no_other_name_barrio: 2, 
+	col_no_provincia: 3,
+	col_no_departamento: 4,
+	col_no_municipio_partido_comuna: 4,
+	col_no_municipio: 4,
+	col_no_partido: 5,
+	col_no_localidad: 6,
+	col_no_families: 10,
+	col_no_start_year: 9, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 17, // RED CLOACAL
+	col_no_water: 18, // AGUA
+	col_no_electrical: 16, // ACCESO A LA ENERGÍA
+	col_no_gas: 19, // GAS
+	col_no_drains: 20, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 21, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 22, // RECOLECCIÓN DE RESIDUOS
+	col_no_polygon: 7,
+	alias_municipio: 'departamento',
+	search_part_txt_label: 'departamento o localidad',
+	shortcut_municipio: 'dpto.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
+
+//*******************************************************************
+// Buenos Aires 2013
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-34.672747, -58.41774);
+datasources.table['buenos_aires_2013'] = {
+	key:	'buenos_aires_2013',
+	id:		'1KJW4OtVXG7tJcJSFDl5kqA2OsqiEcDQ25kFpzmU',
+	type:	'fusion_table',
+	name:	'Catastro Buenos Aires',
+	year:	'2011',
+	provincia:	'Buenos Aires',
+	startZoom:	10,
+	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
+	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_municipio:	"'Departamento'",
+	sql_codigo: "'#'",
+	sql_barrio: "'1. Nombre del barrio'",
+	sql_other_name_barrio: "'2. Otros nombres del barrio'",
+	sql_partido: "'Municipio/Partido/Comuna'",
+	sql_localidad: "'Localidad'",
+	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	cols: {},
+	col_no_barrio: 29,
+	col_no_other_name_barrio: 30,
+	col_no_provincia: 23,
+	col_no_departamento: 24,
+	col_no_municipio_partido_comuna: 25,
+	col_no_municipio: 25,
+	col_no_partido: 25,
+	col_no_localidad: 26,
+	col_no_families: 32,
+	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 61, // RED CLOACAL
+	col_no_water: 66, // AGUA
+	col_no_electrical: 54, // ACCESO A LA ENERGÍA
+	col_no_gas: 79, // GAS
+	col_no_drains: 85, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_polygon: 196,
+	alias_municipio: 'partido',
+	search_part_txt_label: 'municipio o localidad',
+	shortcut_municipio: 'mpio.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
+
+//*******************************************************************
+// Córdoba 2013
+//*******************************************************************
+center_lat_lng = new google.maps.LatLng(-31.396439, -64.179486);
+datasources.table['cordoba_2013'] = {
+	key:	'cordoba_2013',
+	id:		'1Tu94Wa-59lBYTsZZNGYonV-vFcqAn0VS2cLKYXo',
+	type:	'fusion_table',
+	name:	'Catastro Cordoba',
+	year:	'2013',
+	provincia:	'Córdoba',
+	startZoom:  12,
+	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
+	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_municipio:	"'Departamento'",
+	sql_codigo: "'#'",
+	sql_barrio: "'1. Nombre del barrio'",
+	sql_other_name_barrio: "'2. Otros nombres del barrio'",
+	sql_partido: "'Municipio/Partido/Comuna'",
+	sql_localidad: "'Localidad'",
+	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	cols: {},
+	col_no_barrio: 29,
+	col_no_other_name_barrio: 30,
+	col_no_provincia: 23,
+	col_no_departamento: 24,
+	col_no_municipio_partido_comuna: 25,
+	col_no_municipio: 25,
+	col_no_partido: 25,
+	col_no_localidad: 26,
+	col_no_families: 32,
+	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 61, // RED CLOACAL
+	col_no_water: 66, // AGUA
+	col_no_electrical: 54, // ACCESO A LA ENERGÍA
+	col_no_gas: 79, // GAS
+	col_no_drains: 85, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_polygon: 196,
+	alias_municipio: 'departamento',
+	search_part_txt_label: 'departamento o localidad',
+	shortcut_municipio: 'dpto.',
+	shortcut_localidad: 'loc.',
+	center_lat_lng:	center_lat_lng,
+	filter: data_filter
+};
 
 //*******************************************************************
 // Rosario, Santa Fe 2013
@@ -65,12 +254,24 @@ datasources.table['rosario_2013'] = {
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	cols: {},
 	col_no_barrio: 29,
-	col_no_other_name_barrio: 30, 
+	col_no_other_name_barrio: 30,
+	col_no_provincia: 23,
+	col_no_departamento: 24,
+	col_no_municipio_partido_comuna: 25,
+	col_no_municipio: 25,
 	col_no_partido: 25,
 	col_no_localidad: 26,
 	col_no_families: 32,
-	col_no_municipio: 25,
+	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 61, // RED CLOACAL
+	col_no_water: 66, // AGUA
+	col_no_electrical: 54, // ACCESO A LA ENERGÍA
+	col_no_gas: 79, // GAS
+	col_no_drains: 85, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
@@ -101,85 +302,25 @@ datasources.table['salta_2013'] = {
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
+	cols: {},
 	col_no_barrio: 29,
-	col_no_other_name_barrio: 30, 
+	col_no_other_name_barrio: 30,
+	col_no_provincia: 23,
+	col_no_departamento: 24,
+	col_no_municipio_partido_comuna: 25,
+	col_no_municipio: 25,
 	col_no_partido: 25,
 	col_no_localidad: 26,
 	col_no_families: 32,
-	col_no_municipio: 25,
+	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
+	col_no_sewage: 61, // RED CLOACAL
+	col_no_water: 66, // AGUA
+	col_no_electrical: 54, // ACCESO A LA ENERGÍA
+	col_no_gas: 79, // GAS
+	col_no_drains: 85, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'partido',
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
-	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
-	filter: data_filter
-};
-
-//*******************************************************************
-// Córdoba 2011
-//*******************************************************************
-center_lat_lng = new google.maps.LatLng(-31.396439, -64.179486);
-datasources.table['cordoba_2011'] = {
-	key:	'cordoba_2011',
-	id:		'17P_q8RIm8-T2iW0Nij_6dIBhnL50z2O-UicNVaU',
-	type:	'fusion_table',
-	name:	'Catastro Córdoba',
-	year:	'2011',
-	provincia:	'Córdoba',
-	startZoom:  12,
-	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD'",
-	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD', 'PROVINCIA'",
-	sql_municipio:	"'DEPARTAMENTO'",
-	sql_codigo: "'CÓDIGO'",
-	sql_barrio: "'BARRIO'",
-	sql_other_name_barrio: "'OTRA DENOMINACIÓN'",
-	sql_partido: "'DEPARTAMENTO'",
-	sql_localidad: "'LOCALIDAD'",
-	sql_families: "'NRO DE FLIAS'",
-	col_no_barrio: 1,
-	col_no_other_name_barrio: 2, 
-	col_no_partido: 5,
-	col_no_localidad: 6,
-	col_no_families: 10,
-	col_no_municipio: 4,
-	col_no_polygon: 7,
-	alias_municipio: 'departamento',
-	search_part_txt_label: 'departamento o localidad',
-	shortcut_municipio: 'dpto.',
-	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
-	filter: data_filter
-};
-
-//*******************************************************************
-// Buenos Aires 2011
-//*******************************************************************
-center_lat_lng = new google.maps.LatLng(-34.672747, -58.41774);
-datasources.table['buenos_aires_2011'] = {
-	key:	'buenos_aires_2011',
-	id:		'1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY',
-	type:	'fusion_table',
-	name:	'Catastro Buenos Aires',
-	year:	'2011',
-	provincia:	'Buenos Aires',
-	startZoom:	10,
-	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD'",
-	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD', 'PROVINCIA'",
-	sql_municipio:	"'PARTIDO'",
-	sql_codigo: "'CÓDIGO'",
-	sql_barrio: "'BARRIO'",
-	sql_other_name_barrio: "'OTRA DENOMINACIÓN'",
-	sql_partido: "'PARTIDO'",
-	sql_localidad: "'LOCALIDAD'",
-	sql_families: "'NRO DE FLIAS'",
-	col_no_barrio: 1,
-	col_no_other_name_barrio: 2, 
-	col_no_partido: 5,
-	col_no_localidad: 6,
-	col_no_families: 10,
-	col_no_municipio: 5,
-	col_no_polygon: 7,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
@@ -309,6 +450,9 @@ function getFusionTableData(query, callback) {
 /**
  * Retrieves a list of the specified table's columns.
  *
+ * Please note 'maxResults' query parameter below.
+ * The list request only returns up to 50 results by default!
+ *
  * @return {json-p} Query result.
  */
 function getFusionTableColumns(tbl_id, callback) {
@@ -319,6 +463,7 @@ function getFusionTableColumns(tbl_id, callback) {
     url.push('/columns');
     url.push('?key=' + API_KEY);
 	url.push('&callback=?');
+	url.push('&maxResults=200');
 
 	// Send the JSONP request using jQuery.
   	$.ajax( {
@@ -338,12 +483,17 @@ function getFusionTableColumns(tbl_id, callback) {
  *
  */
 function columnTableHandler(response) {
-	// Get column list.
-//	console.debug("totalItems: " + response.totalItems);
-	tbl_cols = response.items;
-//    	for(var i=0; i<tbl_cols.length; i++) {
-//  		console.debug("column[" + i + "] = " + tbl_cols[i].name);  		
-//    	}	
+	current_datasource.cols = response.items;
+
+//	begin checking >>>
+//	Part below only for checking and testing...
+	// Get column list (total of all columns in the table).
+// 	console.debug("totalItems: " + response.totalItems);
+// 	var tbl_cols = response.items;
+// 	for(var i=0; i<tbl_cols.length; i++) {
+// 		console.debug("column[" + i + "] = " + tbl_cols[i].name);  		
+// 	}	
+// <<< end checking
 }
 
 /**

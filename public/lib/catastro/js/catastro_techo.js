@@ -326,12 +326,10 @@ function addBarrioListener(initLayer) {
 
 	google.maps.event.addListener(initLayer, 'click', function(e) {
     	placeMarker(map, e.latLng, techo_marker, techo_marker_shadow, true);
-    	showBarrioInfo(e);
+		showBarrioInfo(e);
     	drawSupplyCharts(view_level["barrio"], "map_page");
   	} );
 }
-
-
 
 /*
  * Evaluate focus (midpoint) from a given polygon boundary.
@@ -610,19 +608,19 @@ function findBarrioData() {
         		row : []
       		};
 
-			e.row[current_datasource.sql_barrio] = { value: response.getDataTable().getValue(0, current_datasource.col_no_barrio) };
-      		e.row[current_datasource.sql_other_name_barrio] = { value: response.getDataTable().getValue(0, current_datasource.col_no_other_name_barrio) };
-      		e.row[current_datasource.alias_municipio.toUpperCase()] = { value: response.getDataTable().getValue(0, current_datasource.col_no_municipio) };
-      		e.row[current_datasource.sql_localidad] = { value: response.getDataTable().getValue(0, current_datasource.col_no_localidad) };
-      		e.row[current_datasource.sql_families] = { value: response.getDataTable().getValue(0, current_datasource.col_no_families) };
-      		e.row['AÑO DE CONFORMACIÓN DEL BARRIO'] = { value: response.getDataTable().getValue(0, 9) };
-      		e.row['RED CLOACAL'] = { value: response.getDataTable().getValue(0, 17) };
-      		e.row['AGUA'] = { value: response.getDataTable().getValue(0, 18) };
-      		e.row['ACCESO A LA ENERGÍA'] = { value: response.getDataTable().getValue(0, 16) };
-      		e.row['GAS'] = { value: response.getDataTable().getValue(0, 20) };
-      		e.row['DESAGÜES PLUVIALES'] = { value: response.getDataTable().getValue(0, 21) };
-      		e.row['ALUMBRADO PÚBLICO'] = { value: response.getDataTable().getValue(0, 22) };
-      		e.row['RECOLECCIÓN DE RESIDUOS'] = { value: response.getDataTable().getValue(0, 23) };
+			e.row[current_datasource.cols[current_datasource.col_no_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_barrio) };
+      		e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_other_name_barrio) };
+      		e.row[current_datasource.cols[current_datasource.col_no_municipio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_municipio) };
+      		e.row[current_datasource.cols[current_datasource.col_no_localidad].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_localidad) };
+      		e.row[current_datasource.cols[current_datasource.col_no_families].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_families) };
+      		e.row[current_datasource.cols[current_datasource.col_no_start_year].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_start_year) };
+      		e.row[current_datasource.cols[current_datasource.col_no_sewage].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_sewage) };
+      		e.row[current_datasource.cols[current_datasource.col_no_water].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_water) };
+      		e.row[current_datasource.cols[current_datasource.col_no_electrical].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_electrical) };
+      		e.row[current_datasource.cols[current_datasource.col_no_gas].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_gas) };
+      		e.row[current_datasource.cols[current_datasource.col_no_drains].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_drains) };
+      		e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_street_lighting) };
+      		e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_waste_collection) };
 
       		// Triggering'click'-event listener to display barrio map marker and data.
       		google.maps.event.trigger(initLayer, 'click', e);
@@ -931,21 +929,20 @@ function showBarrioInfo(e) {
   //
   var missing = "-";
   var no_info = "?";
-  
-  var barrio = e.row[current_datasource.sql_barrio].value;  
-  var other_name_barrio = e.row[current_datasource.sql_other_name_barrio].value;
-  var partido = e.row[current_datasource.alias_municipio.toUpperCase()].value;
-  var localidad = e.row[current_datasource.sql_localidad].value;
-  var families = e.row[current_datasource.sql_families].value;
-  var start_year = e.row['AÑO DE CONFORMACIÓN DEL BARRIO'].value;
-  var sewage = e.row['RED CLOACAL'].value;
-  var water = e.row['AGUA'].value;
-  var electrical = e.row['ACCESO A LA ENERGÍA'].value;
-  var gas = e.row['GAS'].value;
-  var drains = e.row['DESAGÜES PLUVIALES'].value;
-  var street_lighting = e.row['ALUMBRADO PÚBLICO'].value;
-  var waste_collection = e.row['RECOLECCIÓN DE RESIDUOS'].value;
 
+  var barrio = e.row[current_datasource.cols[current_datasource.col_no_barrio].name].value;
+  var other_name_barrio = e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name].value;
+  var partido = e.row[current_datasource.cols[current_datasource.col_no_municipio].name].value;
+  var localidad = e.row[current_datasource.cols[current_datasource.col_no_localidad].name].value;
+  var families = e.row[current_datasource.cols[current_datasource.col_no_families].name].value;
+  var start_year = e.row[current_datasource.cols[current_datasource.col_no_start_year].name].value;
+  var sewage = e.row[current_datasource.cols[current_datasource.col_no_sewage].name].value;
+  var water = e.row[current_datasource.cols[current_datasource.col_no_water].name].value;
+  var electrical = e.row[current_datasource.cols[current_datasource.col_no_electrical].name].value;
+  var gas = e.row[current_datasource.cols[current_datasource.col_no_gas].name].value;
+  var drains = e.row[current_datasource.cols[current_datasource.col_no_drains].name].value;
+  var street_lighting = e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name].value;
+  var waste_collection = e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name].value;
   var barrio_id = document.getElementById('barrio_id');
   if (barrio)
     barrio_id.innerHTML = barrio;
