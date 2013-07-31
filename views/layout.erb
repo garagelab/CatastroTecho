@@ -136,6 +136,7 @@
             <% end %>
             <a href="/">Inicio</a></li>
 
+            <% if request.path_info != '/' && request.path_info != '/content/methodology' %>
 			<li class="dropdown">
             	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Vista <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -152,6 +153,7 @@
                     <li onclick="setViewToDatasource('cordoba_2011')"><a href="#">C&oacute;rdoba</a></li>
             	</ul>
             </li>
+            <% end %>
 
             <% if request.path_info == '/content/mapa-de-barrios' %>
               <li class="active">

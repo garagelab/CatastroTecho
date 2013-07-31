@@ -103,7 +103,7 @@ function initIndexPage() {
 }
 
 /**
- * Initialize map page (overview) at index page for first use.
+ * Initialize map page (overview) at index page.
  *
  */
 function initMapIndexPage() {
@@ -125,7 +125,12 @@ function initMapIndexPage() {
   		if(!datasources.table.hasOwnProperty(key)) {
   			continue;
   		}
-  		
+
+		// Only temporary filter solution.
+  		if (datasources.table[key].key.indexOf("2013") == -1) {
+  			continue;
+  		}
+  		  		
   		var marker = placeMarker(
   			map, 
   			datasources.table[key].center_lat_lng, 
@@ -206,7 +211,7 @@ function setViewToDatasource(datasource_key) {
 }
 
 /**
- * Initialize map page with barrios for first use.
+ * Initialize map page with barrios.
  *
  */
 function initMapBarriosPage() {    
@@ -245,7 +250,7 @@ function initTableBarriosPage() {
 	var header = document.getElementById('header_table_barrio_page');
   	header.innerHTML = "Informaci&oacute;n completa de cada villa y asentamiento de " + 
   		current_datasource.provincia + " " + current_datasource.year;
-	getFusionTableData('select * from ' + current_datasource.id, dataTableHandler);
+  	getFusionTableData('select * from ' + current_datasource.id, dataTableHandler);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -1182,6 +1187,7 @@ function drawSupplyCharts(view_level, page) {
     chart_base = "Provincia";
   }
 
+if (current_datasource.key.indexOf("2013") == -1) {
   if (where_clause) {
     charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id + where_clause };
     charts.water.query = { value: "SELECT 'AGUA' FROM " + current_datasource.id  + where_clause };
@@ -1194,6 +1200,21 @@ function drawSupplyCharts(view_level, page) {
     charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + current_datasource.id };
     charts.gas.query = { value: "SELECT 'GAS' FROM " + current_datasource.id };
   }
+}
+else {
+  if (where_clause) {
+    charts.sewage.query = { value: "SELECT '13.1- Red cloacal publica' FROM " + current_datasource.id + where_clause };
+    charts.water.query = { value: "SELECT '14.1- Agua corriente (red pública)' FROM " + current_datasource.id  + where_clause };
+    charts.electrical.query = { value: "SELECT '12.1- Red pública (con medidores domiciliarios) " + current_datasource.id  + where_clause };
+    charts.gas.query = { value: "SELECT '16.1- Gas natural de red pública' FROM " + current_datasource.id  + where_clause };
+  }
+  else {
+    charts.sewage.query = { value: "SELECT '13.1- Red cloacal publica' FROM " + current_datasource.id };
+    charts.water.query = { value: "SELECT '14.1- Agua corriente (red pública)' FROM " + current_datasource.id };
+    charts.electrical.query = { value: "SELECT '12.1- Red pública (con medidores domiciliarios)' FROM " + current_datasource.id };
+    charts.gas.query = { value: "SELECT '16.1- Gas natural de red pública' FROM " + current_datasource.id };
+  }
+}
 
   charts.sewage.chartType = { value: "PieChart" };
   charts.sewage.containerID = { value: "sewage_chart_div" };

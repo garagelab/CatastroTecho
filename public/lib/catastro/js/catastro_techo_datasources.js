@@ -92,7 +92,7 @@ datasources.table['buenos_aires_2011'] = {
 //*******************************************************************
 // Córdoba 2011
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-31.396439, -64.179486);
+center_lat_lng = new google.maps.LatLng(-31.40039,-64.228233);
 datasources.table['cordoba_2011'] = {
 	key:	'cordoba_2011',
 	id:		'17P_q8RIm8-T2iW0Nij_6dIBhnL50z2O-UicNVaU',
@@ -146,7 +146,7 @@ datasources.table['buenos_aires_2013'] = {
 	id:		'1KJW4OtVXG7tJcJSFDl5kqA2OsqiEcDQ25kFpzmU',
 	type:	'fusion_table',
 	name:	'Catastro Buenos Aires',
-	year:	'2011',
+	year:	'2013',
 	provincia:	'Buenos Aires',
 	startZoom:	10,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
@@ -188,7 +188,7 @@ datasources.table['buenos_aires_2013'] = {
 //*******************************************************************
 // Córdoba 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-31.396439, -64.179486);
+center_lat_lng = new google.maps.LatLng(-31.40039,-64.228233);
 datasources.table['cordoba_2013'] = {
 	key:	'cordoba_2013',
 	id:		'1Tu94Wa-59lBYTsZZNGYonV-vFcqAn0VS2cLKYXo',
@@ -236,7 +236,7 @@ datasources.table['cordoba_2013'] = {
 //*******************************************************************
 // Rosario, Santa Fe 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-32.943576,-60.665869);
+center_lat_lng = new google.maps.LatLng(-32.948615,-60.722049);
 datasources.table['rosario_2013'] = {
 	key:	'rosario_2013',
 	id:		'1kq6OYlRQRZGH1rEI6I4wx8BVQl99K7uhdDiQ_pU',
@@ -332,7 +332,7 @@ datasources.table['salta_2013'] = {
 //*******************************************************************
 // Río Negro y Neuquén 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-38.945795,-68.063444);
+center_lat_lng = new google.maps.LatLng(-38.943659,-68.113569);
 datasources.table['rio_negro_neuquen_2013'] = {
 	key:	'rio_negro_neuquen_2013',
 	id:		'1rSuFqqgGtywBw_Hw_qHBwTjXeNUY4LrY2SEkYhU',
@@ -380,7 +380,7 @@ datasources.table['rio_negro_neuquen_2013'] = {
 //*******************************************************************
 // Posadas 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-27.370195,-55.896122);
+center_lat_lng = new google.maps.LatLng(-27.387316,-55.928834);
 datasources.table['posadas_2013'] = {
 	key:	'posadas_2013',
 	id:		'1IrVpWor4zkUSv3nY8VMuM4Vaq6WSinBnFRzndhE',
@@ -603,14 +603,16 @@ function setDataCache(response) {
 		if(data_cache.hasOwnProperty(i)) {
 			var entry = data_cache[i];
 			barrios_cache.data[i] = { 
-				key: 		entry[0], 
+				key: 		entry[0],	// Código
 				value: 		entry[1],	// Barrio
-				name2:		entry[2],
+				name2:		entry[2],	// Otro denominación
 				municipio:	entry[3],
 				localidad:	entry[4],
 				provincia:	entry[5],
-				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4]  + ', ' + entry[0] 
+				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4]
+//				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4].toString()  + ', ' + entry[0] 
 			};
+			//console.debug(barrios_cache.data[i].label);	
 		}
 	}
 }
@@ -622,9 +624,99 @@ function setDataCache(response) {
  * For details see: http://www.datatables.net/index
  */
 function dataTableHandler(response) {
-	// Get columns and rows
-  	var cols = response.columns;
-  	var rows = response.rows;
+  	var cols;
+  	var rows = new Array();
+  	var qry_table_view;
+	
+  	// Special case for 2011 data.
+  	if (current_datasource.key.indexOf("2011") != -1) {
+  		cols = response.columns;
+  		
+		for(var row=0; row<response.rows.length; row++) {
+			rows[row] = new Array();
+			for (var col=0; col<28; col++) {
+				rows[row][col] = response.rows[row][col];
+			}
+		}	
+  		
+		qry_table_view = [
+        	{ "bVisible": false, "sTitle": cols[0], "aTargets": [0] },
+        	{ "bVisible": true, "sTitle": cols[1], "aTargets": [1] },
+        	{ "bVisible": true, "sTitle": cols[2], "aTargets": [2] },
+        	{ "bVisible": true, "sTitle": cols[3], "aTargets": [3] },
+        	{ "bVisible": true, "sTitle": cols[4], "aTargets": [4] },
+        	{ "bVisible": true, "sTitle": cols[5], "aTargets": [5] },
+        	{ "bVisible": true, "sTitle": cols[6], "aTargets": [6] },
+        	{ "bVisible": false, "aTargets": [7] },
+        	{ "bVisible": false, "aTargets": [8] },
+        	{ "bVisible": true, "sTitle": cols[9], "aTargets": [9] },
+        	{ "bVisible": true, "sTitle": cols[10], "aTargets": [10] },
+        	{ "bVisible": true, "sTitle": cols[11], "aTargets": [11] },
+        	{ "bVisible": true, "sTitle": cols[12], "aTargets": [12] },
+        	{ "bVisible": true, "sTitle": cols[13], "aTargets": [13] },
+        	{ "bVisible": true, "sTitle": cols[14], "aTargets": [14] },
+        	{ "bVisible": true, "sTitle": cols[15], "aTargets": [15] },
+        	{ "bVisible": true, "sTitle": cols[16], "aTargets": [16] },
+        	{ "bVisible": true, "sTitle": cols[17], "aTargets": [17] },
+        	{ "bVisible": true, "sTitle": cols[18], "aTargets": [18] },
+        	{ "bVisible": true, "sTitle": cols[19], "aTargets": [19] },
+        	{ "bVisible": true, "sTitle": cols[20], "aTargets": [20] },
+        	{ "bVisible": true, "sTitle": cols[21], "aTargets": [21] },
+        	{ "bVisible": true, "sTitle": cols[22], "aTargets": [22] },
+        	{ "bVisible": true, "sTitle": cols[23], "aTargets": [23] },
+        	{ "bVisible": true, "sTitle": cols[24], "aTargets": [24] },
+        	{ "bVisible": true, "sTitle": cols[25], "aTargets": [25] },
+        	{ "bVisible": true, "sTitle": cols[26], "aTargets": [26] },
+        	{ "bVisible": true, "sTitle": cols[27], "aTargets": [27] }
+    	];
+	}
+	// Default column selection.
+	else {
+  		cols = response.columns;
+		sel_cols = [
+			0, 29, 30, 23, 24, 25, 26, 32, 40, 41, 42, 43, 61, 66, 54, 79, 85, 91, 87, 
+			105, 106, 107, 108, 109, 110, 111, 112, 113
+		];
+		
+		for(var row=0; row<response.rows.length; row++) {
+			var entry = new Array();
+			for (var col=0; col<sel_cols.length; col++) {
+				entry.push(response.rows[row][sel_cols[col]]);
+			}
+			rows.push(entry);
+		}	
+
+		qry_table_view = [
+        	{ "bVisible": false, "sTitle": cols[0], "aTargets": [0], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": "BARRIO", "aTargets": [1], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": "OTRA DENOMINACIÓN", "aTargets": [2], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": "PROVINCIA", "aTargets": [3], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": "DEPARTAMENTO", "aTargets": [4], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[25], "aTargets": [5], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[26], "aTargets": [6], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[32], "aTargets": [7], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[40], "aTargets": [8], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[41], "aTargets": [9], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[42], "aTargets": [10], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[43], "aTargets": [11], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[61], "aTargets": [12], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[66], "aTargets": [13], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[54], "aTargets": [14], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[79], "aTargets": [15], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[85], "aTargets": [16], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[91], "aTargets": [17], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[87], "aTargets": [18], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[105], "aTargets": [19], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[106], "aTargets": [20], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[107], "aTargets": [21], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[108], "aTargets": [22], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[109], "aTargets": [23], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[110], "aTargets": [24], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[111], "aTargets": [25], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[112], "aTargets": [26], sDefaultContent: "" },
+        	{ "bVisible": true, "sTitle": cols[113], "aTargets": [27], sDefaultContent: "" }
+    	];
+	}
   
   $(document).ready(function() {
     var oTable = $('#table_container').dataTable( {
@@ -709,36 +801,37 @@ function dataTableHandler(response) {
       "aaSorting": [[ 1, "asc" ]],
       //
       // Table columns
-      "aoColumnDefs": [
-        { "bVisible": false, "sTitle": cols[0], "aTargets": [0] },
-        { "bVisible": true, "sTitle": cols[1], "aTargets": [1] },
-        { "bVisible": true, "sTitle": cols[2], "aTargets": [2] },
-        { "bVisible": true, "sTitle": cols[3], "aTargets": [3] },
-        { "bVisible": true, "sTitle": cols[4], "aTargets": [4] },
-        { "bVisible": true, "sTitle": cols[5], "aTargets": [5] },
-        { "bVisible": true, "sTitle": cols[6], "aTargets": [6] },
-        { "bVisible": false, "aTargets": [7] },
-        { "bVisible": false, "aTargets": [8] },
-        { "bVisible": true, "sTitle": cols[9], "aTargets": [9] },
-        { "bVisible": true, "sTitle": cols[10], "aTargets": [10] },
-        { "bVisible": true, "sTitle": cols[11], "aTargets": [11] },
-        { "bVisible": true, "sTitle": cols[12], "aTargets": [12] },
-        { "bVisible": true, "sTitle": cols[13], "aTargets": [13] },
-        { "bVisible": true, "sTitle": cols[14], "aTargets": [14] },
-        { "bVisible": true, "sTitle": cols[15], "aTargets": [15] },
-        { "bVisible": true, "sTitle": cols[16], "aTargets": [16] },
-        { "bVisible": true, "sTitle": cols[17], "aTargets": [17] },
-        { "bVisible": true, "sTitle": cols[18], "aTargets": [18] },
-        { "bVisible": true, "sTitle": cols[19], "aTargets": [19] },
-        { "bVisible": true, "sTitle": cols[20], "aTargets": [20] },
-        { "bVisible": true, "sTitle": cols[21], "aTargets": [21] },
-        { "bVisible": true, "sTitle": cols[22], "aTargets": [22] },
-        { "bVisible": true, "sTitle": cols[23], "aTargets": [23] },
-        { "bVisible": true, "sTitle": cols[24], "aTargets": [24] },
-        { "bVisible": true, "sTitle": cols[25], "aTargets": [25] },
-        { "bVisible": true, "sTitle": cols[26], "aTargets": [26] },
-        { "bVisible": true, "sTitle": cols[27], "aTargets": [27] }
-      ],
+      "aoColumnDefs": qry_table_view,
+//       [
+//         { "bVisible": false, "sTitle": cols[0], "aTargets": [0] },
+//         { "bVisible": true, "sTitle": cols[1], "aTargets": [1] },
+//         { "bVisible": true, "sTitle": cols[2], "aTargets": [2] },
+//         { "bVisible": true, "sTitle": cols[3], "aTargets": [3] },
+//         { "bVisible": true, "sTitle": cols[4], "aTargets": [4] },
+//         { "bVisible": true, "sTitle": cols[5], "aTargets": [5] },
+//         { "bVisible": true, "sTitle": cols[6], "aTargets": [6] },
+//         { "bVisible": false, "aTargets": [7] },
+//         { "bVisible": false, "aTargets": [8] },
+//         { "bVisible": true, "sTitle": cols[9], "aTargets": [9] },
+//         { "bVisible": true, "sTitle": cols[10], "aTargets": [10] },
+//         { "bVisible": true, "sTitle": cols[11], "aTargets": [11] },
+//         { "bVisible": true, "sTitle": cols[12], "aTargets": [12] },
+//         { "bVisible": true, "sTitle": cols[13], "aTargets": [13] },
+//         { "bVisible": true, "sTitle": cols[14], "aTargets": [14] },
+//         { "bVisible": true, "sTitle": cols[15], "aTargets": [15] },
+//         { "bVisible": true, "sTitle": cols[16], "aTargets": [16] },
+//         { "bVisible": true, "sTitle": cols[17], "aTargets": [17] },
+//         { "bVisible": true, "sTitle": cols[18], "aTargets": [18] },
+//         { "bVisible": true, "sTitle": cols[19], "aTargets": [19] },
+//         { "bVisible": true, "sTitle": cols[20], "aTargets": [20] },
+//         { "bVisible": true, "sTitle": cols[21], "aTargets": [21] },
+//         { "bVisible": true, "sTitle": cols[22], "aTargets": [22] },
+//         { "bVisible": true, "sTitle": cols[23], "aTargets": [23] },
+//         { "bVisible": true, "sTitle": cols[24], "aTargets": [24] },
+//         { "bVisible": true, "sTitle": cols[25], "aTargets": [25] },
+//         { "bVisible": true, "sTitle": cols[26], "aTargets": [26] },
+//         { "bVisible": true, "sTitle": cols[27], "aTargets": [27] }
+//       ],
       //
       // Table rows
       "aaData": rows,
