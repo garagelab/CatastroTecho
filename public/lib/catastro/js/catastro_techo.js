@@ -109,11 +109,12 @@ function initIndexPage() {
 function initMapIndexPage() {
 	getCurrentDatasource();
 	
-	var argentina = new google.maps.LatLng(-38.416097, -63.616672);
+//	var argentina = new google.maps.LatLng(-38.416097, -63.616672);
+	var argentina = new google.maps.LatLng(-34.669564,-64.361218);
 
   	map = new google.maps.Map(document.getElementById('map_index_page'), {
     	center: argentina,
-    	zoom: 4,
+    	zoom: 5, // before 4
     	minZoom: 2,
     	mapTypeId: google.maps.MapTypeId.ROADMAP,
     	streetViewControl: false
@@ -176,6 +177,7 @@ function initMapIndexPage() {
   		circle[key].bindTo('center', marker, 'position');
 		addSelectionListener(marker, circle[key]);
   	}
+  	map.setCenter(argentina);
 }
 
 /**
