@@ -15,20 +15,16 @@
     <!-- jQuery library 1.7.2 -->
     <script src="/lib/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
 
-    <!-- DataTables CSS -->
+    <!-- DataTables css and javascript library -->
     <link rel="stylesheet" type="text/css" 
     href="/lib/DataTables/media/css/jquery.dataTables.css">
-
-    <!-- DataTables JavaScript -->
     <script type="text/javascript" charset="utf8" 
       src="/lib/DataTables/media/js/jquery.dataTables.min.js">
     </script>
 
-    <!-- DataTables - TableTools CSS -->
+    <!-- DataTables - TableTools css and javascript library -->
     <link rel="stylesheet" type="text/css" 
     href="/lib/DataTables/extras/TableTools/media/css/TableTools.css">
-  
-    <!-- DataTables - TableTools JavaScript -->
     <script type="text/javascript" charset="utf8" 
       src="/lib/DataTables/extras/TableTools/media/js/TableTools.min.js">
     </script>
@@ -50,13 +46,29 @@
 
     <!-- Bootstrap css and javascript library -->
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
-
     <script type='text/javascript' 
     	src="/lib/bootstrap/js/bootstrap.min.js">
     </script>
-
     <script type='text/javascript' 
     	src="/lib/bootstrap/js/bootstrap-dropdown.js">
+    </script>
+    <script type='text/javascript' 
+    	src="/lib/bootstrap/js/bootstrap-tab.js">
+    </script>
+    <script type='text/javascript' 
+    	src="/lib/bootstrap/js/bootstrap-button.js">
+    </script>
+    
+    <!-- Font Awesome css -->
+	<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    <!-- Select2 css and javascript library -->
+	<link rel="stylesheet" href="/lib/select2/select2.css">
+    <script type='text/javascript' 
+    	src="/lib/select2/select2.js">
+    </script>
+    <script type='text/javascript' 
+    	src="/lib/select2/select2_locale_es.js">
     </script>
 
     <!-- Google Maps and Places API -->
@@ -70,6 +82,10 @@
 
     <!-- Google javascripts -->
     <script type='text/javascript' charset='utf-8' src='/lib/google/maplabel-compiled.js'></script>
+
+    <!-- JSON library and session module (requires json-serialization.js) -->
+	<script type="text/javascript" charset='utf-8' src='/lib/js-session/json-serialization.js'></script>
+	<script type="text/javascript" charset='utf-8' src='/lib/js-session/session.js'></script>
 
     <!-- Business code (Visualization functions, routines, etc.) -->
     <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
@@ -126,7 +142,7 @@
           <a class="brand" href="http://www.techo.org.ar" target="_blank">
             <img src="/images/logo_techo_trans1.png" width="67" height="19" />
           </a>
-          <a class="brand" href="/">Catastro Argentina</a>
+          <a class="brand" href="/">Relevamiento Argentina</a>
 
           <ul class="nav">
             <% if request.path_info == '/' %>
@@ -136,7 +152,8 @@
             <% end %>
             <a href="/">Inicio</a></li>
 
-            <% if request.path_info != '/' && request.path_info != '/content/methodology' %>
+<!--             <%# if request.path_info != '/' && request.path_info != '/content/methodology' %> -->
+<!-- 
 			<li class="dropdown">
             	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Vista <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -153,7 +170,8 @@
                     <li onclick="setViewToDatasource('cordoba_2011')"><a href="#">C&oacute;rdoba</a></li>
             	</ul>
             </li>
-            <% end %>
+ -->
+<!--             <%# end %> -->
 
             <% if request.path_info == '/content/mapa-de-barrios' %>
               <li class="active">
@@ -172,8 +190,9 @@
             <% else %>
               <li>
             <% end %>
-            <a href="/content/methodology">Metodolog&iacute;a</a></li>
+<!--             <a href="/content/methodology">Metodolog&iacute;a</a></li> -->
 
+<!-- 
 			<li class="dropdown">
             	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Informes <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -181,6 +200,7 @@
                     <li><a href="/downloads/Informe_Relevamiento_Cordoba_2011.pdf" target="_blank">Informe Relevamiento Córdoba 2011</a></li>
             	</ul>
             </li>
+ -->
           </ul>
 
           <ul class="nav pull-right">
@@ -194,6 +214,21 @@
         </div>
       </div>
     </div>
+
+<!-- 
+<div class="subnav navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav">
+                <li><a>foo</a></li>
+                <li><a>bar</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+ -->
+
+
 
     <!-- Container for global and local content.
     ================================================== -->

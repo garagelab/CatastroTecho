@@ -1,12 +1,187 @@
 <!-- Mapa de Barrios
 ================================================== -->
 <div class="container-fluid">
-  <div class="row-fluid">
-    <!-- Selections container -->
-    <div id="selector">
-      <form>
-        <!-- Municipio/Localidad Search -->
+	<div class="row-fluid">
+    	<!-- Selections container -->
+    	<div id="selector">
+			<!-- Year -->    	
+    		<div class="sel_year">
+				<ul class="nav nav-pills sel-year-space-reducer">
+  					<li id="2011"><a href="#" >2011</a></li>
+  					<li id="2013"><a href="#">2013</a></li>
+				</ul>
+			</div>
+
+			<!-- Methodology and information for download -->
+    		<div class="methodology_and_information">
+				<ul class="breadcrumb information-space-reducer">
+  					<li id="methodology" data-toggle="modal" data-backdrop="false" data-target="#methodology-modal-2013">
+  						<a href="#">Metodolog&iacute;a</a><span class="divider">|</span>
+  					</li>  
+  					<li id="information" class="dropdown">
+    					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        				Informe<b class="caret"></b>
+      					</a>
+    					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+							<li><a href="#">Ninguna informaci&oacute;n disponible.</a></li> 
+    					</ul>
+  					</li>  
+				</ul>
+			</div>
+
+			<!-- Modal -->
+			<!-- 2013 -->
+			<div id="methodology-modal-2013" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  			
+  				<div class="modal-header">
+    				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      				<h3 class="lead" id="techo_style"><strong>Metodología 2013</strong></h3>
+  				</div>
+  			
+  				<div class="modal-body">
+  				Ninguna información disponible.
+  				</div> <!-- end modal-body -->
+
+				<div class="modal-footer">
+    				<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+  				</div>
+			</div>
+
+			<!-- 2011 -->
+			<div id="methodology-modal-2011" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  			
+  				<div class="modal-header">
+    				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      				<h3 class="lead" id="techo_style"><strong>Metodología 2011</strong></h3>
+  				</div>
+  			
+  				<div class="modal-body">
+          			<p>
+					<h4 id="techo_style">DISEÑO METODOLÓGICO METODOLOGÍA UTILIZADA</h4>
+					El presente estudio asumió como objetivo central determinar el universo de 
+					urbanizaciones informales (tanto villas como asentamientos) existentes a la 
+					fecha (mayo 2011) en los 30 partidos del Aglomerado del Gran Buenos Aires, 
+					y en la Provincia de Córdoba, relevando las características socio-urbanas de 
+					las villas y los asentamientos así como su localización geográfica. 
+					Para responder a este desafío se optó por una estrategia metodológica 
+					cuantitativa ya que en la actualidad se carece de cifras actualizadas que 
+					nos permitan establecer con precisión la magnitud y el crecimiento del fenómeno 
+					estudiado. En este sentido una aproximación cuantitativa al problema nos 
+					permitió relevar la cantidad de villas y asentamientos, sus características 
+					principales y su localización geográfica. La elaboración estadística de los 
+					datos y su análisis nos permitió presentar además una fotografía de la realidad 
+					de las urbanizaciones informales en la actualidad sin desconocer el carácter 
+					dinámico del fenómeno abordado.
+					</br>
+					</br>
+          			</p>
+				  	
+				  	<p>
+					<h4 id="techo_style">UNIDAD DE ANÁLISIS</h4>
+					La unidad de análisis de la presente investigación son las villas y los 
+					asentamientos pertenecientes a la Región del Gran Buenos Aires y la Provincia 
+					de Córdoba. Estos son definidos por Un Techo para mi País Argentina como un 
+					conjunto de un mínimo de 8 familias agrupadas o contiguas, que no cuenten con 
+					acceso regular a al menos uno de los servicios básicos (agua potable, luz 
+					eléctrica y alcantarillado público) y que se encuentren en una situación 
+					irregular de tenencia del terreno.
+					</br>
+					</br>
+				  	</p>
+				  	
+				  	<p>
+					<h4 id="techo_style">INSTRUMENTO DE RECOLECCIÓN DE DATOS</h4>
+					Para abordar el fenómeno bajo estudio utilizamos “procedimientos estandarizados 
+					de interrogación con el fin de obtener mediciones cuantitativas de una gran 
+					variedad de características objetivas” de las villas y los asentamientos 
+					(García Ferrando; 1994:147).
+					</p>
+
+					<p>			
+					En este sentido, el instrumento de recolección de datos elaborado consistió 
+					en la implementación de una encuesta. A la hora de construir el cuestionario 
+					estaba la necesidad de elaborar una herramienta de recolección de datos que 
+					permitiera recoger la máxima cantidad de información sobre las urbanizaciones 
+					informales, pero que a su vez fuera fácil de aplicar, presentara buenos 
+					estándares de confiabilidad y validez; y se adecuara a nuestras posibilidades. 
+					En ese sentido, la entrevista estandarizada por medio de un cuestionario nos 
+					permitió comparar las respuestas dadas a la misma pregunta por los referentes 
+					seleccionados de cada una de las villas y asentamientos, así como también 
+					cuantificar los resultados.
+					</p>
+
+					<p>
+					A fin de consolidar la herramienta de recolección de datos se realizó un 
+					pre-test del cuestionario donde el instrumento se aprobó definitivamente. 
+					Para ello se llevaron a cabo las correspondientes entrevistas con la versión 
+					inicial del cuestionario. Los resultados obtenidos nos permitieron recalibrar 
+					y ajustar el instrumento, a partir de la revisión de algunas de las preguntas 
+					e incluso de la secuencia de temas. Luego de realizada la prueba piloto se 
+					procedió a editar la versión definitiva del cuestionario.
+					</p>
+
+					<p>
+					Una vez consolidado el cuestionario éste se aplicó, en cada una de las villas 
+					y los asentamientos a los referentes seleccionados. Para el proceso de 
+					selección de los referentes se tomaron en cuenta las personas que nos pudieran 
+					aportar los datos más precisos en lo que respecta a cada uno de los barrios 
+					informales en particular. Los referentes elegidos fueron aquellos que pudieron 
+					aportar datos sobre el proceso de conformación y desarrollo del barrio en el 
+					tiempo, la propiedad de los terrenos y el acceso a los servicios públicos 
+					domiciliarios, entre otros aspectos. En todos los casos se privilegiaron en el 
+					proceso de selección a las personas que participaran de comisiones o juntas 
+					vecinales u otras organizaciones propias de las villas y los asentamientos. 
+					La duración promedio de la aplicación del cuestionario fue de aproximadamente 
+					1 hora.
+					</p>
+
+					<p>
+					Cabe destacar que la implementación de la encuesta fue llevada a cabo por 600 
+					voluntarios coordinados por un equipo de profesionales.
+					</p>
+
+					<p>
+					Todos los voluntarios fueron capacitados para realizar dicha tarea. Para tal 
+					fin se elaboró un manual de aplicación del instrumento de recolección de datos 
+					el cuál se constituyó como un insumo relevante en la etapa de capacitación al 
+					brindar un conjunto de recomendaciones respecto a las instrucciones específicas 
+					de llenado del cuestionario.
+					</p>
+
+					<p>
+					A través de esta medida se buscó garantizar la correcta administración de las 
+					preguntas.			
+					</p>
+
+					<p>
+					Los equipos conformados recorrieron cada una de las localidades con el objetivo 
+					de identificar las villas y los asentamientos y sus respectivos referentes. 
+					Para lograr el registro completo de las urbanizaciones informales de la Región 
+					del Gran Buenos Aires, y la Provincia de Córdoba,  se visitó cada una de las 
+					zonas a lo largo de un período de cuatro meses.
+					</p>
+  				</div> <!-- end modal-body -->
+
+
+				<div class="modal-footer">
+    				<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+  				</div>
+			</div>
+
+        	<!-- Territory search -->
+			<div>
+				<span><i id="territory_icon" class="icon-globe icon"></i>&nbsp;territorio</span>			
+		    	<p><input type="hidden" id="sel_terri" style="width:300px"/></p>
+			</div>
+
+			<!-- Territory / Mini map -->
+	    	<div id="mini_canvas_container">
+      			<div id="mini_map_canvas"></div>
+    		</div>
+
+      <form style="margin-top: 5px;">
         <fieldset>
+			<!-- Municipio/Localidad Search -->
           <label id="search_part_txt_label"></label>
           <div class="input-append">
             <input class="span10" id="search_part_txt" size="10" type="text" 
@@ -56,37 +231,52 @@
       </form>
 
       <!-- Barrio Info -->
-      <div id="info_barrio" class="breadcrumb"
-        style="height: 480px; padding: 0px; margin: 0px; border: 0px solid #ccc; background-color: #ffffff;">
-        <ul class="breadcrumb" style="text-align: center; padding: 4px 15px; margin: 0px;">
-          <li><span id="barrio_id"></span></li>
-        </ul>
-        <dl class="dl-horizontal" style="font-size: 80%; margin-left:-20px;">
-          <dt>Otro denominaci&oacute;n:</dt><dd id="other_name_barrio_id">-</dd>
-          <dt>Municipio:</dt><dd id="partido_id">-</dd>
-          <dt>Localidad:</dt><dd id="localidad_id">-</dd>
-          <dt>Cantidad de Familias:</dt><dd id="families_id">-</dd>
-          <dt>A&ntilde;o de inicio:</dt><dd id="start_year_id">-</dd>
-          <dt></dt><dd>&nbsp;</dd>
-          <span style="font-size:110%; margin-left:70px;">
-            Situaci&oacute;n de los Servicios B&aacute;sicos:
-          </span>
-          <dt>&nbsp;Desag&uuml;es cloacales:</dt><dd id="sewage_id">-</dd>
-          <dt>&nbsp;Agua potable:</dt><dd id="water_id">-</dd>
-          <dt>&nbsp;Sistema el&eacute;ctrico:</dt><dd id="electrical_id">-</dd>
-          <dt>&nbsp;Red de gas:</dt><dd id="gas_id">-</dd>
-          <dt>Desag&uuml;es pluviales:</dt><dd id="drains_id">-</dd>
-          <dt>Alumbrado p&uacute;blico:</dt><dd id="street_lighting_id">-</dd>
-          <dt>Recolecci&oacute;n de residuos:</dt><dd id="waste_collection_id">-</dd>
-          <dt></dt><dd>&nbsp;</dd>
-<!--
-          <span style="margin-left:40px;">
-		  	<img data-src="holder.js/250x100" class="img-polaroid">
-		  </span>
--->
-        </dl>
-      </div>
-    </div>
+		<div id="flip_barrio" class="btn btn-block disabled">
+			<span id="barrio_id"></span>
+			</br>
+			<i id="flip_barrio_icon" class="icon-caret-down icon-2x"></i>
+		</div>
+		<div id="panel_barrio">
+
+			<ul class="nav nav-tabs" id="barrio_tabs">
+  				<li><a href="#barrio_general">General</a></li>
+				<li><a href="#barrio_servicios">Servicios</a></li>		
+			</ul>
+
+			<!-- Tab content -->
+			<div class="tab-content">
+				<div class="tab-pane" id="barrio_general">
+        			<span>
+						<img src="/images_barrios/campo_tongui.jpg" class="img-polaroid img-barrio"/>
+		  			</span>
+        			<dl class="dl-horizontal" style="font-size: 80%; margin-left:-20px;">
+          			<dt>Otro denominaci&oacute;n:</dt><dd id="other_name_barrio_id">-</dd>
+          			<dt>Municipio:</dt><dd id="partido_id">-</dd>
+          			<dt>Localidad:</dt><dd id="localidad_id">-</dd>
+          			<dt>Cantidad de Familias:</dt><dd id="families_id">-</dd>
+          			<dt>A&ntilde;o de inicio:</dt><dd id="start_year_id">-</dd>
+          			<dt></dt><dd>&nbsp;</dd>
+        			</dl>
+				</div>
+
+				<div class="tab-pane" id="barrio_servicios">
+        			<dl class="dl-horizontal" style="font-size: 80%; margin-left:-20px;">
+          			<span style="font-size:110%; margin-left:70px;">
+            			Situaci&oacute;n de los Servicios B&aacute;sicos:
+          			</span>
+          			<dt>&nbsp;Desag&uuml;es cloacales:</dt><dd id="sewage_id">-</dd>
+          			<dt>&nbsp;Agua potable:</dt><dd id="water_id">-</dd>
+          			<dt>&nbsp;Sistema el&eacute;ctrico:</dt><dd id="electrical_id">-</dd>
+          			<dt>&nbsp;Red de gas:</dt><dd id="gas_id">-</dd>
+          			<dt>Desag&uuml;es pluviales:</dt><dd id="drains_id">-</dd>
+          			<dt>Alumbrado p&uacute;blico:</dt><dd id="street_lighting_id">-</dd>
+          			<dt>Recolecci&oacute;n de residuos:</dt><dd id="waste_collection_id">-</dd>
+          			<dt></dt><dd>&nbsp;</dd>
+        			</dl>
+				</div>
+			</div> <!-- end tab-content -->
+		</div> <!-- end panel_barrio -->
+    </div> <!-- end selector -->
 
     <!-- Info text container -->
     <div id="info_text_container">
@@ -106,8 +296,11 @@
         <ul class="breadcrumb" style="padding: 2px 15px; margin: 1px;">
           <li style="font-size: 75%;">Cuenta con <strong><em>desag&uuml;es cloacales</em></strong>:</li>
         </ul>
+
+
 <!--           <div class="well well-small" style="background-color:rgba(245,245,245,0.6);" id="sewage_chart_div"></div>
 -->
+
         <div id="sewage_chart_div"></div>
       </div>
 
@@ -133,18 +326,147 @@
     </div>
   </div> <!-- row-fluid -->
 </div><!-- container-fluid -->
+
 <script type="text/javascript">
-  // Cookie Check...
-  if (!supportsCookies()) { 
-  	alert ("Por favor habilite las cookies en su navegador\n" + 
-  			"o actualice a uno que las permita.\n" + 
-  			"La aplicación no puede funcionar correctamente");
-  } 
-  // Set a callback to run when the Google Visualization library is loaded.
-  google.setOnLoadCallback(initMapBarriosPage);
+	// Cookie Check...
+//   	if (!supportsCookies()) { 
+//   		alert ("Por favor habilite las cookies en su navegador\n" + 
+//   				"o actualice a uno que las permita.\n" + 
+//   				"La aplicación no puede funcionar correctamente");
+//   	}
+
+	$(document).ready(function() {
+		/*********/
+		/** Init */
+		/*********/
+		var current_datasource = Session.get("current_datasource");
+		var placeholder = "ingresa el nombre y pulse enter...";
+		
+		function format(item) { return item.text; };
+		
+		function setInformationLinks() {
+			// Set year specific information document links.
+			$("#information ul").empty();
+			switch (Session.get("sel_year")) {
+				case '2011':
+				$("#information ul").append('<li><a href="/downloads/Informe_Relevamiento_Buenos_Aires_2011.pdf" target="_blank">Informe Relevamiento Buenos Aires 2011.pdf</a></li>');
+				$("#information ul").append('<li><a href="/downloads/Informe_Relevamiento_Cordoba_2011.pdf" target="_blank">Informe Relevamiento Córdoba 2011.pdf</a></li>');
+				break;
+
+				case '2013':
+ 				$("#information ul").append('<li><a href="#">Ninguna informaci&oacute;n disponible.</a></li>');
+// 				$("#information ul").append('<li><a href="/downloads/Informe_Relevamiento_Buenos_Aires_2011.pdf" target="_blank">Informe Relevamiento Buenos Aires 2013</a></li>');
+// 				$("#information ul").append('<li><a href="/downloads/Informe_Relevamiento_Cordoba_2011.pdf" target="_blank">Informe Relevamiento Córdoba 2013</a></li>');				
+				break;
+			}		
+		}		
+		
+		// Init/Set selected year as active on screen.
+		$('.sel_year ul.nav-pills li[id="'+ Session.get("sel_year") +'"]').addClass('active');
+		// Set year specific methodology text.	
+		$('#methodology').attr('data-target', '#methodology-modal-' + Session.get("sel_year"));
+		// Set year specific information document links.
+		setInformationLinks();
+
+		// Init territory selection.
+		function init_select2_sel_terri(year_changed) {
+			// Apply territories which are available in selected year. 
+			var sel_year = Session.get("sel_year");
+// 			console.debug("sel_year is ===> " + sel_year);
+			var filtered_territories = territories.filter(function(elem) {
+				return elem.year == sel_year;
+			});
+
+			// Sort array text ascending
+			filtered_territories.sort(function(a, b){
+ 				var textA = a.text.toLowerCase(), textB = b.text.toLowerCase()
+ 				if (textA < textB) return -1
+ 				if (textA > textB)return 1
+ 				return 0 //default return value (no sorting)
+			})
+			
+			$('#sel_terri').select2( {
+				placeholder: placeholder,
+				allowClear: true,
+				data: filtered_territories, 
+// 				initSelection: function(item, callback) {
+//   					var to_be_selected = null;
+//   					$.each(filtered_territories, function(index, sel_terri) {
+//     					if (sel_terri.id == item.val()) {
+//       						to_be_selected = sel_terri;
+//       						return;
+//     					}
+//   					})
+//   					callback(to_be_selected);
+// 				}            	
+ 			});
+
+			// Set selected territory - only if year didn't changed.
+			if (year_changed === undefined) {
+				var current_datasource = Session.get("current_datasource");
+				$('#sel_terri').select2('val',current_datasource.key);
+			}
+		}
+		init_select2_sel_terri();
+
+  		// Init barrio tabs to first tab.
+		$(function () {
+    		$('#barrio_tabs a:first').tab('show');
+  		});
+
+		//$('.dropdown-toggle').dropdown();
+	
+		/*******************/
+		/** Event handling */
+		/*******************/
+		
+		// Get selected year for session object and show it as active on screen.
+		$('.sel_year ul.nav-pills li a').click(function (e) {
+			$('ul.nav-pills li.active').removeClass('active');
+  			$(this).parent('li').addClass('active');
+    		Session.set("sel_year", $(this).text());
+//   			console.debug("Selected year/Session year: " + Session.get("sel_year"));
+
+			// Set year specific methodology text.	
+			$('#methodology').attr('data-target', '#methodology-modal-' + Session.get("sel_year"));
+			
+			// Set year specific information document links.
+			setInformationLinks();
+		
+			var year_changed = true;
+			init_select2_sel_terri(year_changed);
+			
+			// Set default datasource! - maybe temporary only ???????
+			setViewToDatasource('buenos_aires_' + Session.get("sel_year"));
+		});
+
+		// Get selected territory and set new datasource.
+		$("#sel_terri").on("change", function(e) { 
+			if (e.val) {
+				setViewToDatasource(e.val);
+			}
+		});
+
+		// Expand/Collapse barrio information.
+  		$("#flip_barrio").click(function() {
+    		$("#panel_barrio").slideToggle('1400');
+
+			// "Flip flop" icon view (expand/collapse)    	
+			var icon = $("#flip_barrio_icon").attr('class') == "icon-caret-down icon-2x" ? "icon-caret-up icon-2x" : "icon-caret-down icon-2x";
+			$("#flip_barrio_icon").attr('class', icon);
+        	$('#barrio_tabs a:first').tab('show');
+
+        	return false;
+  		});
+
+		// Show selected barrio tab.
+		$('#barrio_tabs a').click(function (e) {
+  			e.preventDefault();
+  			$(this).tab('show');
+		});	
+		
+	}); // end $(document).ready(function()
+
+	// Set a callback to run when the Google Visualization library is loaded.
+	google.setOnLoadCallback(initMapBarriosPage);		
 </script>
-<!--
-<script type='text/javascript' 
-  src="/lib/bootstrap/js/holder.js">
-</script>
--->

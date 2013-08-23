@@ -82,7 +82,9 @@ var where_clause;
 var where_clause_area_map;
 var barrio;
 var map;
+var mini_map;
 var initLayer;
+var initMiniMapLayer;
 var markers = [];
 var techo_marker = "../images/marker_techo1.png";
 var techo_marker_shadow = "../images/shadow_blue_marker.png";
@@ -107,6 +109,7 @@ function initIndexPage() {
  *
  */
 function initMapIndexPage() {
+	Session.clear(); // Initialize session data store.
 	getCurrentDatasource();
 	
 //	var argentina = new google.maps.LatLng(-38.416097, -63.616672);
@@ -121,6 +124,7 @@ function initMapIndexPage() {
   	} );
     
   	var circle = {};
+  	var lat_lng;
   	for(var key in datasources.table) {
   		// Check, if key really exists in associative array - to be safe!
   		if(!datasources.table.hasOwnProperty(key)) {
@@ -131,10 +135,12 @@ function initMapIndexPage() {
   		if (datasources.table[key].key.indexOf("2013") == -1) {
   			continue;
   		}
-  		  		
+  		
+  		lat_lng = new google.maps.LatLng(datasources.table[key].center_lat_lng[0],
+  										datasources.table[key].center_lat_lng[1]);
   		var marker = placeMarker(
-  			map, 
-  			datasources.table[key].center_lat_lng, 
+  			map,
+  			lat_lng,
   			techo_marker, 
   			techo_marker_shadow,
   			false
@@ -157,7 +163,8 @@ function initMapIndexPage() {
           maxZoom: 12,	
           align: 'center'
         });
-        mapLabel.set('position', datasources.table[key].center_lat_lng);
+
+        mapLabel.set('position', lat_lng);
 
   		// Add a Circle overlay to the map.
   		circle[key] = new google.maps.Circle( {
@@ -189,12 +196,14 @@ function initMapIndexPage() {
 function addSelectionListener(marker, circle) {
 
   	google.maps.event.addListener(marker, 'click', function() {
-		setCurrentDatasource(datasources.table[marker.getTitle()]);
+  		var datasource_key = marker.getTitle();
+		setCurrentDatasource(datasource_key);
     	window.location.href = "/content/mapa-de-barrios";
   	});
 
   	google.maps.event.addListener(circle, 'click', function() {
-		setCurrentDatasource(datasources.table[marker.getTitle()]);
+  		var datasource_key = marker.getTitle();
+		setCurrentDatasource(datasource_key);
     	window.location.href = "/content/mapa-de-barrios";
   	});
 }
@@ -205,9 +214,9 @@ function addSelectionListener(marker, circle) {
  */
 function setViewToDatasource(datasource_key) {
 	// No need setting new datasource.
-	if (current_datasource.key == datasource_key) { return; }
+	if (current_datasource.key == datasource_key) { return; }	
+	setCurrentDatasource(datasource_key);
 	
-	setCurrentDatasource(datasources.table[datasource_key]);
  	// Refresh current page after changing datasource.
  	window.location.reload(true);
 }
@@ -216,22 +225,63 @@ function setViewToDatasource(datasource_key) {
  * Initialize map page with barrios.
  *
  */
-function initMapBarriosPage() {    
+function initMapBarriosPage() {
 	getCurrentDatasource();
 	var search_part_txt_label = document.getElementById('search_part_txt_label');
   	search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
   		current_datasource.search_part_txt_label;
   	
   	map = new google.maps.Map(document.getElementById('map_canvas'), {
-    	center: current_datasource.center_lat_lng,
+  		center: new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  										current_datasource.center_lat_lng[1]),
     	zoom: current_datasource.startZoom,
     	minZoom: 2, // 9
     	mapTypeId: google.maps.MapTypeId.ROADMAP,
+   		mapTypeControl: false,
+//     	mapTypeControlOptions: {
+//         	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+//         	position: google.maps.ControlPosition.LEFT_CENTER
+//     	},    	
+//     	overviewMapControl: true,
+// 	    overviewMapControlOptions: {
+// 	    	opened: true,
+//         	position: google.maps.ControlPosition.BOTTOM_LEFT,
+// 		},
+		zoomControlOptions: {
+      		style: google.maps.ZoomControlStyle.SMALL,
+      		position: google.maps.ControlPosition.TOP_LEFT
+    	},
+    	panControl: true,
+    	panControlOptions: {
+        	position: google.maps.ControlPosition.TOP_LEFT
+    	},
     	streetViewControl: false
   	} );
 
+  	mini_map = new google.maps.Map(document.getElementById('mini_map_canvas'), {
+  		center: new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  										current_datasource.center_lat_lng[1]),
+    	zoom: 8,
+    	minZoom: 8,
+		zoomControl: false,
+  		scaleControl: false,
+  		scrollwheel: false,
+  		disableDoubleClickZoom: true,    	
+    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+    	mapTypeControl: false,
+		zoomControl: false,
+    	streetViewControl: false
+  	} );
+
+	// Bind the maps together
+	mini_map.bindTo('center', map, 'center');
+	//mini_map.bindTo('zoom', map, 'zoom');
+
+
   	initMapLayer();
   	initLayer.setMap(map);
+  	initMiniMapLayer();
+  	initMiniMapLayer.setMap(mini_map);
 
   	// Show province data (all data).
   	setViewToProvincia();
@@ -289,6 +339,30 @@ function setViewToBarrio() {
   //
   var result = findBarrioData();
 }
+
+function initMiniMapLayer() {
+  //
+  // Updating Fusion Table Layer.
+  //
+  
+  initMiniMapLayer = new google.maps.FusionTablesLayer( {
+    suppressInfoWindows: true, // Because we have a separate listener for that.
+    query: {
+      select: 'Poligon',
+      from: current_datasource.id
+    },
+    styles: [ {
+      polygonOptions: {
+        fillColor: "#FF3300",     // Color del plano - #ff0000 rojo de Google.
+        fillOpacity: 0.5,         // Opacidad del plano
+        strokeColor: "#000000",   // Color del margen
+        strokeOpacity: 0.5,       // Opacidad del margen
+        strokeWeight: 2           // Grosor del margen
+      }
+    } ]
+  } );
+}
+
 
 function initMapLayer() {
   //
@@ -469,7 +543,8 @@ function findPartidoData() {
         	}
         	else {
           	// set default
-          		lat_lng = current_datasource.center_lat_lng;
+  			lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  										current_datasource.center_lat_lng[1]);          	
         	}
         	map.setCenter(lat_lng);
         	map.setZoom(12); // antes era 11
@@ -643,7 +718,7 @@ function findBarrioData() {
  */
 function initSearchFieldBarrio() {
 	
-	//console.debug('initSearchFieldBarrio()');
+// 	console.debug('initSearchFieldBarrio()');
 
 	var barrios = {};
 	
@@ -777,7 +852,10 @@ function initSearchFieldPartido() {
   	// Autocompletition via jQuery for Partido/Localidad search field.
   	//
   	// Retrieve the unique names of 'municipios' using GROUP BY workaround.
- 	queryText = encodeURIComponent(
+  	
+//  	console.debug('initSearchFieldPartido()');
+	
+	queryText = encodeURIComponent(
             "SELECT " + current_datasource.sql_municipio + ", " + current_datasource.sql_localidad +
             'FROM ' + current_datasource.id + " GROUP BY " + current_datasource.sql_municipio + ", " + current_datasource.sql_localidad);
   	query = new google.visualization.Query(urlVizData + queryText);
@@ -816,28 +894,30 @@ function initSearchFieldPartido() {
 }
 
 function removeAllPartidoSelections() {
-  //
-  // Remove all selection criterias from objects.
-  // Returns to starting position.
-  //
+	//
+  	// Remove all selection criterias from objects.
+  	// Returns to starting position.
+  	//
 
-  partidoFilter = false;
+  	partidoFilter = false;
 
-  deleteOverlays();
-  initLayer.setMap(null);
-  delete initLayer;
-  initMapLayer();
-  initLayer.setMap(map);
-  map.setCenter(current_datasource.center_lat_lng);
-  map.setZoom(current_datasource.startZoom);
-  delete queryText;
+  	deleteOverlays();
+  	initLayer.setMap(null);
+  	delete initLayer;
+  	initMapLayer();
+  	initLayer.setMap(map);
+	var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  										current_datasource.center_lat_lng[1]);
+  	map.setCenter(lat_lng);
+  	map.setZoom(current_datasource.startZoom);
+  	delete queryText;
 
   //removeBarrioInfo();
   //initSearchFieldBarrio();
-  removeAllBarrioSelections();
+  	removeAllBarrioSelections();
 
-  initSearchFieldPartido();
-  clearThis(document.getElementById('search_part_txt'));
+  	initSearchFieldPartido();
+  	clearThis(document.getElementById('search_part_txt'));
 
   	// Remove filter.
 	resetFilter();
@@ -861,7 +941,9 @@ function removeAllBarrioSelections() {
   deleteOverlays();
 
   if (partidoFilter === false) {
-    map.setCenter(current_datasource.center_lat_lng);
+  	var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  										current_datasource.center_lat_lng[1]);
+    map.setCenter(lat_lng);
     map.setZoom(current_datasource.startZoom);
   }
 
@@ -1189,7 +1271,7 @@ function drawSupplyCharts(view_level, page) {
     chart_base = "Provincia";
   }
 
-if (current_datasource.key.indexOf("2013") == -1) {
+if (current_datasource.key.indexOf("2013") == -1) { // 2011 only...
   if (where_clause) {
     charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id + where_clause };
     charts.water.query = { value: "SELECT 'AGUA' FROM " + current_datasource.id  + where_clause };
@@ -1205,16 +1287,16 @@ if (current_datasource.key.indexOf("2013") == -1) {
 }
 else {
   if (where_clause) {
-    charts.sewage.query = { value: "SELECT '13.1- Red cloacal publica' FROM " + current_datasource.id + where_clause };
-    charts.water.query = { value: "SELECT '14.1- Agua corriente (red pública)' FROM " + current_datasource.id  + where_clause };
-    charts.electrical.query = { value: "SELECT '12.1- Red pública (con medidores domiciliarios) " + current_datasource.id  + where_clause };
-    charts.gas.query = { value: "SELECT '16.1- Gas natural de red pública' FROM " + current_datasource.id  + where_clause };
+    charts.sewage.query = { value: "SELECT '13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' FROM " + current_datasource.id + where_clause };
+    charts.water.query = { value: "SELECT '14.2- Conexión irregular a la red pública' FROM " + current_datasource.id  + where_clause };
+    charts.electrical.query = { value: "SELECT '12.2- Red pública (con medidor comunitario / social)' FROM " + current_datasource.id  + where_clause };
+    charts.gas.query = { value: "SELECT '16.2- Gas en garrafa' FROM " + current_datasource.id  + where_clause };
   }
   else {
-    charts.sewage.query = { value: "SELECT '13.1- Red cloacal publica' FROM " + current_datasource.id };
-    charts.water.query = { value: "SELECT '14.1- Agua corriente (red pública)' FROM " + current_datasource.id };
-    charts.electrical.query = { value: "SELECT '12.1- Red pública (con medidores domiciliarios)' FROM " + current_datasource.id };
-    charts.gas.query = { value: "SELECT '16.1- Gas natural de red pública' FROM " + current_datasource.id };
+    charts.sewage.query = { value: "SELECT '13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' FROM " + current_datasource.id };
+    charts.water.query = { value: "SELECT '14.2- Conexión irregular a la red pública' FROM " + current_datasource.id };
+    charts.electrical.query = { value: "SELECT '12.2- Red pública (con medidor comunitario / social)' FROM " + current_datasource.id };
+    charts.gas.query = { value: "SELECT '16.2- Gas en garrafa' FROM " + current_datasource.id };
   }
 }
 
@@ -1530,7 +1612,3 @@ Number.prototype.format = function(k, fixLength) {
 
   return result;
 };
-
-$(document).ready(function() {
-	$('.dropdown-toggle').dropdown();
-});

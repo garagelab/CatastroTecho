@@ -17,8 +17,6 @@ var urlEndpoint = 'https://www.googleapis.com/fusiontables/v1/';
 // Google Visualization API Query Language URL
 var urlVizData = 'http://www.google.com/fusiontables/gvizdata?tq=';
 
-var center_lat_lng;
-
 // Datasources - fusion tablas de google
 var datasources = { table: [] };
 
@@ -36,6 +34,18 @@ var reporting_level = null;
 var municipios_cache = { data: [] };
 var barrios_cache = { data: [] };
 
+var territories = [
+	{ id: 'buenos_aires_2011', text: 'Buenos Aires', year: '2011' },
+	{ id: 'cordoba_2011', text: 'Córdoba', year: '2011' },
+	{ id: 'buenos_aires_2013', text: 'Buenos Aires', year: '2013' },
+	{ id: 'cordoba_2013', text: 'Córdoba', year: '2013' },
+	{ id: 'rosario_2013', text: 'Rosario', year: '2013' },
+	{ id: 'salta_2013', text: 'Salta', year: '2013' },
+	{ id: 'rio_negro_neuquen_2013', text: 'Río Negro y Neuquén', year: '2013' },
+	{ id: 'posadas_2013', text: 'Posadas', year: '2013' }
+];
+
+
 /////////////////////////////////////////////////////////////////////
 // TABLE SECTION BEGIN >>>
 // ADD NEW TABLES HERE => AT BOTTOM !!!!
@@ -44,7 +54,6 @@ var barrios_cache = { data: [] };
 //*******************************************************************
 // Buenos Aires 2011
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-34.672747, -58.41774);
 datasources.table['buenos_aires_2011'] = {
 	key:	'buenos_aires_2011',
 	id:		'1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY',
@@ -85,14 +94,13 @@ datasources.table['buenos_aires_2011'] = {
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-34.672747,-58.41774], 
 	filter: data_filter
 };
 
 //*******************************************************************
 // Córdoba 2011
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-31.40039,-64.228233);
 datasources.table['cordoba_2011'] = {
 	key:	'cordoba_2011',
 	id:		'17P_q8RIm8-T2iW0Nij_6dIBhnL50z2O-UicNVaU',
@@ -133,14 +141,13 @@ datasources.table['cordoba_2011'] = {
 	search_part_txt_label: 'departamento o localidad',
 	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-31.40039,-64.228233],
 	filter: data_filter
 };
 
 //*******************************************************************
 // Buenos Aires 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-34.672747, -58.41774);
 datasources.table['buenos_aires_2013'] = {
 	key:	'buenos_aires_2013',
 	id:		'1KJW4OtVXG7tJcJSFDl5kqA2OsqiEcDQ25kFpzmU',
@@ -170,30 +177,29 @@ datasources.table['buenos_aires_2013'] = {
 	col_no_families: 32,
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
-	col_no_water: 66, // AGUA
-	col_no_electrical: 54, // ACCESO A LA ENERGÍA
-	col_no_gas: 79, // GAS
-	col_no_drains: 85, // DESAGÜES PLUVIALES
-	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
-	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_water: 67, // AGUA
+	col_no_electrical: 56, // ACCESO A LA ENERGÍA
+	col_no_gas: 81, // GAS
+	col_no_drains: 86, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-34.672747,-58.41774],
 	filter: data_filter
 };
 
 //*******************************************************************
 // Córdoba 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-31.40039,-64.228233);
 datasources.table['cordoba_2013'] = {
 	key:	'cordoba_2013',
 	id:		'1Tu94Wa-59lBYTsZZNGYonV-vFcqAn0VS2cLKYXo',
 	type:	'fusion_table',
-	name:	'Cordoba',
+	name:	'Córdoba',
 	year:	'2013',
 	provincia:	'Córdoba',
 	startZoom:  12,
@@ -218,25 +224,24 @@ datasources.table['cordoba_2013'] = {
 	col_no_families: 32,
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
-	col_no_water: 66, // AGUA
-	col_no_electrical: 54, // ACCESO A LA ENERGÍA
-	col_no_gas: 79, // GAS
-	col_no_drains: 85, // DESAGÜES PLUVIALES
-	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
-	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_water: 67, // AGUA
+	col_no_electrical: 56, // ACCESO A LA ENERGÍA
+	col_no_gas: 81, // GAS
+	col_no_drains: 86, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'departamento',
 	search_part_txt_label: 'departamento o localidad',
 	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-31.40039,-64.228233],
 	filter: data_filter
 };
 
 //*******************************************************************
 // Rosario, Santa Fe 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-32.948615,-60.722049);
 datasources.table['rosario_2013'] = {
 	key:	'rosario_2013',
 	id:		'1kq6OYlRQRZGH1rEI6I4wx8BVQl99K7uhdDiQ_pU',
@@ -266,25 +271,24 @@ datasources.table['rosario_2013'] = {
 	col_no_families: 32,
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
-	col_no_water: 66, // AGUA
-	col_no_electrical: 54, // ACCESO A LA ENERGÍA
-	col_no_gas: 79, // GAS
-	col_no_drains: 85, // DESAGÜES PLUVIALES
-	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
-	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_water: 67, // AGUA
+	col_no_electrical: 56, // ACCESO A LA ENERGÍA
+	col_no_gas: 81, // GAS
+	col_no_drains: 86, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-32.948615,-60.722049],
 	filter: data_filter
 };
 
 //*******************************************************************
 // Salta 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-24.775517,-65.410246);
 datasources.table['salta_2013'] = {
 	key:	'salta_2013',
 	id:		'10rvyZWQVl9lUvPm2BGalAIDMd2Xioc87cu5rl_A',
@@ -314,25 +318,24 @@ datasources.table['salta_2013'] = {
 	col_no_families: 32,
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
-	col_no_water: 66, // AGUA
-	col_no_electrical: 54, // ACCESO A LA ENERGÍA
-	col_no_gas: 79, // GAS
-	col_no_drains: 85, // DESAGÜES PLUVIALES
-	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
-	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_water: 67, // AGUA
+	col_no_electrical: 56, // ACCESO A LA ENERGÍA
+	col_no_gas: 81, // GAS
+	col_no_drains: 86, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-24.775517,-65.410246],
 	filter: data_filter
 };
 
 //*******************************************************************
 // Río Negro y Neuquén 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-38.943659,-68.113569);
 datasources.table['rio_negro_neuquen_2013'] = {
 	key:	'rio_negro_neuquen_2013',
 	id:		'1rSuFqqgGtywBw_Hw_qHBwTjXeNUY4LrY2SEkYhU',
@@ -362,25 +365,24 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	col_no_families: 32,
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
-	col_no_water: 66, // AGUA
-	col_no_electrical: 54, // ACCESO A LA ENERGÍA
-	col_no_gas: 79, // GAS
-	col_no_drains: 85, // DESAGÜES PLUVIALES
-	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
-	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_water: 67, // AGUA
+	col_no_electrical: 56, // ACCESO A LA ENERGÍA
+	col_no_gas: 81, // GAS
+	col_no_drains: 86, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-38.943659,-68.113569],
 	filter: data_filter
 };
 
 //*******************************************************************
 // Posadas 2013
 //*******************************************************************
-center_lat_lng = new google.maps.LatLng(-27.387316,-55.928834);
 datasources.table['posadas_2013'] = {
 	key:	'posadas_2013',
 	id:		'1IrVpWor4zkUSv3nY8VMuM4Vaq6WSinBnFRzndhE',
@@ -410,18 +412,18 @@ datasources.table['posadas_2013'] = {
 	col_no_families: 32,
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
-	col_no_water: 66, // AGUA
-	col_no_electrical: 54, // ACCESO A LA ENERGÍA
-	col_no_gas: 79, // GAS
-	col_no_drains: 85, // DESAGÜES PLUVIALES
-	col_no_street_lighting: 91, // ALUMBRADO PÚBLICO
-	col_no_waste_collection: 87, // RECOLECCIÓN DE RESIDUOS
+	col_no_water: 67, // AGUA
+	col_no_electrical: 56, // ACCESO A LA ENERGÍA
+	col_no_gas: 81, // GAS
+	col_no_drains: 86, // DESAGÜES PLUVIALES
+	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
+	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
 	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
-	center_lat_lng:	center_lat_lng,
+	center_lat_lng:	[-27.387316,-55.928834],
 	filter: data_filter
 };
 
@@ -433,46 +435,48 @@ datasources.table['posadas_2013'] = {
 // Interfaces
 
 /**
+ * Set current datasource
  *
- *
+ * We use an easy to handle cookie-less session technique for storing data.
+ * This method is only suitable for storing temporary JavaScript session-only data.
+ * It should never be used for user specific or confidential information, logging, 
+ * debugging, or other similar purposes.
  */
-function setCurrentDatasource(datasource) {
-	if (datasource === undefined) {
- 		// Set the default datasource.
-//		console.debug("setCurrentDatasource() => Setting Buenos Aires as default.");
- 		current_datasource = datasources.table['buenos_aires_2013'];
+function setCurrentDatasource(datasource_key) {
+	if (datasource_key === undefined) {
+ 		// Set the default datasource and year.
+ 		datasource_key = 'buenos_aires_2013';
+ 		Session.set("sel_year", "2013");
  	}
- 	else {
- 		current_datasource = datasource;
- 	}
-
+ 	
+ 	// Store values in session
+	Session.set("current_datasource", datasources.table[datasource_key]);
+	// Set current datasource.
+	current_datasource = Session.get("current_datasource");
+	
 	// Query preparation
  	data_filter['provincia'] = null;
 	data_filter['municipio'] = null;
 	data_filter['localidad'] = null;
 	data_filter['barrio'] = null;
-	
-	// Set datasource cookie.
-	document.cookie = "datasource=" + current_datasource.key + ";" + " path=/";
-		
+			
 //	console.debug("setCurrentDatasource() => " + current_datasource.name + " (" + current_datasource.key + ")"); 
  }
 
 /**
+ * Get current datasource
  *
- *
+ * We use an easy to handle cookie-less session technique for storing data.
+ * This method is only suitable for storing temporary JavaScript session-only data.
+ * It should never be used for user specific or confidential information, logging, 
+ * debugging, or other similar purposes.
  */
 function getCurrentDatasource() {
-	if (document.cookie) {		
-		// Get datasource cookie.
-  		var cookie = document.cookie;
-  		cookie_value = cookie.substr(cookie.indexOf('=')+1, cookie.length);
- 		current_datasource = datasources.table[cookie_value];
-	} 
-	else {
-//		console.debug("getCurrentDatasource() => Cookie not found!"); 	
- 		// Set a default datasource.
-		setCurrentDatasource();
+	// Get current datasource.
+	current_datasource = Session.get("current_datasource");
+	
+	if (current_datasource === undefined) {
+		setCurrentDatasource();	// Set the default datasource.
 	}
 
 	// Get all table columns.
@@ -483,7 +487,10 @@ function getCurrentDatasource() {
 
  	current_datasource.filter['provincia'] = current_datasource.provincia;
 
-//	console.debug("getCurrentDatasource() => " + current_datasource.name + " (" + current_datasource.key + ")"); 
+// 	console.debug("getCurrentDatasource() => " + current_datasource.name + " (" + current_datasource.key + ")"); 
+	
+	var sel_year = Session.get("sel_year");
+// 	console.debug("getCurrentDatasource() => sel_year is " + sel_year); 
 	return current_datasource;
 }
 
