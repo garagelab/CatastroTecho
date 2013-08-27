@@ -81,7 +81,8 @@
 #barrio_id {
   color: #0092dd;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 15px;
+/*   font-size: 20px; */
   font-family: "Courier New";
   text-align: center;
 }
@@ -126,20 +127,55 @@
   	overflow: "hidden";
 }
 
-#selector {
+/**********/
+
+/**********/
+
+
+.control-panel {
   width: 300px;
   background: rgba(220,220,220,0.8);
-  top: 60px;
-  left: 78px;
   z-index: 110;
-  position: absolute;
-  color: black;
   padding: 10px;
   border-radius: 10px;
   -moz-border-radius: 10px;
   -o-border-radius: 10px;
   -webkit-border-radius: 10px;
   -ms-border-radius: 10px;
+}
+
+.control-panel.ui-state-disabled.ui-draggable-disabled { 
+	opacity : 1;
+}
+
+#selector {
+  left: 78px;
+  top: 60px;
+  position: absolute;
+  color: black;
+}
+
+#icon-move {
+  float: right;
+  color: #000000;
+  opacity: 0.4;
+  filter: alpha(opacity=20);
+}
+
+#icon-reply {
+  float: left;
+  color: #000000;
+  opacity: 0.4;
+  filter: alpha(opacity=20);
+}
+
+#icon-move:hover,
+#icon-reply:hover {
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0.6;
+  filter: alpha(opacity=40);
 }
 
 #info_text_container {
@@ -226,7 +262,8 @@ max-height: 300px !important;
 
 #flip_barrio {
 	cursor: pointer;
-	padding: 5px;
+	margin-top: 0;
+	padding-top: 5px;
 	text-align: center;
 	background-color: #f5f5f5;
 	border: solid 1px #c3c3c3;
@@ -254,6 +291,7 @@ img.img-barrio {
 	/* La resolución esta cerca de la sección áurea [mat.](1,618). */
 	width: 250px;
 	height: 155px;
+	height: 100px;
 }
 
 .dashed-line {
@@ -278,6 +316,7 @@ img.img-barrio {
 
 .sel-year-space-reducer {
 	margin-bottom: 5px;
+	padding-left: 25px;
 	padding-bottom: 0; 
 }
 

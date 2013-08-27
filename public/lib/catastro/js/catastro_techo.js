@@ -84,7 +84,7 @@ var barrio;
 var map;
 var mini_map;
 var initLayer;
-var initMiniMapLayer;
+var initMiniLayer;
 var markers = [];
 var techo_marker = "../images/marker_techo1.png";
 var techo_marker_shadow = "../images/shadow_blue_marker.png";
@@ -112,7 +112,6 @@ function initMapIndexPage() {
 	Session.clear(); // Initialize session data store.
 	getCurrentDatasource();
 	
-//	var argentina = new google.maps.LatLng(-38.416097, -63.616672);
 	var argentina = new google.maps.LatLng(-34.669564,-64.361218);
 
   	map = new google.maps.Map(document.getElementById('map_index_page'), {
@@ -216,9 +215,11 @@ function setViewToDatasource(datasource_key) {
 	// No need setting new datasource.
 	if (current_datasource.key == datasource_key) { return; }	
 	setCurrentDatasource(datasource_key);
+
 	
  	// Refresh current page after changing datasource.
- 	window.location.reload(true);
+// 	window.location.reload(true);
+	initMapBarriosPage();
 }
 
 /**
@@ -237,15 +238,15 @@ function initMapBarriosPage() {
     	zoom: current_datasource.startZoom,
     	minZoom: 2, // 9
     	mapTypeId: google.maps.MapTypeId.ROADMAP,
-   		mapTypeControl: false,
-//     	mapTypeControlOptions: {
-//         	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-//         	position: google.maps.ControlPosition.LEFT_CENTER
-//     	},    	
+   		mapTypeControl: true,
+    	mapTypeControlOptions: {
+        	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+        	position: google.maps.ControlPosition.LEFT_BOTTOM
+    	},    	
 //     	overviewMapControl: true,
 // 	    overviewMapControlOptions: {
 // 	    	opened: true,
-//         	position: google.maps.ControlPosition.BOTTOM_LEFT,
+//         	position: google.maps.ControlPosition.BOTTOM,
 // 		},
 		zoomControlOptions: {
       		style: google.maps.ZoomControlStyle.SMALL,
@@ -281,7 +282,7 @@ function initMapBarriosPage() {
   	initMapLayer();
   	initLayer.setMap(map);
   	initMiniMapLayer();
-  	initMiniMapLayer.setMap(mini_map);
+  	initMiniLayer.setMap(mini_map);
 
   	// Show province data (all data).
   	setViewToProvincia();
@@ -293,10 +294,7 @@ function initMapBarriosPage() {
   	initSearchFieldPartido();
 }
 
-/**
- * Initialize table page.
- *
- */
+/** Initialize table page. */
 function initTableBarriosPage() {
 	getCurrentDatasource();
 	var header = document.getElementById('header_table_barrio_page');
@@ -340,71 +338,54 @@ function setViewToBarrio() {
   var result = findBarrioData();
 }
 
+/** Update Fusion Table Layer for mini map. */
 function initMiniMapLayer() {
-  //
-  // Updating Fusion Table Layer.
-  //
-  
-  initMiniMapLayer = new google.maps.FusionTablesLayer( {
-    suppressInfoWindows: true, // Because we have a separate listener for that.
-    query: {
-      select: 'Poligon',
-      from: current_datasource.id
-    },
-    styles: [ {
-      polygonOptions: {
-        fillColor: "#FF3300",     // Color del plano - #ff0000 rojo de Google.
-        fillOpacity: 0.5,         // Opacidad del plano
-        strokeColor: "#000000",   // Color del margen
-        strokeOpacity: 0.5,       // Opacidad del margen
-        strokeWeight: 2           // Grosor del margen
-      }
-    } ]
-  } );
+	initMiniLayer = new google.maps.FusionTablesLayer( {
+    	suppressInfoWindows: true, // Because we have a separate listener for that.
+    	query: {
+      		select: 'Poligon',
+      		from: current_datasource.id
+    	},
+    	styles: [ {
+      		polygonOptions: {
+        		fillColor: "#FF3300",     // Color del plano.
+        		fillOpacity: 0.5,         // Opacidad del plano
+       			strokeColor: "#000000",   // Color del margen
+        		strokeOpacity: 0.5,       // Opacidad del margen
+        		strokeWeight: 2           // Grosor del margen
+      		}
+    	} ]
+  	} );
 }
 
-
-function initMapLayer() {
-  //
-  // Updating Fusion Table Layer.
-  //
-  
-  initLayer = new google.maps.FusionTablesLayer( {
-    suppressInfoWindows: true, // Because we have a separate listener for that.
-    query: {
-      select: 'Poligon',
-      from: current_datasource.id
-    },
-    styles: [ {
-      polygonOptions: {
-        fillColor: "#ff0000",     // Color del plano - #ff0000 rojo de Google.
-        fillOpacity: 0.5,         // Opacidad del plano
-        strokeColor: "#000000",   // Color del margen
-        strokeOpacity: 0.5,       // Opacidad del margen
-        strokeWeight: 1           // Grosor del margen
-      }
-    } ]
-  } );
-
-  // A listener to the initLayer that constructs a map marker and
-  // afterwards shows barrio data for information.
-//   google.maps.event.addListener(initLayer, 'click', function(e) {
-//     placeMarker(map, e.latLng, techo_marker, techo_marker_shadow, true);
-//     showBarrioInfo(e);
-//     drawSupplyCharts(view_level["barrio"], "map_page");
-//   } );
-  
-  addBarrioListener(initLayer);
+/** Update Fusion Table Layer for main map. */
+function initMapLayer() {  
+  	initLayer = new google.maps.FusionTablesLayer( {
+    	suppressInfoWindows: true, // Because we have a separate listener for that.
+    	query: {
+      		select: 'Poligon',
+      		from: current_datasource.id
+    	},
+    	styles: [ {
+      		polygonOptions: {
+        		fillColor: polygon_color[current_datasource.year], // Color del plano
+        		fillOpacity: 0.3,         // Opacidad del plano
+        		strokeColor: "#000000",   // Color del margen
+        		strokeOpacity: 0.5,       // Opacidad del margen
+        		strokeWeight: 1           // Grosor del margen
+      		}
+    	} ]
+  	} );
+  	addBarrioListener(initLayer);
 }
 
 /**
- * Barrio listener.
+ * Barrio listener
  *
  * A listener to the initLayer that constructs a map marker and
  * afterwards shows barrio data for information.
  */
 function addBarrioListener(initLayer) {
-
 	google.maps.event.addListener(initLayer, 'click', function(e) {
     	placeMarker(map, e.latLng, techo_marker, techo_marker_shadow, true);
 		showBarrioInfo(e);
@@ -461,9 +442,9 @@ function findPartidoData() {
   //
   // Find Partido/Localidad via text search.
   //
-
-  // Init - alert message box should be closed.
-  $(".alert").alert('close');
+	
+	// Init - alert message box should be closed.
+  	$(".alert").alert('close');
 
   var latlngArr = [];
   var lat_lng, lat, lng;
@@ -579,7 +560,6 @@ function findPartidoData() {
       		// Reinit selection for 'Barrio' search field.
       		partidoFilter = true;
       		initSearchFieldBarrio();
-			
       		// Reinit layer.
       		initLayer.setOptions( {
         		suppressInfoWindows: true, // Because we have a separate listener for that.
@@ -587,16 +567,29 @@ function findPartidoData() {
           			select: 'Poligon',
           			from: current_datasource.id
         		},
-        		styles: [ {
-          			polygonOptions: {
-            			fillColor: "#1e90ff",     // Color del plano - #ff0000 rojo de Google.
-            			fillOpacity: 0.5,         // Opacidad del plano
-            			strokeColor: "#000000",   // Color del margen
-            			strokeOpacity: 0.5,       // Opacidad del margen
-            			strokeWeight: 1           // Grosor del margen
-          			},
-          		where: where_clause_area_map, polygonOptions: { fillColor: "#1e90ff" }
-        		} ]
+        		
+   				styles: [ 
+   					{
+   						// All polygons without where clause.
+    					polygonOptions: { 
+    						fillColor: polygon_color[current_datasource.year], // Color del plano
+            				fillOpacity: 0.5,         	// Opacidad del plano
+            				strokeColor: "#000000",   	// Color del margen
+            				strokeOpacity: 0.5,       	// Opacidad del margen
+            				strokeWeight: 1           	// Grosor del margen
+    					}
+  					}, 
+  					{
+    					where: where_clause_area_map,
+    					polygonOptions: { 
+    						fillColor: "#ff0000", 		// Color del plano
+            				fillOpacity: 0.5,         	// Opacidad del plano
+            				strokeColor: "#000000",   	// Color del margen
+            				strokeOpacity: 0.5,       	// Opacidad del margen
+            				strokeWeight: 1           	// Grosor del margen
+            			}
+  					} 
+  				]      		
       		} );
       		partidoFilter = true;
     	}
@@ -848,12 +841,57 @@ function initSearchFieldBarrio() {
 }
 
 function initSearchFieldPartido() {
+	// Prepare query string.
+	var query = "SELECT " + 
+        current_datasource.sql_municipio + ", " + 
+        current_datasource.sql_localidad + 
+        'FROM ' + current_datasource.id + 
+        " GROUP BY " + current_datasource.sql_municipio + ", " + 
+        current_datasource.sql_localidad;		
+	var encodedQuery = encodeURIComponent(query);
+
+    // Construct the URL.
+    var urlType = urlEndpoint + 'query';
+    var url = [urlType];
+    url.push('?sql=' + encodedQuery);
+    url.push('&key=' + API_KEY);
+    url.push('&callback=?');
+
+	$('#search_part_txt').autocomplete( {
+		source: function(request, response) { 
+			// Send the JSONP request using jQuery.
+  			$.ajax( {
+    			type: "GET",
+    			url: url.join(''),
+    			dataType: 'jsonp',
+				contentType: "application/json",
+    			error: function () { 
+    				console.error("getFusionTableData(): Error in json-p call. Query was " + url);
+    			},
+        		success: function(data) {
+            		var re = $.ui.autocomplete.escapeRegex(request.term);
+            		var matcher = new RegExp( "^" + re, "i" );
+            		getMunicipios(data);
+            		response($.grep(municipios_cache, function(item) {
+            			return matcher.test(item.label);
+            		}));
+         		} // end success:
+  			}); // end $.ajax
+		}, // end source:
+		minLength: 2,
+		select: function(event, ui) {
+//			$('#state_id').val(ui.item.id);
+			$('#search_part_txt').val(ui.item.id);
+		}
+	});
+}
+
+function initSearchFieldPartido_OLD() {
 	//
   	// Autocompletition via jQuery for Partido/Localidad search field.
   	//
   	// Retrieve the unique names of 'municipios' using GROUP BY workaround.
   	
-//  	console.debug('initSearchFieldPartido()');
 	
 	queryText = encodeURIComponent(
             "SELECT " + current_datasource.sql_municipio + ", " + current_datasource.sql_localidad +
@@ -880,7 +918,7 @@ function initSearchFieldPartido() {
       }
     }
     // Strip all duplicates elements from array away.
-    var unique_results = results.unique();
+//    var unique_results = results.unique();
 
     // Use the results to create the autocomplete options.
     $('#search_part_txt').autocomplete( {
@@ -1540,17 +1578,17 @@ function techoBtnOnMouseOut(obj) {
 // Prototypes for global using.
 /////////////////////////////////////////////////////////////////////
 
-Array.prototype.unique = function() {
-  //
-  // Strips duplicates in an array away.
-  //
-  var obj = {};
-  var tmp = [];
-  var i;
-  for(i = 0 ; i < this.length; i++) obj[this[i]] = true;
-  for(i in obj) tmp[tmp.length] = i;
-  return tmp;
-};
+// Array.prototype.unique = function() {
+//   //
+//   // Strips duplicates in an array away.
+//   //
+//   var obj = {};
+//   var tmp = [];
+//   var i;
+//   for(i = 0 ; i < this.length; i++) obj[this[i]] = true;
+//   for(i in obj) tmp[tmp.length] = i;
+//   return tmp;
+// };
 
 Number.decPoint = ',';
 Number.thousand_sep = '.';
@@ -1612,3 +1650,29 @@ Number.prototype.format = function(k, fixLength) {
 
   return result;
 };
+
+/**
+ * Copyright (c) Mozilla Foundation http://www.mozilla.org/
+ * This code is available under the terms of the MIT License
+ */
+if (!Array.prototype.filter) {
+    Array.prototype.filter = function(fun /*, thisp*/) {
+        var len = this.length >>> 0;
+        if (typeof fun != "function") {
+            throw new TypeError();
+        }
+
+        var res = [];
+        var thisp = arguments[1];
+        for (var i = 0; i < len; i++) {
+            if (i in this) {
+                var val = this[i]; // in case fun mutates this
+                if (fun.call(thisp, val, i, this)) {
+                    res.push(val);
+                }
+            }
+        }
+
+        return res;
+    };
+}

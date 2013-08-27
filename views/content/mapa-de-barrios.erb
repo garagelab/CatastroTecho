@@ -3,7 +3,10 @@
 <div class="container-fluid">
 	<div class="row-fluid">
     	<!-- Selections container -->
-    	<div id="selector">
+    	<div id="selector" class="control-panel">
+    		<span id="reset-contro-panel-pos"><a href="#"><i id="icon-reply" class="icon-reply icon"></i></a></span>
+    		<span><a href="#"><i id="icon-move" class="icon-move icon"></i></a></span>
+
 			<!-- Year -->    	
     		<div class="sel_year">
 				<ul class="nav nav-pills sel-year-space-reducer">
@@ -179,6 +182,26 @@
       			<div id="mini_map_canvas"></div>
     		</div>
 
+
+
+			<!-- Municipio search -->
+<!-- 
+			<div>
+				<span><i id="territory_icon" class="icon-globe icon"></i>&nbsp;territorio</span>			
+		    	<p><input type="hidden" id="sel_muni" style="width:300px"/></p>
+			</div>
+ -->
+			
+
+<!-- 
+<div id="draggable" class="ui-widget-content">
+	<p>Drag me, please!</p>
+	<button id="show-position">Show position</button>
+	<button id="save-position">Save position</button>
+	<button id="reset-position">Reset last position</button>
+</div>
+ -->
+
       <form style="margin-top: 5px;">
         <fieldset>
 			<!-- Municipio/Localidad Search -->
@@ -206,8 +229,7 @@
 
         <!-- Barrio Search -->
         <fieldset>
-          <label>
-            <i class="icon-map-marker"></i>&nbsp;Villa o Asentamiento</label>
+          <label><i class="icon-map-marker"></i>&nbsp;villa o asentamiento</label>
           <div class="input-append">
             <input class="span10" id="search_barrio_txt" size="10" type="text" 
                     placeholder="ingresa el nombre y pulse enter..." 
@@ -234,7 +256,7 @@
 		<div id="flip_barrio" class="btn btn-block disabled">
 			<span id="barrio_id"></span>
 			</br>
-			<i id="flip_barrio_icon" class="icon-caret-down icon-2x"></i>
+			<i id="flip_barrio_icon" class="icon-caret-down icon"></i>
 		</div>
 		<div id="panel_barrio">
 
@@ -288,6 +310,8 @@
       <div id="map_canvas"></div>
     </div>
 
+
+
     <!-- Chart container -->
     <div id="chart_container">
       <div id ="info_text_charts" style="font-size: 90%;"></div>
@@ -324,6 +348,7 @@
         </ul>
       <div id="gas_chart_div"></div>
     </div>
+
   </div> <!-- row-fluid -->
 </div><!-- container-fluid -->
 
@@ -339,8 +364,54 @@
 		/*********/
 		/** Init */
 		/*********/
-		var current_datasource = Session.get("current_datasource");
-		var placeholder = "ingresa el nombre y pulse enter...";
+
+// 		function position () {
+// 			var p = $( "#draggable" );
+// 			var position = p.position();
+// //			console.debug("left: " + position.left + ", top: " + position.top );
+// 		}
+		
+// 		$( "#draggable" ).draggable({
+// 		//	drag: position
+// 		});
+
+		$( ".control-panel" ).draggable({
+		//	drag: position,
+			cursor: "move"
+		});
+
+// 		$('#show-position').click(function (e) {
+//   			e.preventDefault();
+// 			var p = $( "#draggable" );
+// 			var position = p.position();
+//   			alert("Current position is x: " + position.left + ", y: " + position.top );
+// 		});	
+// 
+// 		$('#save-position').click(function (e) {
+//   			e.preventDefault();
+// 			var p = $( "#draggable" );
+// 			var position = p.position();
+// 			var control_panel_pos = { "x": position.left, "y": position.top };
+// 			Session.set("control_panel_pos", control_panel_pos);
+//   			alert("Position saved: x: " + control_panel_pos.x + ", y: " + control_panel_pos.y );
+// 		});	
+// 
+// 		$('#reset-position').click(function (e) {
+//   			e.preventDefault();
+// 			var control_panel_pos = Session.get("control_panel_pos");
+// 			$("#selector").css({ left: control_panel_pos.x, top: control_panel_pos.y, position: "relative" });
+//   			alert("Last position was x: " + control_panel_pos.x + ", y: " + control_panel_pos.y );
+// 		});	
+// 
+
+
+		$('#reset-contro-panel-pos').click(function (e) {
+  			e.preventDefault();
+			$("#selector").css({ left: "78px", top: "60px", position: "absolute" });
+ 		});	
+
+		
+//		position();
 		
 		function format(item) { return item.text; };
 		
@@ -368,46 +439,127 @@
 		// Set year specific information document links.
 		setInformationLinks();
 
-		// Init territory selection.
-		function init_select2_sel_terri(year_changed) {
-			// Apply territories which are available in selected year. 
+		// Get all territories which are available in selected year.
+		function get_territories() {
 			var sel_year = Session.get("sel_year");
-// 			console.debug("sel_year is ===> " + sel_year);
+			
 			var filtered_territories = territories.filter(function(elem) {
 				return elem.year == sel_year;
 			});
-
-			// Sort array text ascending
+			
+			// Sort territories texts ascending.
 			filtered_territories.sort(function(a, b){
  				var textA = a.text.toLowerCase(), textB = b.text.toLowerCase()
  				if (textA < textB) return -1
  				if (textA > textB)return 1
  				return 0 //default return value (no sorting)
-			})
-			
-			$('#sel_terri').select2( {
-				placeholder: placeholder,
-				allowClear: true,
-				data: filtered_territories, 
-// 				initSelection: function(item, callback) {
-//   					var to_be_selected = null;
-//   					$.each(filtered_territories, function(index, sel_terri) {
-//     					if (sel_terri.id == item.val()) {
-//       						to_be_selected = sel_terri;
-//       						return;
-//     					}
-//   					})
-//   					callback(to_be_selected);
-// 				}            	
- 			});
+			});
 
-			// Set selected territory - only if year didn't changed.
-			if (year_changed === undefined) {
-				var current_datasource = Session.get("current_datasource");
-				$('#sel_terri').select2('val',current_datasource.key);
-			}
+			return filtered_territories;	
 		}
-		init_select2_sel_terri();
+
+		// Init select/search box territory selection.
+		$('#sel_terri').select2( {
+			placeholder: placeholder,
+			allowClear: true,
+			data: get_territories(),
+ 		});
+		var current_datasource = Session.get("current_datasource");
+		$('#sel_terri').select2('val', current_datasource.key);
+
+
+/*
+		// Init select/search box municipio selection.
+		// Prepare query string.
+		var query = "SELECT " + 
+        	current_datasource.sql_municipio + ", " + 
+        	current_datasource.sql_localidad + 
+        	'FROM ' + current_datasource.id + 
+        	" GROUP BY " + current_datasource.sql_municipio + ", " + 
+        	current_datasource.sql_localidad;		
+		var encodedQuery = encodeURIComponent(query);
+
+    	// Construct the URL.
+    	var urlType = urlEndpoint + 'query';
+    	var url = [urlType];
+    	url.push('?sql=' + encodedQuery);
+    	url.push('&key=' + API_KEY);
+    	url.push('&callback=?');
+		
+		// Get municipios.
+		$('#sel_muni').select2( {
+			placeholder: placeholder,
+			allowClear: true,
+			matcher: function(term, text) { 
+				return text.toUpperCase().indexOf(term.toUpperCase())==0; 
+			},
+			ajax: {
+    			type: "GET",
+    			url: url.join(''),
+    			dataType: 'jsonp',
+				contentType: "application/json",
+                data: function (term, page) {
+                    return {
+                		filter: term
+//                         q: term, // search term
+//                         page_limit: 10,
+//                         page: page
+                    };
+                },
+				results: function (data) {
+  					var hashtable = {};
+  					var results = [];
+            		var re = $.ui.autocomplete.escapeRegex(request.term);
+            		var matcher = new RegExp( "^" + re, "i" );
+					getMunicipios(data);
+					return { results:	$.grep(municipios_cache, function(item) {
+            								return matcher.test(item.label);
+            							}) 
+            		};
+
+
+//					results = municipios_cache;
+
+// 	  				$.each(municipios_cache, function(index, item) {
+//      					if (hashtable[item.parent] === undefined) {
+//          					hashtable[item.parent]={ text: item.parent, children:[] };
+//          					results.push(hashtable[item.parent]);
+//      					}
+//      					hashtable[item.parent].children.push({ id:item.id, text:item.text});
+//   					});
+
+//  					return {results: results};
+
+				}
+			}, // end ajax
+// 			sortResults: function(results, container, query) {
+//             	if (query.term) {
+//                 	// use the built in javascript sort function
+//                     return results.sort(function(a, b) {
+//                 		if (a.text.length > b.text.length) {
+//                             return 1;
+//                         } else if (a.text.length < b.text.length) {
+//                             return -1;
+//                         } else {
+//                             return 0;
+//                         }
+//                     });
+//                 }
+//                 return results;
+//             }					
+  		});
+
+			
+// 			data: {results: municipios_cache, text: "name"}, 
+// 			formatSelection: function(item) { 
+// 				return item.name 
+// 			}, 
+// 			formatResult: function(item) { 
+// 				return item.name 
+// 			}
+
+*/
+
 
   		// Init barrio tabs to first tab.
 		$(function () {
@@ -425,34 +577,86 @@
 			$('ul.nav-pills li.active').removeClass('active');
   			$(this).parent('li').addClass('active');
     		Session.set("sel_year", $(this).text());
-//   			console.debug("Selected year/Session year: " + Session.get("sel_year"));
 
 			// Set year specific methodology text.	
 			$('#methodology').attr('data-target', '#methodology-modal-' + Session.get("sel_year"));
 			
 			// Set year specific information document links.
 			setInformationLinks();
-		
-			var year_changed = true;
-			init_select2_sel_terri(year_changed);
+					
+			// Set new datasource.
+			// First we have to check if a datasource for selected new year also exits.
+			// If so, we take this one. If not we have to use the default datasource.
+			var current_datasource = Session.get("current_datasource");
+			var datasource_key = current_datasource.key;
+			var last_underscore_idx = datasource_key.lastIndexOf('_');
+			var new_datasource_key = datasource_key.substr(0, last_underscore_idx) + 
+									'_' + Session.get("sel_year");
+
+//  			console.debug("$('.sel_year ul.nav-pills li a').click => new_datasource_key ", new_datasource_key);
+
+
+  			// Check, if key also exists in associative datasource array.
+  			if(!datasources.table.hasOwnProperty(new_datasource_key)) {
+				setViewToDatasource('buenos_aires_' + Session.get("sel_year")); // default
+  			}
+  			else {
+  				setViewToDatasource(new_datasource_key);
+  			}
+
+			var filtered_territories = get_territories();
+			// Set territory selection.
+			$('#sel_terri').select2( {
+				placeholder: placeholder,
+				allowClear: true,
+				data: filtered_territories,
+// 				initSelection: function(item, callback) {
+//   					var to_be_selected = null;
+//   					$.each(filtered_territories, function(index, sel_terri) {
+//     					if (sel_terri.id == item.val()) {
+//       						to_be_selected = sel_terri;
+//       						return;
+//     					}
+//   					})
+//   					callback(to_be_selected);
+// 				}            	
+			});
+			current_datasource = Session.get("current_datasource");
+//   			console.debug(".select2('val'... => current_datasource.key ", current_datasource.key);	
+			$('#sel_terri').select2('val', current_datasource.key);
 			
-			// Set default datasource! - maybe temporary only ???????
-			setViewToDatasource('buenos_aires_' + Session.get("sel_year"));
+
+			// Clear municipio and barrio search fields.
+			removeAllPartidoSelections();
+			
+			
 		});
 
 		// Get selected territory and set new datasource.
 		$("#sel_terri").on("change", function(e) { 
 			if (e.val) {
+//   				console.debug("$('#sel_terri').on('change...'  => current_datasource.key ", current_datasource.key);
 				setViewToDatasource(e.val);
+
+				// Clear municipio and barrio search fields.
+				removeAllPartidoSelections();				
 			}
 		});
+
+		// Get selected municipio.
+// 		$("#sel_muni").on("change", function(e) { 
+// 			if (e.val) {
+//   				console.debug("$('#sel_muni').on('change...'  => current_datasource.key ", e.val);
+// 				//setViewToDatasource(e.val);
+// 			}
+// 		});
 
 		// Expand/Collapse barrio information.
   		$("#flip_barrio").click(function() {
     		$("#panel_barrio").slideToggle('1400');
 
 			// "Flip flop" icon view (expand/collapse)    	
-			var icon = $("#flip_barrio_icon").attr('class') == "icon-caret-down icon-2x" ? "icon-caret-up icon-2x" : "icon-caret-down icon-2x";
+			var icon = $("#flip_barrio_icon").attr('class') == "icon-caret-down icon" ? "icon-caret-up icon" : "icon-caret-down icon";
 			$("#flip_barrio_icon").attr('class', icon);
         	$('#barrio_tabs a:first').tab('show');
 
@@ -464,7 +668,17 @@
   			e.preventDefault();
   			$(this).tab('show');
 		});	
-		
+
+		$('#mini_map_canvas').mouseleave(function (e) {
+//  			e.preventDefault();
+			$(".control-panel").draggable('enable');
+		});
+
+		$('#mini_map_canvas').mousemove(function (e) {
+ 			e.preventDefault();
+			$(".control-panel").draggable('disable');
+		});
+
 	}); // end $(document).ready(function()
 
 	// Set a callback to run when the Google Visualization library is loaded.

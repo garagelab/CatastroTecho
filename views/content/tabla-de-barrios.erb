@@ -3,7 +3,25 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
-      <h3 class="lead" id="techo_style">
+    
+    	<p>
+        <select style="width:250px" id="sel_terri">
+            <optgroup label="2013">
+                <option value="buenos_aires_2013">Buenos Aires</option>
+                <option value="cordoba_2013">C&oacute;rdoba</option>
+                <option value="salta_2013">Salta</option>
+                <option value="rosario_2013">Rosario</option>
+                <option value="rio_negro_neuquen_2013">R&iacute;o Negro y Neuqu&eacute;n</option>
+                <option value="posadas_2013">Posadas</option>
+            </optgroup>
+            <optgroup label="2011">
+                <option value="buenos_aires_2011">Buenos Aires</option>
+                <option value="cordoba_2011">C&oacute;rdoba</option>
+            </optgroup>
+        </select>
+        </p>
+
+        <h3 class="lead" id="techo_style">
       	<span id="header_table_barrio_page"></span>
       </h3>
     </div>
@@ -16,5 +34,27 @@
   </div>
 </div>
 <script type="text/javascript">
+	$('#sel_terri').select2( {
+		placeholder: placeholder,
+		allowClear: true
+	});
+	
+	var current_datasource = Session.get("current_datasource");
+	$('#sel_terri').select2('val', current_datasource.key);
+
+	// Get selected territory and set new datasource.
+	$("#sel_terri").on("change", function(e) { 
+		if (e.val) {
+			setCurrentDatasource(e.val);
+ 			// Refresh current page after changing datasource.
+		 	window.location.reload(true);	
+//		 	initTableBarriosPage();		
+
+			// Clear municipio and barrio search fields.
+			//removeAllPartidoSelections();				
+		}
+	});
+
+
     google.setOnLoadCallback(initTableBarriosPage);
 </script>
