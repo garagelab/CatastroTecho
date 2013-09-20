@@ -130,7 +130,7 @@ class Techo < Sinatra::Base
   	get '/content/:page' do |page|
     	erb :"content/#{page}"
   	end
-
+	
   	# Start the server, if ruby file executed directly.
   	run! if app_file == $0
 end

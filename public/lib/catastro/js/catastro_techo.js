@@ -1,5 +1,5 @@
 /**
- * Project:		Catastro Techo
+ * Project:		Relevamiento Techo (formerly Catastro Techo)
  *
  * Subject:		Geographic Information System
  * Objective:	Establish an interactive, web-based platform with information
@@ -78,19 +78,15 @@ google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'langua
 var query;
 var queryText;
 
-var where_clause;
-var where_clause_area_map;
 var barrio;
 var map;
 var mini_map;
+var mini_map_circles = [];
 var initLayer;
 var initMiniLayer;
 var markers = [];
 var techo_marker = "../images/marker_techo1.png";
 var techo_marker_shadow = "../images/shadow_blue_marker.png";
-
-var partidoFilter = false;
-var barrioFilter = false;
 
 /////////////////////////////////////////////////////////////////////
 //  Initializers for web pages.
@@ -118,10 +114,27 @@ function initMapIndexPage() {
     	center: argentina,
     	zoom: 5, // before 4
     	minZoom: 2,
-    	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    	streetViewControl: false
+    	mapTypeId: google.maps.MapTypeId.HYBRID,
+    	streetViewControl: false,
+    	overviewMapControl: true,
+    	mapTypeControlOptions: {
+        	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+        	position: google.maps.ControlPosition.LEFT_TOP
+    	},    	
+		zoomControlOptions: {
+      		style: google.maps.ZoomControlStyle.SMALL,
+      		position: google.maps.ControlPosition.TOP_LEFT
+    	},
+    	panControl: true,
+    	panControlOptions: {
+        	position: google.maps.ControlPosition.TOP_LEFT
+    	},
+	    overviewMapControlOptions: {
+	    	opened: true,
+        	position: google.maps.ControlPosition.BOTTOM,
+		}
   	} );
-    
+	    
   	var circle = {};
   	var lat_lng;
   	for(var key in datasources.table) {
@@ -154,10 +167,10 @@ function initMapIndexPage() {
           position: new google.maps.LatLng(34.03, -118.235),
           map: map,
           fontSize: 12,
-          fontColor: "#191970",
+          fontColor: "#ffffff",     //#191970
           fontFamily: "sans-serif",
           strokeWeight: 5,
-          strokeColor: "#ffffff",
+          strokeColor: "#000",
           minZoom: 4,
           maxZoom: 12,	
           align: 'center'
@@ -167,14 +180,13 @@ function initMapIndexPage() {
 
   		// Add a Circle overlay to the map.
   		circle[key] = new google.maps.Circle( {
-    		map: map,
-    		fillColor: '#d75857', //#0000ff
-    		fillOpacity: 0.5,
-    		strokeColor: '#1e90ff',
-    		strokeOpacity: 0.5,
-    		strokeWeight: 1,
-    		//radius: 1836.55489862987
-    		radius: 100000 // 100 km
+    		map: map,							// Former values below...
+    		fillColor: '#0092dd', 				//#0000ff #d75857 #0092dd (Techo)
+    		fillOpacity: 0.5,  					// 0.5 0.35
+    		strokeColor: '#0092dd', 			// #1e90ff #ff0000
+    		strokeOpacity: 0.8, 				// 0.5
+    		strokeWeight: 0.5, 					// 1
+    		radius: 100000  					// 100 km
   		});
 
   		// Bind marker to label and circle and set listeners for clicking.
@@ -241,7 +253,7 @@ function initMapBarriosPage() {
    		mapTypeControl: true,
     	mapTypeControlOptions: {
         	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-        	position: google.maps.ControlPosition.LEFT_BOTTOM
+        	position: google.maps.ControlPosition.LEFT_TOP
     	},    	
 //     	overviewMapControl: true,
 // 	    overviewMapControlOptions: {
@@ -276,14 +288,12 @@ function initMapBarriosPage() {
 
 	// Bind the maps together
 	mini_map.bindTo('center', map, 'center');
-	//mini_map.bindTo('zoom', map, 'zoom');
-
 
   	initMapLayer();
   	initLayer.setMap(map);
   	initMiniMapLayer();
   	initMiniLayer.setMap(mini_map);
-
+  	
   	// Show province data (all data).
   	setViewToProvincia();
 
@@ -297,51 +307,86 @@ function initMapBarriosPage() {
 /** Initialize table page. */
 function initTableBarriosPage() {
 	getCurrentDatasource();
-	var header = document.getElementById('header_table_barrio_page');
+	var header = document.getElementById('header_table_barrios_page');
   	header.innerHTML = "Informaci&oacute;n completa de cada villa y asentamiento de " + 
   		current_datasource.provincia + " " + current_datasource.year;
-  	getFusionTableData('select * from ' + current_datasource.id, dataTableHandler);
+  		
+	// Notice workaround with where clause below. Reason is lack of performance without
+	// because 'select *' is not as good. Better would be to get only necessary columns 
+	// but table headings are very large, so an explicit listing is not possible with a 
+	// 'GET' ajax call. => As a result we get an 'requested URI to large Error 414' here. 
+ 	getFusionTableData('select * from ' + current_datasource.id + 
+ 						' where ' + current_datasource.sql_codigo + " > 0", 
+ 						dataTableHandler);
+
+/*
+  	getFusionTableData('select ' +
+  						'"' + current_datasource.cols[0].name + '", ' + 
+  						'"' + current_datasource.cols[29].name + '", ' + 
+  						'"' + current_datasource.cols[30].name + '", ' + 
+  						'"' + current_datasource.cols[23].name + '", ' + 
+  						'"' + current_datasource.cols[24].name + '", ' + 
+  						'"' + current_datasource.cols[25].name + '", ' + 
+  						'"' + current_datasource.cols[26].name + '", ' + 
+  						'"' + current_datasource.cols[32].name + '", ' + 
+  						'"' + current_datasource.cols[40].name + '", ' + 
+  						'"' + current_datasource.cols[41].name + '", ' + 
+  						'"' + current_datasource.cols[42].name + '", ' + 
+  						'"' + current_datasource.cols[43].name + '", ' + 
+  						'"' + current_datasource.cols[61].name + '", ' + 
+  						'"' + current_datasource.cols[66].name + '", ' + 
+  						'"' + current_datasource.cols[54].name + '", ' + 
+  						'"' + current_datasource.cols[79].name + '", ' + 
+  						'"' + current_datasource.cols[85].name + '", ' + 
+  						'"' + current_datasource.cols[91].name + '", ' + 
+  						'"' + current_datasource.cols[87].name + '", ' + 
+  						'"' + current_datasource.cols[105].name + '", ' + 
+  						'"' + current_datasource.cols[106].name + '", ' + 
+  						'"' + current_datasource.cols[107].name + '", ' + 
+  						'"' + current_datasource.cols[108].name + '", ' + 
+  						'"' + current_datasource.cols[109].name + '", ' + 
+  						'"' + current_datasource.cols[110].name + '", ' + 
+  						'"' + current_datasource.cols[111].name + '", ' + 
+  						'"' + current_datasource.cols[112].name + '", ' + 
+  						'"' + current_datasource.cols[113].name + '"' + 
+  						' from ' + current_datasource.id +, dataTableHandler
+  	);
+*/
+
 }
 
 /////////////////////////////////////////////////////////////////////
 // User interactions 
 /////////////////////////////////////////////////////////////////////
 
-/**
- * Set/reset to province data (all).
- *
- */
+/** Set/reset to province data (all). */
 function setViewToProvincia() {
-  current_datasource.filter['provincia'] = current_datasource.provincia;
+	current_datasource.filter.provincia = current_datasource.provincia;
+	reporting_level = is_reporting_level.provincia;
 
-  // Init numbers of villas and families.
-  queryText = "SELECT sum(" + current_datasource.sql_families + ") as familias, count(" + current_datasource.sql_barrio + ") FROM " + current_datasource.id;
-  getFamilyNumber(view_level['provincia'], queryText);
+  	// Init numbers of villas and families and charts.
+  	queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+  				"as families, count(" + current_datasource.sql_barrio + ") " + 
+  				"FROM " + current_datasource.id;
+  	getFamilyNumber(reporting_level, queryText);
 
-  drawSupplyCharts(view_level['provincia'], "map_page");
+  	drawSupplyCharts(reporting_level, "map_page");
 }
 
+/** Set/reset to partido/localidad data. */
 function setViewToPartido() {
-  //
-  // Set/reset to partido/localidad data.
-  //
-  // Clear old barrio data first.
-  removeAllBarrioSelections();
-  // Set partido data.
-  var result = findPartidoData();
+  	findPartidoData();
 }
 
+/** Set/reset to barrio data. */
 function setViewToBarrio() {
-  //
-  // Set/reset to barrio data.
-  //
-  var result = findBarrioData();
+	findBarrioData();
 }
 
 /** Update Fusion Table Layer for mini map. */
 function initMiniMapLayer() {
 	initMiniLayer = new google.maps.FusionTablesLayer( {
-    	suppressInfoWindows: true, // Because we have a separate listener for that.
+    	suppressInfoWindows: true,
     	query: {
       		select: 'Poligon',
       		from: current_datasource.id
@@ -388,15 +433,12 @@ function initMapLayer() {
 function addBarrioListener(initLayer) {
 	google.maps.event.addListener(initLayer, 'click', function(e) {
     	placeMarker(map, e.latLng, techo_marker, techo_marker_shadow, true);
+		reporting_level = is_reporting_level.barrio;
 		showBarrioInfo(e);
-    	drawSupplyCharts(view_level["barrio"], "map_page");
   	} );
 }
 
-/*
- * Evaluate focus (midpoint) from a given polygon boundary.
- *
- */
+/** Evaluate focus (midpoint) from a given polygon boundary. */
 function getLatLngFocusFromPolygonBoundary(polygonBoundary) {
   	var result;
 
@@ -411,113 +453,84 @@ function getLatLngFocusFromPolygonBoundary(polygonBoundary) {
 
   	// Each pair of coordinates is stored in an array element.
   	latlngArr = polygonBoundary.split(' ');
-	
+
+	// Create a polygon boundary with given polygons.		
 	var bounds = new google.maps.LatLngBounds();
-	
-	for(var i=0; i<latlngArr.length; i++) {    	
-      	comma1 = latlngArr[i].indexOf(',');
-      	comma2 = latlngArr[i].lastIndexOf(',');
-      	lat = latlngArr[i].substring(0, comma1-1);
-      	lng = latlngArr[i].substring(comma1+1);
-      	lng = latlngArr[i].substring(comma1+1, comma2-1);      
-      	bounds.extend(new google.maps.LatLng(lat, lng));
+	for(var i=0; i<latlngArr.length; i++) {
+		// New logic since  18/09/2013.
+		var elem = latlngArr[i];
+  		var latlngArrTmp = elem.split(',');
+      	bounds.extend(new google.maps.LatLng(latlngArrTmp[0], latlngArrTmp[1]));
+//       	Former logic			
+//       	comma1 = latlngArr[i].indexOf(',');
+//       	comma2 = latlngArr[i].lastIndexOf(',');
+//       	lat = latlngArr[i].substring(0, comma1-1);
+//       	lng = latlngArr[i].substring(comma1+1);
+//       	lng = latlngArr[i].substring(comma1+1, comma2-1);      
+//       	bounds.extend(new google.maps.LatLng(lat, lng));
     }
 
+	// Get midpoint coordinates from polygon boundary.
 	lat_lng = bounds.getCenter();
 
-	// Changes of coordinates lat to lng and vice versa.
+	// Changes of coordinates lat to lng and vice versa (in move to result).
   	// Otherwise we get a wrong position here.
 	var focus = lat_lng.toString();
-
-  	latlngArr = focus.split(',');
-  	lat = latlngArr[1].substring(1, latlngArr[1].indexOf(')')-1);
-  	lng = latlngArr[0].substring(latlngArr[0].indexOf('(')+1);
-
+  	var latlngArrTmp = focus.split(',');
+  	lat = latlngArrTmp[1].substring(1, latlngArrTmp[1].indexOf(')')-1);
+  	lng = latlngArrTmp[0].substring(latlngArrTmp[0].indexOf('(')+1);
   	result = new google.maps.LatLng(lat, lng);
-
+  	
   	return result;
 }
 
-function findPartidoData() {
-  //
-  // Find Partido/Localidad via text search.
-  //
-	
-	// Init - alert message box should be closed.
-  	$(".alert").alert('close');
+/** Find municipio/departamento data for selected municipio/departamento name. */
+function findPartidoData() {	
+	var latlngArr = [];
+  	var lat_lng, lat, lng;
+  	var comma1, comma2;
+  	var polygonBoundary;
+  	var where_clause;
 
-  var latlngArr = [];
-  var lat_lng, lat, lng;
-  var comma1, comma2;
-  var choice;
-  var area_choice;
-  var polygonBoundary;
+	if (!current_datasource.filter.municipio && !current_datasource.filter.localidad) {
+		setViewToProvincia();
+  		return;
+  	} 
 
-  // Check text search field for manually search first.
-  choice = document.getElementById('search_part_txt').value;
-	
-  // Search field is empty.
-  if (!choice) {
-    return false;
-  }
-
-  if (isEmpty(choice) || isBlank(choice)) {
-    return false;
-  }
-
-  // Is there an entity in search field?
-  if (choice && !isEmpty(choice) && !isBlank(choice)) {
-    // Extract parentheses and prepare query.
-    if (choice.indexOf("(") >= 0) {
-      var exp = "(" + current_datasource.shortcut_municipio + ")";
-      var re = new RegExp(exp, 'g');
-      if (choice.match(re)) {
-        choice = (choice.substring(0, choice.indexOf(exp)-1)).trim();
-        where_clause = " WHERE " + current_datasource.sql_municipio + " = '" + choice + "'";
-        area_choice = 'P';
-      }
-      else {
-        exp = "(" + current_datasource.shortcut_localidad + ")";
-        re = new RegExp(exp, 'g');
-        if (choice.match(re)) {
-          choice = (choice.substring(0, choice.indexOf(exp)-1)).trim();
-          where_clause = " WHERE " + current_datasource.sql_localidad + " = '" + choice + "'";
-          area_choice = 'L';
-        }
-        else {
-        	where_clause = " WHERE " + current_datasource.sql_municipio + " = '" + choice + "'";
-          area_choice = 'P';
-        }
-      }
-    }
-    else {
-    	where_clause = " WHERE " + current_datasource.sql_municipio + " = '" + choice + "'";
-      area_choice = 'P';
-    }
+	// Create where clause.
+	if (current_datasource.filter.municipio) {
+		reporting_level = is_reporting_level.municipio;
+		where_clause = where_mpio_name__eq__selected_name;
+	}
+	if (current_datasource.filter.localidad) {
+		reporting_level = is_reporting_level.localidad;
+		where_clause = where_loc_name__eq__selected_name;
+	}
     
     queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + where_clause);
   	query = new google.visualization.Query(urlVizData + queryText);
     
 	query.send(function(response) {
 	    if (response.isError()) {
-      		alert('Function: findPartidoData()\n Error-msg: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      		console.error('Function: findPartidoData() Error-msg: ' + 
+      			response.getMessage() + ' ' + response.getDetailedMessage());
       		return;
     	}
 
     	var numRows = response.getDataTable().getNumberOfRows();
-      	// Partido or Localidad not found in data source.
+
+      	// Municipio/Localidad not found in data source.
       	if (!numRows) {
         	var msg = "La selecci&oacute;n " + "'" + choice + "'" + " no se pudo encontrar.";
-        	bootstrap_alert.warning(msg);
         	clearThis(document.getElementById("search_part_txt"));
         	return;
       	}
-
+      	
+		// Get polygon data.
       	if (response.getDataTable().getValue(0, current_datasource.col_no_polygon) &&
           	!isEmpty(response.getDataTable().getValue(0, current_datasource.col_no_polygon)) &&
           	!isBlank(response.getDataTable().getValue(0, current_datasource.col_no_polygon))) {
         	polygonBoundary = response.getDataTable().getValue(0, current_datasource.col_no_polygon);
-        	current_datasource.filter['municipio'] = response.getDataTable().getValue(0, current_datasource.col_no_municipio);
         	// Evaluate the focus of a polygon in selected area for center map.
         	if (polygonBoundary) {
           		lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
@@ -527,319 +540,163 @@ function findPartidoData() {
   			lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
   										current_datasource.center_lat_lng[1]);          	
         	}
+        	
         	map.setCenter(lat_lng);
-        	map.setZoom(12); // antes era 11
+        	map.setZoom(current_datasource.partidoZoom);
+        	
+  			// Add a Circle overlay to the mini map.
+  			var mini_map_circle_options = {
+      			strokeColor: '#FF0000',
+      			strokeOpacity: 0.8,
+      			strokeWeight: 2,
+      			fillColor: '#FF0000',
+      			fillOpacity: 0.35,
+      			map: mini_map,
+      			center: lat_lng,
+      			radius: 7000 // 7000 m
+    		};
+    		mini_map_circles.push(new google.maps.Circle(mini_map_circle_options));    		
       	}
      
-		if (area_choice) {
-      		// Set where clause for map and get numbers for info text.
-      		where_clause_area_map = null;
+      	// Reset barrio info.
+      	removeBarrioInfo();
+      	current_datasource.filter.barrio_id = null;
+  		current_datasource.filter.barrio_name = null;
 
-      		// Reset barrio info.
-      		removeBarrioInfo();
-      		current_datasource.filter['barrio'] = null;
+		// Get family data.
+        queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+        			"as families, count() FROM " + current_datasource.id + 
+					where_clause;
+        getFamilyNumber(reporting_level, queryText);
 
-      		switch(area_choice.toUpperCase()) {
-        		case 'P':
-          			current_datasource.filter['municipio'] = choice;
-          			reporting_level = 'municipio';
-                    where_clause_area_map = current_datasource.sql_municipio + " = " + "'" + choice + "'";
-          			queryText = "SELECT sum(" + current_datasource.sql_families + ") as familias, count() FROM " + current_datasource.id + " WHERE " + where_clause_area_map;
-          			getFamilyNumber(view_level["municipio"], queryText);
-          		break;
-        	
-        		case 'L':
-          			current_datasource.filter['localidad'] = choice;
-          			reporting_level = 'localidad';
-          			where_clause_area_map = current_datasource.sql_localidad + " = " + "'" + choice + "'";
-          			queryText = "SELECT sum(" + current_datasource.sql_families + ") as familias, count() FROM " + current_datasource.id + " WHERE " + where_clause_area_map;
-          			getFamilyNumber(view_level["localidad"], queryText);
-          		break;
-      		}
-
-      		// Reinit selection for 'Barrio' search field.
-      		partidoFilter = true;
-      		initSearchFieldBarrio();
-      		// Reinit layer.
-      		initLayer.setOptions( {
-        		suppressInfoWindows: true, // Because we have a separate listener for that.
-        		query: {
-          			select: 'Poligon',
-          			from: current_datasource.id
-        		},
+      	// Reinit selection for 'Barrio' search field.
+      	initSearchFieldBarrio();
+      	
+      	// Reinit layer.
+      	initLayer.setOptions( {
+        	suppressInfoWindows: true, // Because we have a separate listener for that.
+        	query: {
+          		select: 'Poligon',
+          		from: current_datasource.id
+        	},
         		
-   				styles: [ 
-   					{
-   						// All polygons without where clause.
+   			styles: [ 
+   				{
+   					// All polygons without where clause.
+    				polygonOptions: { 
+    					fillColor: polygon_color_not_selected_area, // Color del plano
+            			fillOpacity: 0.5,         	// Opacidad del plano
+            			strokeColor: "#000000",   	// Color del margen
+            			strokeOpacity: 0.5,       	// Opacidad del margen
+            			strokeWeight: 1           	// Grosor del margen
+    				}
+  				}, 
+  				{
+    				where: where_clause_area_map,
     					polygonOptions: { 
-    						fillColor: polygon_color[current_datasource.year], // Color del plano
-            				fillOpacity: 0.5,         	// Opacidad del plano
-            				strokeColor: "#000000",   	// Color del margen
-            				strokeOpacity: 0.5,       	// Opacidad del margen
-            				strokeWeight: 1           	// Grosor del margen
-    					}
-  					}, 
-  					{
-    					where: where_clause_area_map,
-    					polygonOptions: { 
-    						fillColor: "#ff0000", 		// Color del plano
-            				fillOpacity: 0.5,         	// Opacidad del plano
-            				strokeColor: "#000000",   	// Color del margen
-            				strokeOpacity: 0.5,       	// Opacidad del margen
-            				strokeWeight: 1           	// Grosor del margen
+    						fillColor: polygon_color_selected_area,	// Color del plano
+            				fillOpacity: 0.5,         				// Opacidad del plano
+            				strokeColor: "#000000",   				// Color del margen
+            				strokeOpacity: 0.5,       				// Opacidad del margen
+            				strokeWeight: 1           				// Grosor del margen
             			}
-  					} 
-  				]      		
-      		} );
-      		partidoFilter = true;
-    	}
-  	
-  		if (partidoFilter === true) {
-    		drawSupplyCharts(view_level["municipio"], "map_page");
-  		}
-  		else {
-    		setViewToProvincia();
-  		}
+  				} 
+  			]      		
+      	} );
+    	drawSupplyCharts(reporting_level, "map_page");
     } );
-
-  }
 }
 
-/*
- * Find Barrio data via text search.
- *
- */
+/** Find barrio data for selected barrio id. */
 function findBarrioData() {
-	// Init - alert message box should be closed.
-  	$(".alert").alert('close');
   	var latlngArr = [];
   	var lat_lng, lat, lng;
   	var comma1, comma2;
   	var codigo;
-  	var has_codigo = false;
 
-  	// Check text search field for manually search first.
-  	var barrio = document.getElementById('search_barrio_txt').value;
-  	  	
-  	// Is search field empty?
-  	if (!barrio) { return false; }
-  	if (isEmpty(barrio) || isBlank(barrio)) { return false; }
+  	if (!current_datasource.filter.barrio_id) { return false; } 
+	
+	// In 2011 tables barrio id is defined as string so we have to prepare query string.
+	if (current_datasource.year == '2011') {
+		codigo = "'" + current_datasource.filter.barrio_id.toString() + "'";
+	}
+	else {
+		codigo = parseInt(current_datasource.filter.barrio_id);
+	}
 
-	// Seems to be we have data to view...
-  	if (barrio && !isEmpty(barrio) && !isBlank(barrio)) {
-    	// Extract parentheses, if necessary.
-    	if (barrio.indexOf("(") >= 0) {
-      		codigo = (barrio.substring(barrio.indexOf("(")+1, barrio.indexOf(")"))).trim();
-      		has_codigo = true;
-      		barrio = (barrio.substring(0, barrio.indexOf("(")-1)).trim();
-    	}
-    	if (has_codigo) {
-    		queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + " WHERE " + current_datasource.sql_codigo + " = '" + codigo + "'");
-    	}
-    	else {
-    		queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + " WHERE " + current_datasource.sql_barrio + " = '" + barrio + "'");
-    	}
-  		query = new google.visualization.Query(urlVizData + queryText);
+    queryText = encodeURIComponent(
+    		"SELECT * FROM " + 
+    			current_datasource.id + 
+    		" WHERE " + current_datasource.sql_codigo + " = " + codigo);
+  	query = new google.visualization.Query(urlVizData + queryText);
 
-		// Callback
-    	query.send( function(response) {
-    		if (response.isError()) {
-      			alert('Function: findBarrioData()\n Error-msg: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-      			return;
-    		}
+	// Callback
+    query.send( function(response) {
+    	if (response.isError()) {
+    		console.error('Function: findBarrioData()\n Error-msg: ' + 
+    			response.getMessage() + ' ' + response.getDetailedMessage()
+    		);
+      		return;
+    	}
     	
-      		var numRows = response.getDataTable().getNumberOfRows();
-      		// Barrio not found in data source.
-      		if (!numRows) {
-        		var msg = "El barrio " + "'" + barrio + "'" + " no se pudo encontrar.";
-        		bootstrap_alert.warning(msg);
-        		clearThis(document.getElementById("search_barrio_txt"));
-        		return;
-      		}
-
-      		// Get numbers for info text.
-      		current_datasource.filter['barrio'] = barrio;
-      		reporting_level = 'barrio';
-
-    		if (has_codigo) {
-      			queryText = "SELECT sum(" + current_datasource.sql_families + ") as familias, count() FROM " + current_datasource.id +
-                  			" WHERE " + current_datasource.sql_codigo + " = '" + codigo + "'";
-    		}
-    		else {
-      			queryText = "SELECT sum(" + current_datasource.sql_families + ") as familias, count() FROM " + current_datasource.id +
-                  			" WHERE " + current_datasource.sql_barrio + " = '" + barrio + "'";
-      		}
-      		getFamilyNumber(view_level["barrio"], queryText);
-
-      		// Extract polygon data from table.
-      		var polygonBoundary = response.getDataTable().getValue(0, current_datasource.col_no_polygon);
-      		lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
-
-      		// e only has four properties, "infoWindowHtml", "latLng", "pixelOffset" and "row".
-      		var e = {
-        		infoWindowHtml: null,
-        		latLng: lat_lng,
-        		pixelOffset: null,
-        		row : []
-      		};
-
-			e.row[current_datasource.cols[current_datasource.col_no_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_barrio) };
-      		e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_other_name_barrio) };
-      		e.row[current_datasource.cols[current_datasource.col_no_municipio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_municipio) };
-      		e.row[current_datasource.cols[current_datasource.col_no_localidad].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_localidad) };
-      		e.row[current_datasource.cols[current_datasource.col_no_families].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_families) };
-      		e.row[current_datasource.cols[current_datasource.col_no_start_year].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_start_year) };
-      		e.row[current_datasource.cols[current_datasource.col_no_sewage].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_sewage) };
-      		e.row[current_datasource.cols[current_datasource.col_no_water].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_water) };
-      		e.row[current_datasource.cols[current_datasource.col_no_electrical].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_electrical) };
-      		e.row[current_datasource.cols[current_datasource.col_no_gas].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_gas) };
-      		e.row[current_datasource.cols[current_datasource.col_no_drains].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_drains) };
-      		e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_street_lighting) };
-      		e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_waste_collection) };
-
-      		// Triggering'click'-event listener to display barrio map marker and data.
-      		google.maps.event.trigger(initLayer, 'click', e);
-      		barrioFilter = true;
-    	} );
-		return true;
-	}
-}
-
-/**
- * Autocompletion via jQuery for Barrio search field.
- *
- */
-function initSearchFieldBarrio() {
-	
-// 	console.debug('initSearchFieldBarrio()');
-
-	var barrios = {};
-	
-    if (partidoFilter === false) {
-		barrios =  barrios_cache;
-    }
-    else {
-		barrios =  barrios_cache;
-
-// 		for (var i in barrios_cache.data) {
-// 			if(barrios_cache.data.hasOwnProperty(i)) {
-// 				var entry = data_cache[i];
-// 			barrios_cache.data[i] = { 
-// 				key: 		entry[0], 
-// 				value: 		entry[1],	// Barrio
-// 				name2:		entry[2],
-// 				municipio:	entry[3],
-// 				localidad:	entry[4],
-// 				provincia:	entry[5],
-// 				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4]  + ', ' + entry[0] 
-// 			};
-// 		}
-// 	}
-	
-	}
-	
-	$('#search_barrio_txt').autocomplete( {	    
-		source: function(request, response) { 
-        	var re = $.ui.autocomplete.escapeRegex(request.term);
-
-			//console.debug('initSearchFieldBarrio() - re ' + re);
-
-        	var matcher = new RegExp( "^" + re, "i" );
-
-			//console.debug('initSearchFieldBarrio() - matcher ' + matcher);
-
-//        	var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
-
-
-//    		response($.grep(barrios_cache.data, function(item) {
-    		response($.grep(barrios.data, function(item) {
-    			return matcher.test(item.value); 
-    		}));
-
-
-//         	response( $.grep( barrios_cache, function( value ) {
-//           		value = value.key || value.barrio || value;
-//           		console.debug("value = "+ value);
-//           		return matcher.test( value );
-//         	}) );
-
-		},
-		minLength: function() { if (partidoFilter === false) return 2; else return 1; },
-		select: function( event, ui ) {
-        	$("#search_barrio_txt").val( ui.item.value );
-//         	$("#project-id").val( ui.item.value );
-//         	$("#project-description").html( ui.item.desc );
-//         	$("#project-icon").attr( "src", "images/" + ui.item.icon );
- 
-        	return false;
+      	var numRows = response.getDataTable().getNumberOfRows();
+      	// Barrio not found in data source.
+      	if (!numRows) {
+        	var msg = "El barrio " + "'" + barrio + "'" + " no se pudo encontrar.";
+        	clearThis(document.getElementById("search_barrio_txt"));
+        	return;
       	}
-		
-// 		source: function(request, response) {
-//     		//console.debug("request = %s", request.term);
-// 
-//       		if (partidoFilter === false) {
-//         		var query = "SELECT " + current_datasource.sql_barrio_search_grp +
-//             		        "FROM " + current_datasource.id +
-// //                		    " WHERE 'BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
-// // 	                    	" WHERE 'BARRIO' like '" + request.term + "'" +
-//  	                    	" WHERE 'BARRIO' STARTS WITH '" + request.term + "'" +
-//                     		" GROUP BY " + current_datasource.sql_barrio_search_grp;
-//       		}
-//       		else {
-//         		var query = "SELECT " + current_datasource.sql_barrio_search_grp +
-//             		        "FROM " + current_datasource.id +
-//                 		    " WHERE 'BARRIO' CONTAINS IGNORING CASE '" + request.term + "'" +
-//                     		" AND " + where_clause_area_map +
-//                     		" GROUP BY " + current_datasource.sql_barrio_search_grp;
-//       		}
-//       		
-// 			// Prepare query string.
-// 			var encodedQuery = encodeURIComponent(query);
-// 
-//     		// Construct the URL.
-//     		var urlType = urlEndpoint + 'query';
-//     		var url = [urlType];
-//     		url.push('?sql=' + encodedQuery);
-//     		url.push('&key=' + API_KEY);
-//     		url.push('&callback=?');
-// 
-//     		$.ajax( {
-//     			type: "GET",
-//     			url: url.join(''),
-//     			dataType: 'jsonp',
-// 				contentType: "application/json",
-//     			error: function () { 
-//     				console.error("initSearchFieldBarrio(): Error in json-p call.");
-//     			},
-//         		success: function(data) {
-//           			var result = $.map(data.rows, function(row) {
-// // 						console.debug($);
-//             			
-//             			return {
-//               				// Total query information for barrio.
-//               				label: row[1] + (row[2] ? ", " + row[2] : "") + (row[3] ? ", " + row[3] : "") + (row[4] ? ", " + row[4] : "") + (row[0] ? ", " + row[0] : ""),
-//               				// Barrio name and Código (unique key) only for search/autocomplete.
-//         					//value: Código (unique key) for selection.
-//               				value: row[1] + " (" + row[0] + ")"
-//             			};
-//           			}); // $.map...
-//           			response (result);
-//         		} // success...
-//       		}); // $.ajax...
-//     	} // source...
-	}); // $().autocomplete...
 
-    // Overrides the default autocomplete filter function to search only from the beginning of the string
-//     $.ui.autocomplete.filter = function (array, term) {
-//         var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
-// 		//var matcher = new RegExp("\\b" + $.ui.autocomplete.escapeRegex(term), "i");
-//         return $.grep(array, function (value) {
-//             return matcher.test(value.label || value.value || value);
-//         });
-//     };
-	
+      	// Get numbers for info text.
+      	reporting_level = is_reporting_level.barrio;
+      	queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+      				"as families, count() FROM " + current_datasource.id +
+    				" WHERE " + current_datasource.sql_codigo + " = " + codigo;
+    	getFamilyNumber(reporting_level, queryText);
+
+    	// Extract polygon data from table.
+    	var polygonBoundary = response.getDataTable().getValue(0, current_datasource.col_no_polygon);
+    	lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
+
+    	// e only has four properties, "infoWindowHtml", "latLng", "pixelOffset" and "row".
+    	var e = {
+    		infoWindowHtml: null,
+        	latLng: lat_lng,
+        	pixelOffset: null,
+        	row : []
+    	};
+
+		e.row[current_datasource.cols[0].name] = { value: response.getDataTable().getValue(0, 0) }; // barrio id
+		e.row[current_datasource.cols[current_datasource.col_no_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_barrio) };
+    	e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_other_name_barrio) };
+
+    	e.row[current_datasource.cols[current_datasource.col_no_municipio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_municipio) };
+    	e.row[current_datasource.cols[current_datasource.col_no_localidad].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_localidad) };
+    	e.row[current_datasource.cols[current_datasource.col_no_departamento].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_departamento) };
+    	e.row[current_datasource.cols[current_datasource.col_no_partido].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_partido) };
+
+    	e.row[current_datasource.cols[current_datasource.col_no_families].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_families) };
+    	e.row[current_datasource.cols[current_datasource.col_no_start_year].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_start_year) };
+    	e.row[current_datasource.cols[current_datasource.col_no_sewage].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_sewage) };
+    	e.row[current_datasource.cols[current_datasource.col_no_water].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_water) };
+    	e.row[current_datasource.cols[current_datasource.col_no_electrical].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_electrical) };
+    	e.row[current_datasource.cols[current_datasource.col_no_gas].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_gas) };
+    	e.row[current_datasource.cols[current_datasource.col_no_drains].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_drains) };
+    	e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_street_lighting) };
+    	e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_waste_collection) };
+
+		issel_barrio.LatLng = null;
+		issel_barrio.row = [];
+		issel_barrio.LatLng = lat_lng;
+		issel_barrio.row = e.row;
+		
+    	// Triggering'click'-event listener to display barrio map marker and data.
+    	google.maps.event.trigger(initLayer, 'click', e);
+    } );
+	return true;
 }
 
+/** Municipio/Localidad search */
 function initSearchFieldPartido() {
 	// Prepare query string.
 	var query = "SELECT " + 
@@ -878,66 +735,99 @@ function initSearchFieldPartido() {
          		} // end success:
   			}); // end $.ajax
 		}, // end source:
-		minLength: 2,
+		minLength: 1,
 		select: function(event, ui) {
-//			$('#state_id').val(ui.item.id);
-			$('#search_part_txt').val(ui.item.id);
+			// Check if selected string is a municipio/departamento...
+			if (ui.item.label.indexOf(current_datasource.shortcut_municipio) != -1) {
+				current_datasource.filter.municipio = ui.item.id;
+				// Prepare where clause for barrio search.			
+				where_mpio_name__eq__selected_name = " WHERE " + 
+					current_datasource.sql_municipio + " = " + 
+    				"'" + current_datasource.filter.municipio + "'";
+
+				where_clause_area_map = current_datasource.sql_municipio + " = " + 
+    									"'" + current_datasource.filter.municipio + "'";
+    		}
+			// or a localidad.
+			else {
+				current_datasource.filter.localidad = ui.item.id;							
+				// Prepare where clause for barrio search.			
+				where_loc_name__eq__selected_name = " WHERE " + 
+					current_datasource.sql_localidad + " = " + 
+    				"'" + current_datasource.filter.localidad + "'";
+
+				where_clause_area_map = current_datasource.sql_localidad + " = " + 
+    									"'" + current_datasource.filter.localidad + "'";
+			}			
+			setViewToPartido();
 		}
 	});
 }
 
-function initSearchFieldPartido_OLD() {
-	//
-  	// Autocompletition via jQuery for Partido/Localidad search field.
-  	//
-  	// Retrieve the unique names of 'municipios' using GROUP BY workaround.
-  	
+/** Barrio search */
+function initSearchFieldBarrio() {
+	// Prepare query string.
+	// In case of a selected municipio/departamento or localidad a where clause is set.
+	// So only dependent barrios are selectable for users.
+	var query = "SELECT " + 
+        current_datasource.sql_barrio_search_grp + 
+        'FROM ' + current_datasource.id;
+
+    if (current_datasource.filter.municipio) {
+		query = query + where_mpio_name__eq__selected_name;    	
+    }
+
+    if (current_datasource.filter.localidad) {
+		query = query + where_loc_name__eq__selected_name;    	
+    }
 	
-	queryText = encodeURIComponent(
-            "SELECT " + current_datasource.sql_municipio + ", " + current_datasource.sql_localidad +
-            'FROM ' + current_datasource.id + " GROUP BY " + current_datasource.sql_municipio + ", " + current_datasource.sql_localidad);
-  	query = new google.visualization.Query(urlVizData + queryText);
+	var encodedQuery = encodeURIComponent(query);
 
-  query.send(function(response) {
-    if (response.isError()) {
-      alert('Function: initSearchFieldPartido()\n Error-msg: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-      return;
-    }
-
-    var numRows = response.getDataTable().getNumberOfRows();
-    // Create the list of results for display of autocomplete.
-    var results = [];
-    for(var i=0; i<numRows; i++) {
-      // Get 'Municipio' and 'Localidad' too for searching.
-      if (response.getDataTable().getValue(i, 1)) {
-        results.push(response.getDataTable().getValue(i, 0) + " (" + current_datasource.shortcut_municipio +")");
-        results.push(response.getDataTable().getValue(i, 1) + " (" + current_datasource.shortcut_localidad +")");
-      }
-      else {
-        results.push(response.getDataTable().getValue(i, 0) + " (" + current_datasource.shortcut_municipio +")");
-      }
-    }
-    // Strip all duplicates elements from array away.
-//    var unique_results = results.unique();
-
-    // Use the results to create the autocomplete options.
-    $('#search_part_txt').autocomplete( {
-      source: unique_results,
-      minLength: 2,
-//      maxHeight: 100,
-      autoFill: true,
-      zIndex: 4000
-    } );
-  } );
+    // Construct the URL.
+    var urlType = urlEndpoint + 'query';
+    var url = [urlType];
+    url.push('?sql=' + encodedQuery);
+    url.push('&key=' + API_KEY);
+    url.push('&callback=?');
+	
+	$('#search_barrio_txt').autocomplete( {
+		source: function(request, response) { 
+			// Send the JSONP request using jQuery.
+  			$.ajax( {
+    			type: "GET",
+    			url: url.join(''),
+    			dataType: 'jsonp',
+				contentType: "application/json",
+    			error: function () { 
+    				console.error("getFusionTableData(): Error in json-p call. Query was " + url);
+    			},
+        		success: function(data) {
+            		var re = $.ui.autocomplete.escapeRegex(request.term);
+            		var matcher = new RegExp( "^" + re, "i" );
+            		getBarrios(data);
+            		response($.grep(barrios_cache, function(item) {
+            			return matcher.test(item.label);
+            		}));
+         		} // end success:
+  			}); // end $.ajax
+		}, // end source:
+		minLength: 0,
+		select: function(event, ui) {
+			current_datasource.filter.barrio_id = ui.item.id;
+			current_datasource.filter.barrio_name = ui.item.label;			
+			setViewToBarrio();			
+		}
+	});
 }
 
-function removeAllPartidoSelections() {
-	//
-  	// Remove all selection criterias from objects.
-  	// Returns to starting position.
-  	//
-
-  	partidoFilter = false;
+/**
+ * Removes all selection criterias from dependent objects.
+ * Returns to starting position.
+ *
+ */
+function removeAllPartidoSelections() {	
+	var partido_filter = document.getElementById('search_part_txt')
+  	if (!partido_filter.value) { return; }
 
   	deleteOverlays();
   	initLayer.setMap(null);
@@ -947,182 +837,188 @@ function removeAllPartidoSelections() {
 	var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
   										current_datasource.center_lat_lng[1]);
   	map.setCenter(lat_lng);
-  	map.setZoom(current_datasource.startZoom);
+ 	map.setZoom(current_datasource.startZoom);
+ 	
+ 	// Remove circle from mini map.
+ 	deleteCirclesFromMiniMap();
+
   	delete queryText;
 
-  //removeBarrioInfo();
-  //initSearchFieldBarrio();
+  	// Remove filter settings.
+	resetFilter();
+
   	removeAllBarrioSelections();
 
   	initSearchFieldPartido();
   	clearThis(document.getElementById('search_part_txt'));
 
-  	// Remove filter.
-	resetFilter();
   
-	if (reporting_level != 'barrio') {
+	if (reporting_level != is_reporting_level.barrio) {
+    	reporting_level = null;
+  	}
+}
+
+/**
+ * Removes all selection criterias from dependent objects.
+ * Returns to starting position.
+ */
+function removeAllBarrioSelections() {
+  	deleteOverlays();
+
+	// If nothing is selected, we have to recenter the map.
+	if (!current_datasource.filter.municipio && !current_datasource.filter.localidad) {
+  		var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  											current_datasource.center_lat_lng[1]);
+
+    	map.setCenter(lat_lng);
+    	map.setZoom(current_datasource.startZoom);
+  	}
+
+  	removeBarrioInfo();
+
+  	// Remove filter settings.
+  	current_datasource.filter.barrio_id = null;
+  	current_datasource.filter.barrio_name = null;
+
+  	if (reporting_level == is_reporting_level.barrio) {
     	reporting_level = null;
   	}
 
-  	// Show province data (all data).
-  	setViewToProvincia();
+  	initSearchFieldBarrio();
+  	clearThis(document.getElementById('search_barrio_txt'));
+  	
+  	setViewToPartido();
 }
 
-function removeAllBarrioSelections() {
-  //
-  // Remove all selection criterias from objects.
-  // Returns to starting position.
-  //
-  
-  barrioFilter = false;
-
-  deleteOverlays();
-
-  if (partidoFilter === false) {
-  	var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
-  										current_datasource.center_lat_lng[1]);
-    map.setCenter(lat_lng);
-    map.setZoom(current_datasource.startZoom);
-  }
-
-  removeBarrioInfo();
-
-  initSearchFieldBarrio();
-  clearThis(document.getElementById('search_barrio_txt'));
-
-  // Remove filter.
-  current_datasource.filter['barrio'] = null;
-  if (reporting_level == 'barrio') {
-    reporting_level = null;
-  }
-}
-
+/** Remove all dependent texts of these from HTML-Objects. */
 function removePartidoInfo() {
-  //
-  // Remove all dependent texts of these from HTML-Objects.
-  //
-  var missing = "-";
+	var missing = "-";
 }
 
+/** Remove all dependent texts of these from HTML-Objects. */
 function removeBarrioInfo() {
-  //
-  // Remove all dependent texts of these from HTML-Objects.
-  //
-  var missing = "-";
+	var missing = "-";
 
-  var barrio_id = document.getElementById('barrio_id');
-  barrio_id.innerHTML = " ";
+	setBarrioDummyImage();
 
-  var other_name_barrio_id = document.getElementById('other_name_barrio_id');
-  other_name_barrio_id.innerHTML = missing;
+  	var barrio_id = document.getElementById('barrio_id');
+  	barrio_id.innerHTML = " ";
 
-  var partido_id = document.getElementById('partido_id');
-  partido_id.innerHTML = missing;
+  	var other_name_barrio_id = document.getElementById('other_name_barrio_id');
+  	other_name_barrio_id.innerHTML = missing;
 
-  var localidad_id = document.getElementById('localidad_id');
-  localidad_id.innerHTML = missing;
+  	var partido_id = document.getElementById('partido_id');
+  	partido_id.innerHTML = missing;
 
-  var families_id = document.getElementById('families_id');
-  families_id.innerHTML = missing;
+  	var localidad_id = document.getElementById('localidad_id');
+  	localidad_id.innerHTML = missing;
 
-  var start_year_id = document.getElementById('start_year_id');
-  start_year_id.innerHTML = missing;
+  	var families_id = document.getElementById('families_id');
+  	families_id.innerHTML = missing;
 
-  var sewage_id = document.getElementById('sewage_id');
-  sewage_id.innerHTML = missing;
+  	var start_year_id = document.getElementById('start_year_id');
+  	start_year_id.innerHTML = missing;
 
-  var water_id = document.getElementById('water_id');
-  water_id.innerHTML = missing;
+  	var sewage_id = document.getElementById('sewage_id');
+  	sewage_id.innerHTML = missing;
 
-  var electrical_id = document.getElementById('electrical_id');
-  electrical_id.innerHTML = missing;
+  	var water_id = document.getElementById('water_id');
+  	water_id.innerHTML = missing;
 
-  var gas_id = document.getElementById('gas_id');
-  gas_id.innerHTML = missing;
+  	var electrical_id = document.getElementById('electrical_id');
+  	electrical_id.innerHTML = missing;
 
-  var drains_id = document.getElementById('drains_id');
-  drains_id.innerHTML = missing;
+  	var gas_id = document.getElementById('gas_id');
+  	gas_id.innerHTML = missing;
 
-  var street_lighting_id = document.getElementById('street_lighting_id');
-  street_lighting_id.innerHTML = missing;
+  	var drains_id = document.getElementById('drains_id');
+  	drains_id.innerHTML = missing;
 
-  var waste_collection_id = document.getElementById('waste_collection_id');
-  waste_collection_id.innerHTML = missing;
+  	var street_lighting_id = document.getElementById('street_lighting_id');
+  	street_lighting_id.innerHTML = missing;
+
+  	var waste_collection_id = document.getElementById('waste_collection_id');
+  	waste_collection_id.innerHTML = missing;
 }
 
+/** Shows detailed information about a barrio. */
 function showBarrioInfo(e) {
-  //
-  // Shows detailed information about a barrio.
-  //
-  var missing = "-";
-  var no_info = "?";
+	// Set selected barrio data.
+	issel_barrio.LatLng = null;
+	issel_barrio.row = [];
+	issel_barrio.LatLng = e.lat_lng;
+	issel_barrio.row = e.row;
 
-  var barrio = e.row[current_datasource.cols[current_datasource.col_no_barrio].name].value;
-  var other_name_barrio = e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name].value;
-  var partido = e.row[current_datasource.cols[current_datasource.col_no_municipio].name].value;
-  var localidad = e.row[current_datasource.cols[current_datasource.col_no_localidad].name].value;
-  var families = e.row[current_datasource.cols[current_datasource.col_no_families].name].value;
-  var start_year = e.row[current_datasource.cols[current_datasource.col_no_start_year].name].value;
-  var sewage = e.row[current_datasource.cols[current_datasource.col_no_sewage].name].value;
-  var water = e.row[current_datasource.cols[current_datasource.col_no_water].name].value;
-  var electrical = e.row[current_datasource.cols[current_datasource.col_no_electrical].name].value;
-  var gas = e.row[current_datasource.cols[current_datasource.col_no_gas].name].value;
-  var drains = e.row[current_datasource.cols[current_datasource.col_no_drains].name].value;
-  var street_lighting = e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name].value;
-  var waste_collection = e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name].value;
-  var barrio_id = document.getElementById('barrio_id');
-  if (barrio)
-    barrio_id.innerHTML = barrio;
-  else
-    barrio_id.innerHTML = missing;
+	var missing = "-";
+  	var no_info = "?";
+  	var barrio_key = e.row[current_datasource.cols[0].name].value; // id or code!!!
+  	var barrio = e.row[current_datasource.cols[current_datasource.col_no_barrio].name].value;
+  	var other_name_barrio = e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name].value;
+  	var partido = e.row[current_datasource.cols[current_datasource.col_no_municipio].name].value;
+  	var localidad = e.row[current_datasource.cols[current_datasource.col_no_localidad].name].value;
+  	var families = e.row[current_datasource.cols[current_datasource.col_no_families].name].value;
+  	var start_year = e.row[current_datasource.cols[current_datasource.col_no_start_year].name].value;
+  	var sewage = e.row[current_datasource.cols[current_datasource.col_no_sewage].name].value;
+  	var water = e.row[current_datasource.cols[current_datasource.col_no_water].name].value;
+  	var electrical = e.row[current_datasource.cols[current_datasource.col_no_electrical].name].value;
+  	var gas = e.row[current_datasource.cols[current_datasource.col_no_gas].name].value;
+  	var drains = e.row[current_datasource.cols[current_datasource.col_no_drains].name].value;
+  	var street_lighting = e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name].value;
+  	var waste_collection = e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name].value;
+  	var barrio_id = document.getElementById('barrio_id');
 
-  var other_name_barrio_id = document.getElementById('other_name_barrio_id');
-  if (other_name_barrio)
-    other_name_barrio_id.innerHTML = other_name_barrio;
-  else
-    other_name_barrio_id.innerHTML = missing;
+	current_datasource.filter.barrio_id = barrio_key; // barrio id or code
 
-  var partido_id = document.getElementById('partido_id');
-  if (partido)
-    partido_id.innerHTML = partido;
-  else
-    partido_id.innerHTML = missing;
+	// In 2011 tables barrio id is defined as string so we have to prepare query string.
+	var codigo;
+	if (current_datasource.year == '2011') {
+		codigo = "'" + current_datasource.filter.barrio_id.toString() + "'";
+	}
+	else {
+		codigo = parseInt(current_datasource.filter.barrio_id);
+	}
 
-  var localidad_id = document.getElementById('localidad_id');
-  if (localidad)
-    localidad_id.innerHTML = localidad;
-  else
-    localidad_id.innerHTML = missing;
+	
+	setBarrioImage(codigo);
+	
+  	if (barrio)	barrio_id.innerHTML = barrio;
+  	else		barrio_id.innerHTML = missing;
+	
+  	var other_name_barrio_id = document.getElementById('other_name_barrio_id');
+  	if (other_name_barrio)	other_name_barrio_id.innerHTML = other_name_barrio;
+  	else					other_name_barrio_id.innerHTML = missing;
 
-  var families_id = document.getElementById('families_id');
-  if (families)
-    families_id.innerHTML = parseInt(families, 10).format();
-  else
-    families_id.innerHTML = missing;
+  	var partido_id = document.getElementById('partido_id');
+  	if (partido)	partido_id.innerHTML = partido;
+  	else 			partido_id.innerHTML = missing;
 
-  var start_year_id = document.getElementById('start_year_id');
-  if (start_year)
-    start_year_id.innerHTML = start_year;
-  else
-      start_year_id.innerHTML = missing;
+  	var localidad_id = document.getElementById('localidad_id');
+  	if (localidad)	localidad_id.innerHTML = localidad;
+  	else			localidad_id.innerHTML = missing;
 
-  var sewage_id = document.getElementById('sewage_id');
-  if (sewage)
-    sewage_id.innerHTML = sewage;
-  else
-    sewage_id.innerHTML = missing;
+  	var families_id = document.getElementById('families_id');
+  	if (families)	families_id.innerHTML = parseInt(families, 10).format();
+  	else			families_id.innerHTML = missing;
 
-  var water_id = document.getElementById('water_id');
-  if (water)
-    water_id.innerHTML = water;
-  else
-    water_id.innerHTML = missing;
+  	var start_year_id = document.getElementById('start_year_id');
+  	if (start_year)	start_year_id.innerHTML = start_year;
+  	else			start_year_id.innerHTML = missing;
 
-  var electrical_id = document.getElementById('electrical_id');
-  if (electrical)
-    electrical_id.innerHTML = electrical;
-  else
-    electrical_id.innerHTML = missing;
+  	var sewage_id = document.getElementById('sewage_id');
+  	if (sewage)	sewage_id.innerHTML = sewage;
+  	else		sewage_id.innerHTML = missing;
+
+  	var water_id = document.getElementById('water_id');
+  	if (water)
+    	water_id.innerHTML = water;
+  	else
+    	water_id.innerHTML = missing;
+
+  	var electrical_id = document.getElementById('electrical_id');
+  	if (electrical)
+    	electrical_id.innerHTML = electrical;
+  	else
+    	electrical_id.innerHTML = missing;
 
   var gas_id = document.getElementById('gas_id');
   if (gas)
@@ -1166,21 +1062,22 @@ function showBarrioInfo(e) {
     waste_collection_id.innerHTML = no_info;
   }
 
-  // Get numbers for info text.
-  current_datasource.filter['municipio'] = partido;
-  current_datasource.filter['localidad'] = localidad;
-  current_datasource.filter['barrio'] = barrio;
-  reporting_level = 'barrio';
+	// Get numbers for info text.
+//	current_datasource.filter.municipio = partido; // ???????????? CHECK!!!!!
+//	current_datasource.filter.localidad = localidad;
+	current_datasource.filter.barrio_name = barrio;
 
-  queryText = "SELECT sum(" + current_datasource.sql_families + ") as familias, count() FROM " + current_datasource.id +
-              " WHERE " + current_datasource.sql_barrio + " = '" + barrio + "'";
-  getFamilyNumber(view_level["barrio"], queryText);
+  	reporting_level = is_reporting_level.barrio;
+  	queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+  				"as families, count() FROM " + current_datasource.id +
+    			" WHERE " + current_datasource.sql_codigo + " = " + codigo + 
+    			" AND " + current_datasource.sql_barrio + " = " + 
+    				"'" + current_datasource.filter.barrio_name + "'";
+  	getFamilyNumber(reporting_level, queryText);
 }
 
+/** Show different images in response to good/bad criteria. */
 function setYesNoHTMLMarker(bool) {
-  //
-  // Show different images in response to good/bad criteria.
-  //
   if (bool)
 //    result = '<img src="/images/up.png"/>';
 //    result = '<i class="icon-thumbs-up"></i>';
@@ -1192,123 +1089,139 @@ function setYesNoHTMLMarker(bool) {
   return result;
 }
 
+/**
+ * Add markers to the map
+ * Marker sizes are expressed as a Size of X,Y
+ * where the origin of the image (0,0) is located
+ * in the top left of the image.
+ */
 function placeMarker(map, location, marker_icon, marker_shadow, to_stack) {
-  //
-  // Add markers to the map
-  // Marker sizes are expressed as a Size of X,Y
-  // where the origin of the image (0,0) is located
-  // in the top left of the image.
+	// Origins, anchor positions and coordinates of the marker
+  	// increase in the X direction to the right and in
+  	// the Y direction down.
+  	var image = new google.maps.MarkerImage(marker_icon,
+    	// The size of the marker.
+    	new google.maps.Size(32, 32),
+    	// The origin for this image.
+    	new google.maps.Point(0, 0),
+    	// The anchor for this image.
+    	new google.maps.Point(10, 32)
+    );
 
-  // Origins, anchor positions and coordinates of the marker
-  // increase in the X direction to the right and in
-  // the Y direction down.
-  var image = new google.maps.MarkerImage(marker_icon,
-      // The size of the marker.
-      new google.maps.Size(32, 32),
-      // The origin for this image.
-      new google.maps.Point(0, 0),
-      // The anchor for this image.
-      new google.maps.Point(10, 32));
-  var shadow = new google.maps.MarkerImage(marker_shadow,
-      // The shadow image is larger in the horizontal dimension.
-      new google.maps.Size(49, 32),
-      new google.maps.Point(0, 0),
-      new google.maps.Point(18, 32));
-      // Shapes define the clickable region of the icon.
-      // The type defines an HTML <area> element 'poly' which
-      // traces out a polygon as a series of X,Y points. The final
-      // coordinate closes the poly by connecting to the first
-      // coordinate.
-  var shape = {
-      coord: [1, 1, 1, 20, 18, 20, 18 , 1],
-      type: 'poly'
-  };
+  	var shadow = new google.maps.MarkerImage(marker_shadow,
+    	// The shadow image is larger in the horizontal dimension.
+      	new google.maps.Size(49, 32),
+      	new google.maps.Point(0, 0),
+      	new google.maps.Point(18, 32)
+    );
 
-  // Delete current ('old') marker.
-  deleteOverlays();
-  // Create new marker.
-  var marker = new google.maps.Marker( {
-    position: location,
-    icon: image,
-    shadow: shadow,
-//    shape: shape,
-    map: map
-  } );
-  // Set marker to map.
-  if (to_stack == true) {
-  	markers.push(marker);
-  }
-  // Set marker to the map's center.
-  map.setCenter(location);
+    // Shapes define the clickable region of the icon.
+    // The type defines an HTML <area> element 'poly' which
+    // traces out a polygon as a series of X,Y points. The final
+    // coordinate closes the poly by connecting to the first
+    // coordinate.
+  	var shape = {
+    	coord: [1, 1, 1, 20, 18, 20, 18 , 1],
+    	type: 'poly'
+  	};
 
-  return marker;
-}
+  	// Delete current ('old') marker.
+  	deleteOverlays();
 
-function deleteOverlays() {
-  //
-  // Deletes all markers in the array by removing references to them.
-  //
-  var i;
-  if (markers) {
-    for (i=0; i<markers.length; i++) {
-      markers[i].setMap(null);
-    }
-    markers.length = 0;
-  }
-}
+  	// Create new marker.
+  	var marker = new google.maps.Marker( {
+    	position: location,
+    	icon: image,
+    	shadow: shadow,
+		//shape: shape,
+    	map: map
+  	});
 
-function drawSupplyCharts(view_level, page) {
-  //
-  // Prepare charts with data.
-  //
-  // Init charts
-  var charts = {
-    // 1. Desagües cloacales
-    sewage: [],
-    // 2. Red pública
-    water: [],
-    // 3. Sistema eléctrico
-    electrical: [],
-    // 4. Red de gas
-    gas: []
-  };
-
-  // Prepare charts with values.
-  //
-  // Prepare queries in response of view level.
-  // Order of case-statement (switch) is important!!! From barrio to provincia!
-  var where_clause;
-  var chart_base;
+  	// Set marker to map.
+  	if (to_stack == true) {
+  		markers.push(marker);
+  	}
   
-  if (view_level == 4 && reporting_level == 'barrio' && current_datasource.filter['municipio'] !== null) {
-    where_clause = " WHERE " + current_datasource.sql_municipio + " = " + "'" + current_datasource.filter['municipio'] + "'";
-    chart_base = current_datasource.filter['municipio'];
-  }
-  else if (view_level == 4 && current_datasource.filter['barrio'] !== null && reporting_level == 'localidad') {
-    where_clause = " WHERE " + current_datasource.sql_municipio + " = " + "'" + current_datasource.filter['municipio'] + "'";
-    chart_base = current_datasource.filter['municipio'];
-  }
-  else if (view_level == 4 && current_datasource.filter['barrio'] !== null && reporting_level == 'municipio') {
-    where_clause = " WHERE " + current_datasource.sql_municipio + " = " + "'" + current_datasource.filter['municipio'] + "'";
-    chart_base = current_datasource.filter['municipio'];
-  }
-  else if(view_level == 3 && reporting_level == 'localidad') {
-    where_clause = " WHERE " + current_datasource.sql_localidad + " = '" + current_datasource.filter['localidad'] + "'";
-    chart_base = current_datasource.filter['localidad'];
-  }
-  else if(view_level == 2 && reporting_level == 'municipio') {
-    where_clause = " WHERE " + current_datasource.sql_municipio + " = " + "'" + current_datasource.filter['municipio'] + "'";
-    chart_base = current_datasource.filter['municipio'];
-  }
-  else if(view_level == 1) {
-    where_clause = null;
-    chart_base = "Provincia";
-  }
-  else {
-    where_clause = null;
-    chart_base = "Provincia";
-  }
+  	// Set marker to the map's center.
+  	map.setCenter(location);
 
+  	return marker;
+}
+
+/** Deletes all markers in the array by removing references to them. */
+function deleteOverlays() {
+	var i;
+  	if (markers) {
+    	for (i=0; i<markers.length; i++) {
+      		markers[i].setMap(null);
+    	}
+    	markers.length = 0;
+  	}
+}
+
+/** Delete all circles from mini map. */
+function deleteCirclesFromMiniMap() {
+	var i;
+  	if (mini_map_circles) {
+    	for (i=0; i<mini_map_circles.length; i++) {
+      		mini_map_circles[i].setMap(null);
+    	}
+    	mini_map_circles.length = 0;
+  	}
+}
+
+/** Prepare charts with data. */
+function drawSupplyCharts(reporting_level, page) {
+	// Init charts
+  	var charts = {
+    	sewage: [],		// 1. Desagües cloacales
+    	water: [],		// 2. Red pública
+    	electrical: [],	// 3. Sistema eléctrico
+    	gas: []			// 4. Red de gas
+  	};
+
+	// Prepare charts with values.
+  	//
+  	// Prepare queries in response of view level.
+  	// Order of if-statements below is important!!! From barrio to provincia!
+  	var where_clause;
+  	var chart_base;
+  
+  	if (reporting_level == is_reporting_level.barrio && 
+  		current_datasource.filter.municipio) {
+    	where_clause = where_mpio_name__eq__selected_name;
+    	chart_base = current_datasource.filter.municipio;
+  	}
+  	else if (reporting_level == is_reporting_level.localidad && 
+  			current_datasource.filter.barrio_id) {
+    		where_clause = where_loc_name__eq__selected_name;
+    		chart_base = current_datasource.filter.municipio;
+  	}
+  	else if (reporting_level == is_reporting_level.municipio && 
+  			current_datasource.filter.barrio_id) {
+    	where_clause = where_mpio_name__eq__selected_name;
+    	chart_base = current_datasource.filter.municipio;
+  	}
+  	else if(reporting_level == is_reporting_level.localidad) {
+    	where_clause = where_loc_name__eq__selected_name; 
+    	chart_base = current_datasource.filter.localidad;
+  	}
+  	else if(reporting_level == is_reporting_level.municipio) {
+    	where_clause = where_mpio_name__eq__selected_name; 
+    	chart_base = current_datasource.filter.municipio;
+  	}
+  	else if(reporting_level = is_reporting_level.provincia) {
+    	where_clause = null;
+    	chart_base = is_reporting_level.provincia;
+  	}
+  	else {
+    	where_clause = null;
+    	chart_base = is_reporting_level.provincia;
+  	}
+
+	// A little bit cosmetics...
+	//chart_base = chart_base.substring(0, 1).toUpperCase() + chart_base.substr(1, chart_base.length-1);
+	
 if (current_datasource.key.indexOf("2013") == -1) { // 2011 only...
   if (where_clause) {
     charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id + where_clause };
@@ -1412,148 +1325,143 @@ else {
   }
 }
 
+/** Draws a chart on given page. */
 function draw_chart(chartObject) {
-  //
-  // Draws a chart on given page.
-  //
-  google.visualization.drawChart( {
-    "containerId": chartObject["containerID"],
-    "dataSourceUrl": chartObject["dataSourceUrl"],
-    "query": chartObject["query"],
-    "chartType": chartObject["chartType"],
-    "options": chartObject["options"]
-  } );
+	google.visualization.drawChart( {
+    	"containerId": chartObject["containerID"],
+    	"dataSourceUrl": chartObject["dataSourceUrl"],
+    	"query": chartObject["query"],
+    	"chartType": chartObject["chartType"],
+    	"options": chartObject["options"]
+  	} );
 }
 
-function getFamilyNumber(view_level, queryText) {
-  //
-  // Get and show info texts.
-  //
-  var info_text_view_level = document.getElementById('info_text_view_level');
-  query = new google.visualization.Query(urlVizData + queryText);
+/** 
+ * Get and show info text of families.
+ * Display depends on reporting level.
+ * Levels are: Provincia, Municipio/Localidad and Barrio.
+ *
+ */
+function getFamilyNumber(reporting_level, queryText) {
+	var info_text_reporting_level = document.getElementById('info_text_reporting_level');
+  	query = new google.visualization.Query(urlVizData + queryText);
 
-  query.send(function(response) {
-    if (response.isError()) {
-      alert('getFamilyNumber(): Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-      return;
-    }
-    var results = [];
-    var numRows = response.getDataTable().getNumberOfRows();
-    // Search criteria not found in data source.
-    if (!numRows) {
-        var msg = "La selecci&oacute;n no se pudo encontrar.";
-        bootstrap_alert.warning(msg);
-        return;
-    }
-    for(var i=0; i<numRows; i++) {
-      results.push(response.getDataTable().getValue(i, 0));
-      results.push(response.getDataTable().getValue(i, 1));
+  	query.send(function(response) {
+    	if (response.isError()) {
+			console.error('getFamilyNumber(): Error in query: ' + 
+      						response.getMessage() + ' ' + 
+      						response.getDetailedMessage()
+      		);
+      		return;
+    	}
 
-    }
-    var html;
+	    var	results = [];    	
+    	var numRows = response.getDataTable().getNumberOfRows();
+    	// Search criteria not found in data source.
+    	if (!numRows) {
+        	var msg = "La selecci&oacute;n no se pudo encontrar.";
+        	return;
+    	}
+    
+    	for(var i=0; i<numRows; i++) {
+      		results.push(response.getDataTable().getValue(i, 0));
+      		results.push(response.getDataTable().getValue(i, 1));
+    	}
+    	
+    	// Distinction of singular and plural use of texts in response to numbers.
+    	var villa_text = "asentamientos informales";
+    	var familia_text = "familias";
 
-    // Distinction of singular and plural use of texts in response to numbers.
-    var villa_text = "villas y asentamientos";
-    var familia_text = "familias";
+    	if (parseInt(results[1], 10).format() == '1') {
+      		villa_text = "asentamiento informal";
+    	}
 
-    if (parseInt(results[1], 10).format() == '1') {
-      villa_text = "villa y asentamiento";
-    }
+    	if (parseInt(results[0], 10).format() == '1') {
+      		familia_text = "familia";
+    	}
 
-    if (parseInt(results[0], 10).format() == '1') {
-      familia_text = "familia";
-    }
+		// Set info texts.
+    	var html, municipio;
+    	switch(reporting_level) {
+    		// Provincia
+      		case is_reporting_level.provincia:
+         		html = "En la provincia de " + 
+        		"<strong>" + current_datasource.filter.provincia + "</strong> hay&nbsp;" +
+        		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
+        		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+        		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
+        		"&nbsp;" + familia_text + ".";
+        	break;
 
-    // Set info texts.
-    switch(view_level) {
-      // provincia
-      case 1:
-        html = "En la <strong>provincia</strong> de " + current_datasource.provincia + " hay&nbsp;" +
-        "<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        "&nbsp;" + villa_text + ", en los que residen&nbsp;" +
-        "<strong>" + parseInt(results[0], 10).format() + "</strong>" +
-        "&nbsp;" + familia_text + ".";
-        break;
-      // municipio
-      case 2:
-        html = "En el municipio de <strong>" + current_datasource.filter['municipio'] + "</strong> hay&nbsp;" +
-        "<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        "&nbsp;" + villa_text + ", en los que residen&nbsp;" +
-        "<strong>" + parseInt(results[0], 10).format() + "</strong>" +
-        "&nbsp;" + familia_text + ".";
-        break;
-      // localidad
-      case 3:
-        html = "En la localidad de <strong>" + current_datasource.filter['localidad'] +
-        "</strong> del municipio de <strong>" + current_datasource.filter['municipio'] + "</strong> hay&nbsp;" +
-        "<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        "&nbsp;" + villa_text + ", en los que residen&nbsp;" +
-        "<strong>" + parseInt(results[0], 10).format() + "</strong>" +
-        "&nbsp;" + familia_text + ".";
-        break;
-      // barrio
-      case 4:
-        html = "En el barrio de <strong>" + current_datasource.filter['barrio'] +
-        "</strong> en la localidad de <strong>" + current_datasource.filter['localidad'] +
-        "</strong> del " + current_datasource.alias_municipio + " de <strong>" + current_datasource.filter['municipio'] + "</strong> hay&nbsp;" +
-        "<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        "&nbsp;" + villa_text + ", en los que residen&nbsp;" +
-        "<strong>" + parseInt(results[0], 10).format() + "</strong>" +
-        "&nbsp;" + familia_text + ".";
-        break;
-      //default:
-      // not set...
-    }
-    info_text_view_level.innerHTML = html;
-  } );
+			// Municipio => same level as localidad (synonymous).
+      		case is_reporting_level.municipio:
+        		html = "En el " + current_datasource.alias_municipio + " de " + 
+        		"<strong>" + current_datasource.filter.municipio + "</strong> hay&nbsp;" +
+        		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
+        		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+        		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
+        		"&nbsp;" + familia_text + ".";
+        	break;
+      
+			// Localidad => same level as municipio (synonymous).
+      		case is_reporting_level.localidad:
+        		html = "En el " + current_datasource.alias_municipio + " de " + 
+        		"<strong>" + current_datasource.filter.localidad + "</strong> hay&nbsp;" +
+        		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
+        		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+        		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
+        		"&nbsp;" + familia_text + ".";
+        	break;
+
+			// Barrio			
+			case is_reporting_level.barrio:
+				html = "En el barrio de " + "<strong>" + current_datasource.filter.barrio_name + "</strong>" + 
+				" del " + current_datasource.alias_municipio +
+				" de <strong>" + issel_barrio.row[current_datasource.cols[current_datasource.col_no_localidad].name].value + "</strong> hay&nbsp;" +
+				"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
+				"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+				"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
+				"&nbsp;" + familia_text + ".";
+        	break;
+    	}
+    	info_text_reporting_level.innerHTML = html;
+  	});
 }
 
 /////////////////////////////////////////////////////////////////////
 // Public functions for global using.
 /////////////////////////////////////////////////////////////////////
 
-// A simple alert message via bootstrap.
-bootstrap_alert = function() {};
-bootstrap_alert.warning = function(msg) {
-  $('#alert_placeholder').html(
-  '<div class="alert fade in"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-thumbs-down"></i>&nbsp;<span>'+msg+'</span></div>')
-};
-
+/** For checking if a string is empty, null or undefined. */
 function isEmpty(str) {
-  //
-  // For checking if a string is empty, null or undefined.
-  //
-  return (!str || 0 === str.length);
+	return (!str || 0 === str.length);
 }
 
+/** For checking if a string is blank, null or undefined. */
 function isBlank(str) {
-  //
-  // For checking if a string is blank, null or undefined.
-  //
-  return (!str || /^\s*$/.test(str));
+	return (!str || /^\s*$/.test(str));
 }
 
+/** Clears text in a text field, when the user clicks on it. */
 function clearThis(target) {
-  //
-  // Clears text in a text field, when the user clicks on it.
-  //
-  target.value= "";
+	target.value= "";
 }
 
 function doAction(e, obj) {
-  var keyCode = e ? (e.which ? e.which : e.keyCode) : event.keyCode;
-  // For enter...
-  if (keyCode == 13) {
-    if (obj.id == 'search_part_txt') {
-      setViewToPartido();
-      return false;
-    }
-    if (obj.id == 'search_barrio_txt') {
-      setViewToBarrio();
-      return false;
-    }
-  }
-  return true;
+	var keyCode = e ? (e.which ? e.which : e.keyCode) : event.keyCode;
+  	// For enter...
+  	if (keyCode == 13) {
+    	if (obj.id == 'search_part_txt') {
+      		//setViewToPartido();
+      		return false;
+    	}
+
+    	if (obj.id == 'search_barrio_txt') {
+      		//setViewToBarrio();
+      		return false;
+    	}
+  	}
+  	return true;
 }
 
 function techoBtnOnMouseOver(obj) {
@@ -1578,10 +1486,8 @@ function techoBtnOnMouseOut(obj) {
 // Prototypes for global using.
 /////////////////////////////////////////////////////////////////////
 
+/** Strips duplicates in an array away. */
 // Array.prototype.unique = function() {
-//   //
-//   // Strips duplicates in an array away.
-//   //
 //   var obj = {};
 //   var tmp = [];
 //   var i;
@@ -1593,24 +1499,26 @@ function techoBtnOnMouseOut(obj) {
 Number.decPoint = ',';
 Number.thousand_sep = '.';
 
+/*
+//
+// Usage: <number_obj>.format([, number]  [, bool]  )
+//
+// The function is a prototype extension of the Number object, that it can be
+// applied as a method of all the numbers. The call <number_obj>.format() expects
+// two parameters to identify the following:
+// number (optional)
+// The number of decimal places to which the number is to be rounded (default: 0)
+// bool (optional)
+// This parameter determines whether the formatted number should have a fixed
+// number of decimal places. If true, then any missing bodies will extend with zero.
+// Examples:
+// var myNumber = 12345678;
+// myNumber.format() => Result: 12.345.678
+// myNumber.format(2) => Result: 12.345.678
+// myNumber.format(2, true) => Result: 12.345.678,00
+//
+*/
 Number.prototype.format = function(k, fixLength) {
-  //
-  // Usage: <number_obj>.format([, number]  [, bool]  )
-  //
-  // The function is a prototype extension of the Number object, that it can be
-  // applied as a method of all the numbers. The call <number_obj>.format() expects
-  // two parameters to identify the following:
-  // number (optional)
-  // The number of decimal places to which the number is to be rounded (default: 0)
-  // bool (optional)
-  // This parameter determines whether the formatted number should have a fixed
-  // number of decimal places. If true, then any missing bodies will extend with zero.
-  // Examples:
-  // var myNumber = 12345678;
-  // myNumber.format() => Result: 12.345.678
-  // myNumber.format(2) => Result: 12.345.678
-  // myNumber.format(2, true) => Result: 12.345.678,00
-  //
   if (!k) {
     k = 0;
   }

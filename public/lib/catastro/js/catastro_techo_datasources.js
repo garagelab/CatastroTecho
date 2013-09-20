@@ -24,26 +24,64 @@ var datasources = { table: [] };
 var current_datasource;
 
 // Data filters (municipio equal to departamento, partido).
-var data_filter = { provincia: null, municipio: null, localidad: null, barrio: null };
+var data_filter = { 
+	provincia: null, 
+	municipio: null, 
+	localidad: null, 
+	barrio_id: null, 
+	barrio_name: null 
+};
 
-// View levels (municipio equal to departamento, partido).
-var view_level = { provincia: 1, municipio: 2, localidad: 3, barrio: 4 };
+// Reporting levels (municipio equal to departamento, partido).
+var is_reporting_level = { 
+	provincia: "provincia", 
+	municipio: "municipio", 
+	localidad: "localidad",
+	barrio: "barrio"
+};
 
+// Current reporting level.
 var reporting_level = null;
 
 var municipios_cache = new Array();
-var barrios_cache = { data: [] };
+var barrios_cache = new Array();
+
+// Where clauses.
+var where_mpio_name__eq__selected_name;
+var where_loc_name__eq__selected_name;
+var where_barrio_id__eq__selected_id;
+var where_clause_area_map;
+var where_clause;
+
+// Current selected barrio record (table row).
+var issel_barrio = {	// is selected...
+	infoWindowHtml: null,
+    latLng: null,
+    pixelOffset: null,
+    row : []
+};
 
 // Color of polygons changes every year.
 // #1e90ff (blue tone) was the default during test phase.
 // #ff0000 Google default (red).
 var polygon_color = {
 	"2011": "#00FF00", // green
-	"2013": "#1e90ff", // blue
+//	"2013": "#1e90ff", // blue
+	"2013": "#ff0000", // red
 };
 
+var polygon_color_selected_area = "#ff0000";
+var polygon_color_not_selected_area = "#ffffff";
+
+ 
 var placeholder = "ingresa el nombre y pulse enter...";
 
+var image_barrios_path = "/images_barrios";
+
+/////////////////////////////////////////////////////////////////////
+// TERRITORIES SECTION BEGIN >>>
+// ADD NEW TERRITORIES HERE.
+/////////////////////////////////////////////////////////////////////
 var territories = [
 	{ id: 'buenos_aires_2011', text: 'Buenos Aires', year: '2011' },
 	{ id: 'cordoba_2011', text: 'Córdoba', year: '2011' },
@@ -54,6 +92,10 @@ var territories = [
 	{ id: 'rio_negro_neuquen_2013', text: 'Río Negro y Neuquén', year: '2013' },
 	{ id: 'posadas_2013', text: 'Posadas', year: '2013' }
 ];
+/////////////////////////////////////////////////////////////////////
+// <<< END OF TERRITORIES SECTION
+/////////////////////////////////////////////////////////////////////
+
 
 /////////////////////////////////////////////////////////////////////
 // TABLE SECTION BEGIN >>>
@@ -71,6 +113,7 @@ datasources.table['buenos_aires_2011'] = {
 	year:	'2011',
 	provincia:	'Buenos Aires',
 	startZoom:	10,
+	partidoZoom: 12,
 	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD'",
 	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD', 'PROVINCIA'",
 	sql_municipio:	"'PARTIDO'",
@@ -80,8 +123,8 @@ datasources.table['buenos_aires_2011'] = {
 	sql_partido: "'PARTIDO'",
 	sql_localidad: "'LOCALIDAD'",
 	sql_families: "'NRO DE FLIAS'",
-	alias_municipio: "Municipio",
-	alias_localidad: "Localidad",
+	alias_municipio: 'partido',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 1,
 	col_no_other_name_barrio: 2, 
@@ -101,7 +144,6 @@ datasources.table['buenos_aires_2011'] = {
 	col_no_street_lighting: 21, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 22, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 7,
-	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
@@ -120,6 +162,7 @@ datasources.table['cordoba_2011'] = {
 	year:	'2011',
 	provincia:	'Córdoba',
 	startZoom:  12,
+	partidoZoom: 12,
 	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD'",
 	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD', 'PROVINCIA'",
 	sql_municipio:	"'DEPARTAMENTO'",
@@ -129,8 +172,8 @@ datasources.table['cordoba_2011'] = {
 	sql_partido: "'DEPARTAMENTO'",
 	sql_localidad: "'LOCALIDAD'",
 	sql_families: "'NRO DE FLIAS'",
-	alias_municipio: "Departamento",
-	alias_localidad: "Localidad",
+	alias_municipio: 'departamento',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 1,
 	col_no_other_name_barrio: 2, 
@@ -150,7 +193,6 @@ datasources.table['cordoba_2011'] = {
 	col_no_street_lighting: 21, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 22, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 7,
-	alias_municipio: 'departamento',
 	search_part_txt_label: 'departamento o localidad',
 	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
@@ -169,17 +211,18 @@ datasources.table['buenos_aires_2013'] = {
 	year:	'2013',
 	provincia:	'Buenos Aires',
 	startZoom:	10,
+	partidoZoom: 12,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Departamento'",
-	sql_codigo: "'#'",
+	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: "Municipio",
-	alias_localidad: "Localidad",
+	alias_municipio: 'partido',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
 	col_no_other_name_barrio: 30,
@@ -199,7 +242,6 @@ datasources.table['buenos_aires_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
@@ -218,17 +260,18 @@ datasources.table['cordoba_2013'] = {
 	year:	'2013',
 	provincia:	'Córdoba',
 	startZoom:  12,
+	partidoZoom: 13,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'#id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Departamento'",
-	sql_codigo: "'#'",
+	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: "Departamento",
-	alias_localidad: "Localidad",
+	alias_municipio: 'departamento',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
 	col_no_other_name_barrio: 30,
@@ -248,7 +291,6 @@ datasources.table['cordoba_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'departamento',
 	search_part_txt_label: 'departamento o localidad',
 	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
@@ -267,17 +309,18 @@ datasources.table['rosario_2013'] = {
 	year:	'2013',
 	provincia:	'Santa Fe',
 	startZoom:  12,
+	partidoZoom: 12,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Departamento'",
-	sql_codigo: "'#'",
+	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: "Municipio",
-	alias_localidad: "Localidad",
+	alias_municipio: 'departamento',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
 	col_no_other_name_barrio: 30,
@@ -297,7 +340,6 @@ datasources.table['rosario_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
@@ -316,17 +358,18 @@ datasources.table['salta_2013'] = {
 	year:	'2013',
 	provincia:	'Salta',
 	startZoom:  12,
+	partidoZoom: 13,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Municipio/Partido/Comuna'",
-	sql_codigo: "'#'",
+	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: "Municipio",
-	alias_localidad: "Localidad",
+	alias_municipio: 'departamento',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
 	col_no_other_name_barrio: 30,
@@ -346,7 +389,6 @@ datasources.table['salta_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
@@ -365,17 +407,18 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	year:	'2013',
 	provincia:	'Río Negro y Neuquén',
 	startZoom:  12,
+	partidoZoom: 12,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Municipio/Partido/Comuna'",
-	sql_codigo: "'#'",
+	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: "Municipio",
-	alias_localidad: "Localidad",
+	alias_municipio: 'departamento',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
 	col_no_other_name_barrio: 30,
@@ -395,7 +438,6 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
@@ -414,17 +456,18 @@ datasources.table['posadas_2013'] = {
 	year:	'2013',
 	provincia:	'Misiones',
 	startZoom:  12,
+	partidoZoom: 12,
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Municipio/Partido/Comuna'",
-	sql_codigo: "'#'",
+	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: "Municipio",
-	alias_localidad: "Localidad",
+	alias_municipio: 'departamento',
+	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
 	col_no_other_name_barrio: 30,
@@ -444,7 +487,6 @@ datasources.table['posadas_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	alias_municipio: 'partido',
 	search_part_txt_label: 'municipio o localidad',
 	shortcut_municipio: 'mpio.',
 	shortcut_localidad: 'loc.',
@@ -508,7 +550,7 @@ function getCurrentDatasource() {
 	getFusionTableColumns(current_datasource.id, columnTableHandler);
 
 	// Filling data cache.
-	getFusionTableData("select " + current_datasource.sql_barrio_search_grp + " from " + current_datasource.id, setDataCache);	
+	//getFusionTableData("select " + current_datasource.sql_barrio_search_grp + " from " + current_datasource.id, setDataCache);	
 
  	current_datasource.filter['provincia'] = current_datasource.provincia;
 
@@ -519,13 +561,19 @@ function getCurrentDatasource() {
 	return current_datasource;
 }
 
-/** */
+/** Filter resetter */
 function resetFilter(level) {
 	if (level === undefined) { 
- 		current_datasource.filter['provincia'] = null;
-		current_datasource.filter['municipio'] = null;
-		current_datasource.filter['localidad'] = null;
-		current_datasource.filter['barrio'] = null;
+ 		current_datasource.filter.provincia = null;
+		current_datasource.filter.municipio = null;
+		current_datasource.filter.localidad = null;
+		current_datasource.filter.barrio_id = null;
+		current_datasource.filter.barrio_name = null;
+
+		where_mpio_name__eq__selected_name = null;
+		where_loc_name__eq__selected_name = null;
+		where_barrio_id__eq__selected_id = null;
+		where_clause_area_map = null;
 		return;
 	}
 	
@@ -534,11 +582,18 @@ function resetFilter(level) {
 	}
 }
 
-/** */
-function setFilter(level, value) {
-	if (level in data_filter) {
-		current_datasource.filter[level] = value;
-	}
+/* Set image (path only) from current selected barrio and shows it on screen. */
+function setBarrioImage(barrio_id) {
+	var image = image_barrios_path + '/' + barrio_id + '.jpg';
+	$('#img-barrio')
+		.error( function () { setBarrioDummyImage(); })
+		.attr('src', image);
+}
+
+/* Set dummy (transparent) image as placeholder to barrio data. */
+function setBarrioDummyImage() {
+	var image = '/images/barrio_dummy.jpg';
+	$('#img-barrio').attr('src', image);
 }
 
 /**
@@ -553,6 +608,7 @@ function setFilter(level, value) {
  */
 function getFusionTableData(query, callback) {	
 	// Prepare query string.
+
 	var encodedQuery = encodeURIComponent(query);
 
     // Construct the URL.
@@ -611,13 +667,16 @@ function columnTableHandler(response) {
 	current_datasource.cols = response.items;
 
 //	begin checking >>>
-//	Part below only for checking and testing...
+//	Part below is only for checking and testing...
 	// Get column list (total of all columns in the table).
-// 	console.debug("totalItems: " + response.totalItems);
+	// Uncomment code below for check.
+// 
+// 	console.debug("totalItems: " + response.totalItems);  			// first line
 // 	var tbl_cols = response.items;
 // 	for(var i=0; i<tbl_cols.length; i++) {
 // 		console.debug("column[" + i + "] = " + tbl_cols[i].name);  		
-// 	}	
+// 	}																// last line
+// 
 // <<< end checking
 }
 
@@ -632,12 +691,14 @@ function getMunicipios(response) {
 	// Apply responded data into municipio array.
 	for (var i in response.rows) {
 		var row = response.rows[i];
-		
 		row[0].trim();
 		row[1].trim();
-
-		municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
-		municipios_cache.push({ id: row[1], label: row[1] + " (" + localidad + ")"});
+		if (!row[0] == "") {
+ 			municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
+		}
+		if (!row[1] == "") {
+			municipios_cache.push({ id: row[1], label: row[1] + " (" + localidad + ")"});
+		}
 	}
 
 	// Remove duplicates.
@@ -677,6 +738,39 @@ function getMunicipios(response) {
 
 
 //	console.debug("getMunicipios() =>  municipios_cache ", municipios_cache.length);
+}
+
+/** Callback: Get barrios from current datasource. */
+function getBarrios(response) {
+	barrios_cache = [];
+
+	// Apply responded data into barrio array.
+	for (var i in response.rows) {
+		var row = response.rows[i];
+		row[0].trim();
+		barrios_cache.push({ id: row[0], label: row[1]});
+	}
+
+	// Remove duplicates - there should be none because barrios id's must be unique!
+	var tmp_arr = {};
+	for (var i=0; i<barrios_cache.length; i++) {
+    	tmp_arr[barrios_cache[i]['id']] = barrios_cache[i];
+	}
+	barrios_cache = new Array();
+	for (key in tmp_arr) {
+    	barrios_cache.push(tmp_arr[key]);	
+	}
+
+//	console.debug("total barrios: " + barrios_cache.length);
+//	$("#test").replaceWith("&nbsp;villa o asentamiento&nbsp;" + barrios_cache.length); 
+		
+	// Sort texts ascending.
+	barrios_cache.sort(function(a, b){
+ 		var textA = a.label.toLowerCase(), textB = b.label.toLowerCase()
+ 		if (textA < textB) return -1
+ 		if (textA > textB)return 1
+ 		return 0 //default return value (no sorting)
+	});
 }
 
 /**

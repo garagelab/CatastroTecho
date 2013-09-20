@@ -81,24 +81,27 @@
         		
         		<!-- Map container Argentina -->
         		<div class="span6 well" id="map_index_page"></div>
+
       		</div> <!-- class="row-fluid" -->
     	</div> <!-- class="span12" -->
   	</div> <!-- class="row-fluid" -->   
 </div> <!-- class="container-fluid" -->
 
 <script type="text/javascript">
+<!--
 	// Set a callback to run when the Google Visualization library is loaded.
   	google.setOnLoadCallback(initIndexPage);
 
-  	// Issue: Google Map not showing when in a Bootstrap container-fluid!
+  	// Issue: Google Map not showing (only gray) when in a Bootstrap container-fluid!
   	// Workaround: In order to avoid adding of a fixed value for height via CSS,
   	// we use a callback, see below.  
   	// Callback that will manually set the height of the map when the window is
   	// resized. 
   	$(window).resize(function () {
-    	var h = $(window).height(),
-        offsetTop = 50; // Calculate the top offset
+    	var h = $(window).height();
+        var offsetTop = 50; // Calculate the top offset
 
     	$('#map_index_page').css('height', (h - offsetTop));
   	}).resize();
+//-->
 </script>

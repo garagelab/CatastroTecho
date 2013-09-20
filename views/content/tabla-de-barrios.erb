@@ -3,7 +3,6 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
-    
     	<p>
         <select style="width:250px" id="sel_terri">
             <optgroup label="2013">
@@ -20,9 +19,8 @@
             </optgroup>
         </select>
         </p>
-
         <h3 class="lead" id="techo_style">
-      	<span id="header_table_barrio_page"></span>
+      	<span id="header_table_barrios_page"></span>
       </h3>
     </div>
   </div>
@@ -34,6 +32,8 @@
   </div>
 </div>
 <script type="text/javascript">
+
+$(document).ready(function() {
 	$('#sel_terri').select2( {
 		placeholder: placeholder,
 		allowClear: true
@@ -48,13 +48,9 @@
 			setCurrentDatasource(e.val);
  			// Refresh current page after changing datasource.
 		 	window.location.reload(true);	
-//		 	initTableBarriosPage();		
-
-			// Clear municipio and barrio search fields.
-			//removeAllPartidoSelections();				
 		}
 	});
+}); // end $(document).ready(function()
 
-
-    google.setOnLoadCallback(initTableBarriosPage);
+google.setOnLoadCallback(initTableBarriosPage);
 </script>
