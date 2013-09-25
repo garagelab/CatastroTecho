@@ -249,7 +249,8 @@ function initMapBarriosPage() {
   										current_datasource.center_lat_lng[1]),
     	zoom: current_datasource.startZoom,
     	minZoom: 2, // 9
-    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+    	mapTypeId: google.maps.MapTypeId.HYBRID,
+//    	mapTypeId: google.maps.MapTypeId.ROADMAP,
    		mapTypeControl: true,
     	mapTypeControlOptions: {
         	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
@@ -280,7 +281,8 @@ function initMapBarriosPage() {
   		scaleControl: false,
   		scrollwheel: false,
   		disableDoubleClickZoom: true,    	
-    	mapTypeId: google.maps.MapTypeId.ROADMAP,
+    	mapTypeId: google.maps.MapTypeId.HYBRID,
+//     	mapTypeId: google.maps.MapTypeId.ROADMAP,
     	mapTypeControl: false,
 		zoomControl: false,
     	streetViewControl: false
@@ -827,7 +829,10 @@ function initSearchFieldBarrio() {
  */
 function removeAllPartidoSelections() {	
 	var partido_filter = document.getElementById('search_part_txt')
-  	if (!partido_filter.value) { return; }
+  	if (!partido_filter.value) { 
+  		removeAllBarrioSelections();
+  		return; 
+  	}
 
   	deleteOverlays();
   	initLayer.setMap(null);
@@ -1371,12 +1376,14 @@ function getFamilyNumber(reporting_level, queryText) {
     	// Distinction of singular and plural use of texts in response to numbers.
     	var villa_text = "asentamientos informales";
     	var familia_text = "familias";
-
+		var living_text = "residen";
+		
     	if (parseInt(results[1], 10).format() == '1') {
       		villa_text = "asentamiento informal";
     	}
 
     	if (parseInt(results[0], 10).format() == '1') {
+    		living_text = "reside";
       		familia_text = "familia";
     	}
 
@@ -1415,11 +1422,10 @@ function getFamilyNumber(reporting_level, queryText) {
 
 			// Barrio			
 			case is_reporting_level.barrio:
-				html = "En el barrio de " + "<strong>" + current_datasource.filter.barrio_name + "</strong>" + 
-				" del " + current_datasource.alias_municipio +
-				" de <strong>" + issel_barrio.row[current_datasource.cols[current_datasource.col_no_localidad].name].value + "</strong> hay&nbsp;" +
-				"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-				"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+				html = "En el barrio <strong>" + current_datasource.filter.barrio_name + "</strong>" +  
+				" de&nbsp;" + 
+				"<strong>" + issel_barrio.row[current_datasource.cols[current_datasource.col_no_localidad].name].value + "</strong>" + 
+				"&nbsp;" + living_text + ",&nbsp;aproximadamente,&nbsp;" +
 				"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
 				"&nbsp;" + familia_text + ".";
         	break;

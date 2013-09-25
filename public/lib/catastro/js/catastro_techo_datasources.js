@@ -67,7 +67,8 @@ var issel_barrio = {	// is selected...
 var polygon_color = {
 	"2011": "#00FF00", // green
 //	"2013": "#1e90ff", // blue
-	"2013": "#ff0000", // red
+	"2013": "#E54DE5", // red
+// 	"2013": "#ff0000", // red
 };
 
 var polygon_color_selected_area = "#ff0000";
