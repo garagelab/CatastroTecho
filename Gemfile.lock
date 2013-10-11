@@ -1,32 +1,38 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.4)
-    bcrypt-ruby (3.0.1)
-    excon (0.25.0)
+    addressable (2.3.5)
+    bcrypt-ruby (3.1.2)
+    excon (0.25.3)
     fusion_tables (0.3.2)
       gdata_19 (>= 1.1.2)
     gdata_19 (1.1.5)
-    heroku (2.39.4)
+    heroku (2.41.0)
       heroku-api (~> 0.3.7)
       launchy (>= 0.3.2)
       netrc (~> 0.7.7)
       rest-client (~> 1.6.1)
       rubyzip
-    heroku-api (0.3.13)
-      excon (~> 0.25.0)
+    heroku-api (0.3.15)
+      excon (~> 0.25.1)
     launchy (2.3.0)
       addressable (~> 2.3)
-    mime-types (1.23)
+    mail (2.5.4)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
+    mime-types (1.25)
     netrc (0.7.7)
+    polyglot (0.3.3)
+    pony (1.5.1)
+      mail (>= 2.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
     rdiscount (2.1.6)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rubyzip (0.9.9)
-    sequel (3.48.0)
+    rubyzip (1.0.0)
+    sequel (4.2.0)
     sinatra (1.4.3)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -34,6 +40,9 @@ GEM
     sinatra-partial (0.3.2)
       sinatra
     tilt (1.4.1)
+    treetop (1.4.15)
+      polyglot
+      polyglot (>= 0.3.1)
 
 PLATFORMS
   ruby
@@ -42,6 +51,7 @@ DEPENDENCIES
   bcrypt-ruby
   fusion_tables (~> 0.3.1)
   heroku
+  pony
   rdiscount
   sequel
   sinatra

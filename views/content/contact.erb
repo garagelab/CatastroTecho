@@ -1,0 +1,92 @@
+<!-- Contacto
+================================================== -->
+<div class="container-fluid">
+	<div class="row-fluid">
+    	<div class="span4">
+		<div class="wrapper">
+			<p><strong>Nuestros datos:</strong></p>
+			<p>Oficina Nacional</p>
+			<p>Entre R&iacute;os 258, 2D, Capital Federal, Buenos Aires</p>
+			<p>Teléfono: (+5411) 4519-8349 / 5811-4296</p>
+			<p>Email: <a href="mailto:info.argentina@techo.org">info.argentina@techo.org</a></p>
+			<p>&nbsp;</p>
+
+			<p><strong>Dejenos su mensaje o pregunta aqui:</strong></p>
+			<form action="/content/contact" method="post">
+			<div>
+				<label
+					<span>Nombre: (obligatorio)</span><br>
+					<input type="text" name="name" tabindex="1" required>
+				</label>
+			</div>
+			<div>
+				<label>
+					<span>Apellido: (obligatorio)</span><br>
+					<input type="text" name="last_name" tabindex="2" required>
+				</label>
+			</div>
+			<div>
+				<label>
+					<span>Email: (obligatorio)</span><br>
+					<input type="text" name="email" tabindex="3" required>
+				</label>
+			</div>
+			<div>
+				<label>
+					<span>Mensaje: (obligatorio)</span>
+					<textarea name="message" rows="6" style="width: 100%;" tabindex="5" required></textarea>
+				</label>
+			</div>
+			<div>
+				<label>
+<!-- 					<button name="submit" type="submit" id="contact-submit">Enviar</button> -->
+					<input type="submit" id="contact-submit" value="Enviar">
+				</label>
+			</div>
+			</form>
+		</div>		
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+/**
+ * Handling form input.
+ */
+$(document).ready(function() {
+	(function() {
+		// Create input element for testing
+		var inputs = document.createElement('input');
+	
+		// Create the supports object
+		var supports = {};
+	
+		supports.autofocus   = 'autofocus' in inputs;
+		supports.required    = 'required' in inputs;
+		supports.placeholder = 'placeholder' in inputs;
+
+		// Fallback for autofocus attribute
+		if(!supports.autofocus) {
+		
+		}
+	
+		// Fallback for required attribute
+		if(!supports.required) {
+		
+		}
+
+		// Fallback for placeholder attribute
+		if(!supports.placeholder) {
+		
+		}
+	
+		// Change text inside send button on submit
+// 		var send = document.getElementById('contact-submit');
+// 		if(send) {
+// 			send.onclick = function () {
+// 				this.innerHTML = '...Sending';
+// 			}
+// 		}
+	})();
+}); // end $(document).ready(function()
+</script>

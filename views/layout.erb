@@ -110,6 +110,15 @@
 	<script type="text/javascript" charset='utf-8' src='/lib/js-session/json-serialization.js'></script>
 	<script type="text/javascript" charset='utf-8' src='/lib/js-session/session.js'></script>
 
+    <!-- The HTML5 Shiv enables use of HTML5 sectioning elements in legacy 
+    	Internet Explorer and provides basic HTML5 styling for Internet Explorer 6-9, 
+    	Safari 4.x (and iPhone 3.x), and Firefox 3.x.
+     -->
+	<!--[if lt IE 9]>
+    	<script type='text/javascript' charset='utf-8' src='/lib/html5shiv/html5shiv.js'></script>
+	<![endif]-->
+
+
     <!-- Business code (Visualization functions, routines, etc.) -->
     <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
     <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo_datasources.js'></script>
@@ -359,18 +368,34 @@
               <li>
             <% end %>
             <a href="/">Inicio</a></li>
+
             <% if request.path_info == '/content/mapa-de-barrios' %>
               <li class="active">
             <% else %>
               <li>
             <% end %>
             <a href="/content/mapa-de-barrios">Mapa</a></li>
+
             <% if request.path_info == '/content/tabla-de-barrios' %>
               <li class="active">
             <% else %>
               <li>
             <% end %>
             <a href="/content/tabla-de-barrios">Tabla</a></li>
+
+            <% if request.path_info == '/content/faq' %>
+              <li class="active">
+            <% else %>
+              <li>
+            <% end %>
+            <a href="/content/faq">FAQ</a></li>
+
+            <% if request.path_info == '/content/contact' %>
+              <li class="active">
+            <% else %>
+              <li>
+            <% end %>
+            <a href="/content/contact">Contacto</a></li>
 
 <!-- 
 			<li class="dropdown">

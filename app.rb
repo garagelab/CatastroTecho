@@ -8,6 +8,7 @@ require 'erb'
 require 'sinatra/partial'
 require 'fusion_tables'
 require 'json'
+require 'pony'
 #require 'sequel'
 
 Tilt.register 'md', Tilt::RDiscountTemplate
@@ -119,7 +120,7 @@ class Techo < Sinatra::Base
  	end
 
 	#################################################################
-	### Controller
+	### Controller/Handler
 	#################################################################  	
   	get '/' do
     	navsidebar = partial :"partials/navsidebar"
@@ -130,7 +131,31 @@ class Techo < Sinatra::Base
   	get '/content/:page' do |page|
     	erb :"content/#{page}"
   	end
+
+ 	post '/content/contact' do 
+# 		Pony.mail(
+# 			:from => params[:name] + "<" + params[:email] + ">",
+# 		  	:to => 'daz@gmail.com', // cis.argentina@techo.org
+# 		  	:subject => params[:name] + " has contacted you",
+# 		  	:body => params[:message],
+# 		  	:port => '587',
+# 		  	:via => :smtp,
+# 		  	:via_options => { 
+# 				:address              => 'smtp.gmail.com', 
+# 				:port                 => '587', 
+# 				:enable_starttls_auto => true, 
+# 				:user_name            => 'daz', 
+# 				:password             => 'p@55w0rd', 
+# 				:authentication       => :plain, 
+# 				:domain               => 'localhost.localdomain'
+# 		  	})
+    	redirect '/content/success' 
+	end
+
+	get '/content/success' do
 	
+	end
+  	
   	# Start the server, if ruby file executed directly.
   	run! if app_file == $0
 end

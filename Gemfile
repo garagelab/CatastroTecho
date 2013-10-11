@@ -9,3 +9,4 @@ gem "fusion_tables", "~> 0.3.1"
 gem 'rdiscount'
 gem 'sequel'
 gem 'bcrypt-ruby'
+gem 'pony'

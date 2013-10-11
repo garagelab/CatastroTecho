@@ -364,3 +364,10 @@ img.img-barrio {
 	padding-bottom: 5px; 
 }
 
+/* Contact form */
+.wrapper {
+	max-width:500px;
+	width:95%;
+	margin:0 auto;
+	position:relative;
+}
