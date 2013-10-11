@@ -64,6 +64,9 @@
     <script type='text/javascript' 
     	src="/lib/bootstrap/js/bootstrap-popover.js">
     </script>
+
+    <!-- Respond javascript library -->
+	<link rel="stylesheet" href="/lib/respond/respond.min.js">
     
     <!-- Font Awesome css -->
 	<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
@@ -118,11 +121,28 @@
     	<script type='text/javascript' charset='utf-8' src='/lib/html5shiv/html5shiv.js'></script>
 	<![endif]-->
 
-
     <!-- Business code (Visualization functions, routines, etc.) -->
     <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
     <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo_datasources.js'></script>
     <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo.js'></script>
+
+<!--
+	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
+	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 
+	we can optionally include CSS (see in casastro_techo.css) and JavaScript to work 
+	around this problem until Microsoft issues a fix. 
+-->
+<script type='text/javascript' charset='utf-8'>
+if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+  var msViewportStyle = document.createElement("style")
+  msViewportStyle.appendChild(
+    document.createTextNode(
+      "@-ms-viewport{width:auto!important}"
+    )
+  )
+  document.getElementsByTagName("head")[0].appendChild(msViewportStyle)
+}
+</script>
 
 
     <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com
