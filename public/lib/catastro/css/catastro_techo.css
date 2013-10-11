@@ -372,6 +372,14 @@ img.img-barrio {
 	position:relative;
 }
 
+#gl_navbar_logo{
+	float:left;
+}
+
+#techo_navbar_logo{
+	float:left;
+}
+
 /*
 	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
 	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 
