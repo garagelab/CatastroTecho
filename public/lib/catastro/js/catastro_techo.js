@@ -73,9 +73,10 @@ if (ver != -1) {
 	var MS_IE_VERSION = ver;
 }
 else {
-// following two lines for test only...
+// Following two lines for test only!!!
 // 	var MS_IE = true;
 // 	var MS_IE_VERSION = 8; // -1
+
 	var MS_IE = false;
 	var MS_IE_VERSION = ver; // -1
 }
@@ -167,13 +168,21 @@ function initMapIndexPage() {
 
 		// Special proceeding for IE 8.
  		if (MS_IE && MS_IE_VERSION == 8) {
+
+ 			var ie_img_label = document.createElement("img");
+     		ie_img_label.src = "../images/" + datasources.table[key].ie_img_label;
+
 			var marker = new MarkerWithLabel({
     			position: lat_lng,
     			icon: techo_marker,
     			clickable: true,        
     			draggable: false,
+    			// We use 'crossImage' only as a container for the key!
+    			// It's a misuse!!! here as a quick workaround for IE nightmares.
+    			crossImage: key,
     			map: map,
-    			labelContent: datasources.table[key].name,
+    			labelContent: ie_img_label,
+//     			labelContent: datasources.table[key].name,
     			labelAnchor: new google.maps.Point(10, 5), // x, y
     			labelClass: "init-page-marker-with-label",
     			labelInBackground: false
@@ -243,11 +252,17 @@ function initMapIndexPage() {
 function addSelectionListener(marker, circle) {
 	// Special proceeding for IE 8.
  	if (MS_IE && MS_IE_VERSION == 8) {
-		google.maps.event.addListener(marker, "click", function (e) { 
-  			var datasource_key = marker.getTitle();
+		google.maps.event.addListener(marker, "click", function (e) {
+  			var datasource_key = this.crossImage; //crossImage is only a container for key!
 			setCurrentDatasource(datasource_key);
     		window.location.href = "/content/mapa-de-barrios";
 		});
+
+  		google.maps.event.addListener(circle, 'click', function() {
+  			var datasource_key = marker.crossImage; //crossImage is only a container for key!
+			setCurrentDatasource(datasource_key);
+    		window.location.href = "/content/mapa-de-barrios";
+  		});
 	}
 	else {
   		google.maps.event.addListener(marker, 'click', function() {
@@ -255,13 +270,13 @@ function addSelectionListener(marker, circle) {
 			setCurrentDatasource(datasource_key);
     		window.location.href = "/content/mapa-de-barrios";
   		});
-  	}
 
-  	google.maps.event.addListener(circle, 'click', function() {
-  		var datasource_key = marker.getTitle();
-		setCurrentDatasource(datasource_key);
-    	window.location.href = "/content/mapa-de-barrios";
-  	});
+  		google.maps.event.addListener(circle, 'click', function() {
+  			var datasource_key = marker.getTitle();
+			setCurrentDatasource(datasource_key);
+    		window.location.href = "/content/mapa-de-barrios";
+  		});
+  	}
 }
 
 /**
