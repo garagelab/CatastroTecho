@@ -80,6 +80,7 @@ else {
 	var MS_IE = false;
 	var MS_IE_VERSION = ver; // -1
 }
+alert("MS_IE_VERSION: " + MS_IE_VERSION);
 
 // Load the Visualization API library and the chart libraries using 'Spanish' locale.
 google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'language': 'es' } );
