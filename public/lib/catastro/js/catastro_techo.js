@@ -495,6 +495,7 @@ function initMapLayer() {
 function addBarrioListener(initLayer) {
 	google.maps.event.addListener(initLayer, 'click', function(e) {
     	placeMarker(map, e.latLng, techo_marker, techo_marker_shadow, true);
+		map.setZoom(14); // Zoom in this barrio.
 		reporting_level = is_reporting_level.barrio;
 		showBarrioInfo(e);
   	} );
@@ -1627,7 +1628,7 @@ Number.prototype.format = function(k, fixLength) {
 
 /**
  * IE detection
- * Returns the version of Internet Explorer or -1.
+ * Returns the version of Internet Explorer or -1 if not IE.
  *
  */
 function getInternetExplorerVersion() {
