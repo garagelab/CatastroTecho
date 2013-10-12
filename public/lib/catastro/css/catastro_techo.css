@@ -380,6 +380,17 @@ img.img-barrio {
 	float:left;
 }
 
+.init-page-marker-with-label {
+	color: #ffffff;
+	text-shadow: 1px 2px #000000;
+	font-size: 10px;
+	font-weight: 600;
+/* 	width: 200px; */
+	text-align: left;
+	white-space: nowrap;
+	font-family: "Lucida Grande", "Arial", sans-serif;
+}
+
 /*
 	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
 	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 

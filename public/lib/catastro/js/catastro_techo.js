@@ -66,6 +66,20 @@ function supportsCookies() {
     return true;
 }
 
+// Detect Microsoft Internet Explorer.
+var ver = getInternetExplorerVersion();
+if (ver != -1) {
+	var MS_IE = true;
+	var MS_IE_VERSION = ver;
+}
+else {
+// following two lines for test only...
+// 	var MS_IE = true;
+// 	var MS_IE_VERSION = 8; // -1
+	var MS_IE = false;
+	var MS_IE_VERSION = ver; // -1
+}
+
 // Load the Visualization API library and the chart libraries using 'Spanish' locale.
 google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'language': 'es' } );
 
@@ -150,34 +164,54 @@ function initMapIndexPage() {
   		
   		lat_lng = new google.maps.LatLng(datasources.table[key].center_lat_lng[0],
   										datasources.table[key].center_lat_lng[1]);
-  		var marker = placeMarker(
-  			map,
-  			lat_lng,
-  			techo_marker, 
-  			techo_marker_shadow,
-  			false
-  		);
+
+		// Special proceeding for IE 8.
+ 		if (MS_IE && MS_IE_VERSION == 8) {
+			var marker = new MarkerWithLabel({
+    			position: lat_lng,
+    			icon: techo_marker,
+    			clickable: true,        
+    			draggable: false,
+    			map: map,
+    			labelContent: datasources.table[key].name,
+    			labelAnchor: new google.maps.Point(10, 5), // x, y
+    			labelClass: "init-page-marker-with-label",
+    			labelInBackground: false
+			});
+		}
+		else {
+  			var marker = placeMarker(
+  				map,
+  				lat_lng,
+  				techo_marker, 
+  				techo_marker_shadow,
+  				false
+  			);
   		
 //  		marker.setTitle(datasources.table[key].name + ' (' + key + ')');
-  		marker.setTitle(key);
+  			marker.setTitle(key);
+		}
+		
+		// Not for IE 8.
+ 		if (MS_IE_VERSION != 8) {
+			// Add a marker label.
+        	var mapLabel = new MapLabel({
+          		text: datasources.table[key].name,
+          		position: new google.maps.LatLng(34.03, -118.235),
+          		map: map,
+          		fontSize: 12,
+          		fontColor: "#ffffff",     //#191970
+          		fontFamily: "sans-serif",
+          		strokeWeight: 5,
+          		strokeColor: "#000",
+          		minZoom: 4,
+          		maxZoom: 12,	
+          		align: 'center'
+        	});
 
-		// Add a marker label.
-        var mapLabel = new MapLabel({
-          text: datasources.table[key].name,
-          position: new google.maps.LatLng(34.03, -118.235),
-          map: map,
-          fontSize: 12,
-          fontColor: "#ffffff",     //#191970
-          fontFamily: "sans-serif",
-          strokeWeight: 5,
-          strokeColor: "#000",
-          minZoom: 4,
-          maxZoom: 12,	
-          align: 'center'
-        });
-
-        mapLabel.set('position', lat_lng);
-
+        	mapLabel.set('position', lat_lng);
+		}
+		
   		// Add a Circle overlay to the map.
   		circle[key] = new google.maps.Circle( {
     		map: map,							// Former values below...
@@ -190,8 +224,10 @@ function initMapIndexPage() {
   		});
 
   		// Bind marker to label and circle and set listeners for clicking.
-		marker.bindTo('map', mapLabel);
-        marker.bindTo('position', mapLabel);
+  		if (MS_IE_VERSION != 8) { // Excluding IE 8 here.
+			marker.bindTo('map', mapLabel);
+        	marker.bindTo('position', mapLabel);
+        }
   		circle[key].bindTo('center', marker, 'position');
 		addSelectionListener(marker, circle[key]);
   	}
@@ -205,12 +241,21 @@ function initMapIndexPage() {
  * because they will not work correctly. 
  */
 function addSelectionListener(marker, circle) {
-
-  	google.maps.event.addListener(marker, 'click', function() {
-  		var datasource_key = marker.getTitle();
-		setCurrentDatasource(datasource_key);
-    	window.location.href = "/content/mapa-de-barrios";
-  	});
+	// Special proceeding for IE 8.
+ 	if (MS_IE && MS_IE_VERSION == 8) {
+		google.maps.event.addListener(marker, "click", function (e) { 
+  			var datasource_key = marker.getTitle();
+			setCurrentDatasource(datasource_key);
+    		window.location.href = "/content/mapa-de-barrios";
+		});
+	}
+	else {
+  		google.maps.event.addListener(marker, 'click', function() {
+  			var datasource_key = marker.getTitle();
+			setCurrentDatasource(datasource_key);
+    		window.location.href = "/content/mapa-de-barrios";
+  		});
+  	}
 
   	google.maps.event.addListener(circle, 'click', function() {
   		var datasource_key = marker.getTitle();
@@ -1564,6 +1609,23 @@ Number.prototype.format = function(k, fixLength) {
 
   return result;
 };
+
+/**
+ * IE detection
+ * Returns the version of Internet Explorer or -1.
+ *
+ */
+function getInternetExplorerVersion() {
+    var rv = -1; // Return value assumes failure.
+    if (navigator.appName == 'Microsoft Internet Explorer') {
+        var ua = navigator.userAgent;
+        var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+    	if (re.exec(ua) != null) {
+        	rv = parseFloat( RegExp.$1 );
+    	}
+    }
+    return rv;
+}
 
 /**
  * Copyright (c) Mozilla Foundation http://www.mozilla.org/

@@ -115,6 +115,17 @@
     	src='/lib/google/maplabel.js'>
     </script>
 
+	<!-- Google's MarkerWithLabel library 
+		MarkerWithLabel allows you to define markers with associated labels. 
+		As you would expect, if the marker is draggable, so too will be the label. 
+		In addition, a marker with a label responds to all mouse events in the 
+		same manner as a regular marker. It also fires mouse events and 
+		"property changed" events just as a regular marker would.	
+	-->
+    <script type='text/javascript' charset='utf-8' 
+    	src='/lib/google/markerwithlabel.js'>
+    </script>
+
     <!-- JSON library and session module (requires json-serialization.js) -->
 	<script type="text/javascript" charset='utf-8' 
 		src='/lib/js-session/json-serialization.js'>
@@ -123,7 +134,12 @@
 		src='/lib/js-session/session.js'>
 	</script>
 
-	<!-- IE8 requires the excanvas library extension located. -->
+	<!-- IE8 requires the excanvas library extension located. 
+		Firefox, Safari and Opera 9 support the canvas tag to allow 2D command-based 
+		drawing operations. ExplorerCanvas brings the same functionality to Internet 
+		Explorer; web developers only need to include a single script tag in their 
+		existing canvas webpages to enable this support.
+	-->
 	<!--[if IE]>
 		<script type="text/javascript" charset='utf-8' 
 			src='/lib/excanvas/excanvas.js'>
