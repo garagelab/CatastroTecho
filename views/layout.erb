@@ -114,7 +114,13 @@
 	<script type="text/javascript" charset='utf-8' src='/lib/js-session/session.js'></script>
 
 	<!-- IE8 requires the excanvas library extension located. -->
-	<script type="text/javascript" charset='utf-8' src='/lib/excanvas/excanvas.js'></script>
+	<!--[if IE]>
+		<script type="text/javascript" charset='utf-8' src='/lib/excanvas/excanvas.js'></script>
+	<![endif]-->
+
+	<!--[if IE]>
+		<script type="text/javascript" charset='utf-8' src='/lib/canvas_text/canvas.text.js'></script>
+	<![endif]-->
 	
     <!-- The HTML5 Shiv enables use of HTML5 sectioning elements in legacy 
     	Internet Explorer and provides basic HTML5 styling for Internet Explorer 6-9, 
@@ -123,7 +129,7 @@
 	<!--[if lt IE 9]>
     	<script type='text/javascript' charset='utf-8' src='/lib/html5shiv/html5shiv.js'></script>
 	<![endif]-->
-
+	
 <!--
 	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
 	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 
