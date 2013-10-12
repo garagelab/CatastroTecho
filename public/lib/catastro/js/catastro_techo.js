@@ -80,7 +80,6 @@ else {
 	var MS_IE = false;
 	var MS_IE_VERSION = ver; // -1
 }
-alert("MS_IE_VERSION: " + MS_IE_VERSION);
 
 // Load the Visualization API library and the chart libraries using 'Spanish' locale.
 google.load('visualization', '1', { 'packages' : ['table', 'corechart'], 'language': 'es' } );
@@ -168,7 +167,7 @@ function initMapIndexPage() {
   										datasources.table[key].center_lat_lng[1]);
 
 		// Special proceeding for IE 8.
- 		if (MS_IE && MS_IE_VERSION == 8) {
+ 		if (MS_IE && MS_IE_VERSION < 9) {
 
  			var ie_img_label = document.createElement("img");
      		ie_img_label.src = "../images/" + datasources.table[key].ie_img_label;
@@ -203,7 +202,7 @@ function initMapIndexPage() {
 		}
 		
 		// Not for IE 8.
- 		if (MS_IE_VERSION != 8) {
+ 		if ((MS_IE && MS_IE_VERSION > 8) || (!MS_IE && MS_IE_VERSION == -1)) {
 			// Add a marker label.
         	var mapLabel = new MapLabel({
           		text: datasources.table[key].name,
@@ -234,7 +233,7 @@ function initMapIndexPage() {
   		});
 
   		// Bind marker to label and circle and set listeners for clicking.
-  		if (MS_IE_VERSION != 8) { // Excluding IE 8 here.
+  		if ((MS_IE && MS_IE_VERSION > 8) || (!MS_IE && MS_IE_VERSION == -1)) { // Excluding IE 8 here.
 			marker.bindTo('map', mapLabel);
         	marker.bindTo('position', mapLabel);
         }
@@ -252,7 +251,7 @@ function initMapIndexPage() {
  */
 function addSelectionListener(marker, circle) {
 	// Special proceeding for IE 8.
- 	if (MS_IE && MS_IE_VERSION == 8) {
+ 	if (MS_IE && MS_IE_VERSION < 9) {
 		google.maps.event.addListener(marker, "click", function (e) {
   			var datasource_key = this.crossImage; //crossImage is only a container for key!
 			setCurrentDatasource(datasource_key);
