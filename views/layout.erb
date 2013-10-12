@@ -94,9 +94,13 @@
     </script>
 
     <!-- Google Maps and Places API -->
-    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js'></script>
+    <script type='text/javascript' 
+    	src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js'>
+    </script>
 
-    <script type='text/javascript' src='http://maps.google.com/maps/api/js?sensor=false&language=es'></script>
+    <script type='text/javascript' 
+    	src='http://maps.google.com/maps/api/js?sensor=false&language=es'>
+    </script>
 
     <!-- Google AJAX API -->
     <script type='text/javascript' src='https://www.google.com/jsapi'>
@@ -107,19 +111,29 @@
 			At  20/09/2013 changed 'mapPane' to 'floatPane' (see there at line 127).
 			Do not change it to another version without verification before!	
     -->
-    <script type='text/javascript' charset='utf-8' src='/lib/google/maplabel.js'></script>
+    <script type='text/javascript' charset='utf-8' 
+    	src='/lib/google/maplabel.js'>
+    </script>
 
     <!-- JSON library and session module (requires json-serialization.js) -->
-	<script type="text/javascript" charset='utf-8' src='/lib/js-session/json-serialization.js'></script>
-	<script type="text/javascript" charset='utf-8' src='/lib/js-session/session.js'></script>
+	<script type="text/javascript" charset='utf-8' 
+		src='/lib/js-session/json-serialization.js'>
+	</script>
+	<script type="text/javascript" charset='utf-8' 
+		src='/lib/js-session/session.js'>
+	</script>
 
 	<!-- IE8 requires the excanvas library extension located. -->
 	<!--[if IE]>
-		<script type="text/javascript" charset='utf-8' src='/lib/excanvas/excanvas.js'></script>
+		<script type="text/javascript" charset='utf-8' 
+			src='/lib/excanvas/excanvas.js'>
+		</script>
 	<![endif]-->
 
 	<!--[if IE]>
-		<script type="text/javascript" charset='utf-8' src='/lib/canvas_text/canvas.text.js'></script>
+		<script type="text/javascript" charset='utf-8' 
+			src='/lib/canvas_text/canvas.text.js?reimplement=true'>
+		</script>
 	<![endif]-->
 	
     <!-- The HTML5 Shiv enables use of HTML5 sectioning elements in legacy 
@@ -136,22 +150,26 @@
 	we can optionally include CSS (see in casastro_techo.css) and JavaScript to work 
 	around this problem until Microsoft issues a fix. 
 -->
-<script type='text/javascript' charset='utf-8'>
-if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-  var msViewportStyle = document.createElement("style")
-  msViewportStyle.appendChild(
-    document.createTextNode(
-      "@-ms-viewport{width:auto!important}"
-    )
-  )
-  document.getElementsByTagName("head")[0].appendChild(msViewportStyle)
-}
-</script>
+	<script type='text/javascript' charset='utf-8'>
+		if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+  			var msViewportStyle = document.createElement("style")
+  			msViewportStyle.appendChild(
+    		document.createTextNode(
+      			"@-ms-viewport{width:auto!important}"
+    		)
+  		)
+  		document.getElementsByTagName("head")[0].appendChild(msViewportStyle)
+	}
+	</script>
 
     <!-- Business code (Visualization functions, routines, etc.) -->
     <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
-    <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo_datasources.js'></script>
-    <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo.js'></script>
+    <script type='text/javascript' charset='utf-8' 
+    	src='/lib/catastro/js/catastro_techo_datasources.js'>
+    </script>
+    <script type='text/javascript' charset='utf-8' 
+    	src='/lib/catastro/js/catastro_techo.js'>
+    </script>
 
 
     <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com
