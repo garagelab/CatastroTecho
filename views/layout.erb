@@ -113,6 +113,9 @@
 	<script type="text/javascript" charset='utf-8' src='/lib/js-session/json-serialization.js'></script>
 	<script type="text/javascript" charset='utf-8' src='/lib/js-session/session.js'></script>
 
+	<!-- IE8 requires the excanvas library extension located. -->
+	<script type="text/javascript" charset='utf-8' src='/lib/excanvas/excanvas.js'></script>
+	
     <!-- The HTML5 Shiv enables use of HTML5 sectioning elements in legacy 
     	Internet Explorer and provides basic HTML5 styling for Internet Explorer 6-9, 
     	Safari 4.x (and iPhone 3.x), and Firefox 3.x.
@@ -120,11 +123,6 @@
 	<!--[if lt IE 9]>
     	<script type='text/javascript' charset='utf-8' src='/lib/html5shiv/html5shiv.js'></script>
 	<![endif]-->
-
-    <!-- Business code (Visualization functions, routines, etc.) -->
-    <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
-    <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo_datasources.js'></script>
-    <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo.js'></script>
 
 <!--
 	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
@@ -143,6 +141,11 @@ if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
   document.getElementsByTagName("head")[0].appendChild(msViewportStyle)
 }
 </script>
+
+    <!-- Business code (Visualization functions, routines, etc.) -->
+    <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
+    <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo_datasources.js'></script>
+    <script type='text/javascript' charset='utf-8' src='/lib/catastro/js/catastro_techo.js'></script>
 
 
     <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com
