@@ -116,6 +116,8 @@ datasources.table['buenos_aires_2011'] = {
 	ie_img_label: 'buenos_aires_ie_label.jpg',
 	startZoom:	10,
 	partidoZoom: 12,
+	provincia_prefix_text: "En la Provincia de <strong>Buenos Aires</strong> hay",
+	ciudad_prefix_text: "y en la Ciudad de <strong>Buenos Aires</strong> hay ",
 	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD'",
 	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'PARTIDO', 'LOCALIDAD', 'PROVINCIA'",
 	sql_municipio:	"'PARTIDO'",
@@ -166,6 +168,8 @@ datasources.table['cordoba_2011'] = {
 	ie_img_label: 'cordoba_ie_label.jpg',
 	startZoom:  12,
 	partidoZoom: 12,
+	provincia_prefix_text: "En la Provincia de <strong>Córdoba</strong> hay",
+	ciudad_prefix_text: "",
 	sql_main_grp:	"'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD'",
 	sql_barrio_search_grp:	"'CÓDIGO', 'BARRIO', 'OTRA DENOMINACIÓN', 'DEPARTAMENTO', 'LOCALIDAD', 'PROVINCIA'",
 	sql_municipio:	"'DEPARTAMENTO'",
@@ -216,6 +220,8 @@ datasources.table['buenos_aires_2013'] = {
 	ie_img_label: 'buenos_aires_ie_label.jpg',
 	startZoom:	10,
 	partidoZoom: 12,
+	provincia_prefix_text: "En la Provincia de <strong>Buenos Aires</strong> hay",
+	ciudad_prefix_text: "y en la Ciudad de <strong>Buenos Aires</strong> hay",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Departamento'",
@@ -266,6 +272,8 @@ datasources.table['cordoba_2013'] = {
 	ie_img_label: 'cordoba_ie_label.jpg',
 	startZoom:  12,
 	partidoZoom: 13,
+	provincia_prefix_text: "En la Provincia de <strong>Córdoba</strong> hay",
+	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'#id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Departamento'",
@@ -316,6 +324,8 @@ datasources.table['rosario_2013'] = {
 	ie_img_label: 'rosario_ie_label.jpg',
 	startZoom:  12,
 	partidoZoom: 12,
+	provincia_prefix_text: "En el <strong>Gran Rosario</strong> hay",
+	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Departamento'",
@@ -366,6 +376,8 @@ datasources.table['salta_2013'] = {
 	ie_img_label: 'salta_ie_label.jpg',
 	startZoom:  12,
 	partidoZoom: 13,
+	provincia_prefix_text: "En los territorios relevados de la Provincia de <strong>Salta</strong> hay",
+	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Municipio/Partido/Comuna'",
@@ -416,6 +428,8 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	ie_img_label: 'rio_negro_neuquen_ie_label.jpg',
 	startZoom:  12,
 	partidoZoom: 12,
+	provincia_prefix_text: "En el Alto Valle de <strong>Río Negro y Neuquén</strong> hay",
+	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Municipio/Partido/Comuna'",
@@ -466,6 +480,8 @@ datasources.table['posadas_2013'] = {
 	ie_img_label: 'posadas_ie_label.jpg',
 	startZoom:  12,
 	partidoZoom: 12,
+	provincia_prefix_text: "En el departamento Capital de <strong>Misiones</strong> hay",
+	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
 	sql_municipio:	"'Municipio/Partido/Comuna'",
@@ -506,7 +522,6 @@ datasources.table['posadas_2013'] = {
 /////////////////////////////////////////////////////////////////////
 // <<< END OF TABLE SECTION
 /////////////////////////////////////////////////////////////////////
-
 
 // Interfaces
 

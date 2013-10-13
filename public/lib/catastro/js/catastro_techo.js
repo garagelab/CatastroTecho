@@ -1409,6 +1409,12 @@ function draw_chart(chartObject) {
  *
  */
 function getFamilyNumber(reporting_level, queryText) {
+
+// var qry_caba = "SELECT sum(" + current_datasource.sql_families + ")" + 
+// 					" as families, count() FROM " + current_datasource.id +
+//     				" WHERE 'Departamento' = 'CABA'";	
+// 
+
 	var info_text_reporting_level = document.getElementById('info_text_reporting_level');
   	query = new google.visualization.Query(urlVizData + queryText);
 
@@ -1453,12 +1459,18 @@ function getFamilyNumber(reporting_level, queryText) {
     	switch(reporting_level) {
     		// Provincia
       		case is_reporting_level.provincia:
-         		html = "En la provincia de " + 
-        		"<strong>" + current_datasource.filter.provincia + "</strong> hay&nbsp;" +
+         		html = current_datasource.provincia_prefix_text + "&nbsp;" +
         		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
         		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
         		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
         		"&nbsp;" + familia_text + ".";
+
+//          		html = "En la Provincia de " + 
+//         		"<strong>" + current_datasource.filter.provincia + "</strong> hay&nbsp;" +
+//         		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
+//         		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+//         		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
+//         		"&nbsp;" + familia_text + ".";
         	break;
 
 			// Municipio => same level as localidad (synonymous).

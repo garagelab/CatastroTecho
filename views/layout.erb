@@ -65,25 +65,16 @@
     	src="/lib/bootstrap/js/bootstrap-popover.js">
     </script>
 
-    <!-- Respond javascript library -->
-	<link rel="stylesheet" href="/lib/respond/respond.min.js">
-    
     <!-- Font Awesome css -->
 	<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
     <!-- Select2 css and javascript library -->
 	<link rel="stylesheet" href="/lib/select2/select2.css">
-    <script type='text/javascript' 
-    	src="/lib/select2/select2.js">
-    </script>
-    <script type='text/javascript' 
-    	src="/lib/select2/select2_locale_es.js">
-    </script>
+    <script type='text/javascript' src="/lib/select2/select2.js"></script>
+    <script type='text/javascript' src="/lib/select2/select2_locale_es.js"></script>
 
 	<!-- thenBy sort -->
-    <script type='text/javascript' 
-    	src="/lib/thenby/thenBy.js">
-    </script>
+    <script type='text/javascript' src="/lib/thenby/thenBy.js"></script>
 
 	<!-- tabSlideOut -->
 	<!-- Important note: Library (tabSlideOut.v1.3.js) was modifed !!!
@@ -103,17 +94,14 @@
     </script>
 
     <!-- Google AJAX API -->
-    <script type='text/javascript' src='https://www.google.com/jsapi'>
-    </script>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
 
     <!-- Google javascripts -->
     <!-- Important note: Library (maplabel.js) was modifed !!! 
 			At  20/09/2013 changed 'mapPane' to 'floatPane' (see there at line 127).
 			Do not change it to another version without verification before!	
     -->
-    <script type='text/javascript' charset='utf-8' 
-    	src='/lib/google/maplabel.js'>
-    </script>
+    <script type='text/javascript' charset='utf-8' src='/lib/google/maplabel.js'></script>
 
 	<!-- Google's MarkerWithLabel library 
 		MarkerWithLabel allows you to define markers with associated labels. 
@@ -134,6 +122,10 @@
 		src='/lib/js-session/session.js'>
 	</script>
 
+	<!--
+		IE specific stuff.
+	----------------------------------------------------------->
+	
 	<!-- IE8 requires the excanvas library extension located. 
 		Firefox, Safari and Opera 9 support the canvas tag to allow 2D command-based 
 		drawing operations. ExplorerCanvas brings the same functionality to Internet 
@@ -160,7 +152,15 @@
 	<!--[if lt IE 9]>
     	<script type='text/javascript' charset='utf-8' src='/lib/html5shiv/html5shiv.js'></script>
 	<![endif]-->
-	
+
+     <!-- Respond javascript library 
+		A fast & lightweight polyfill for min/max-width CSS3 
+		Media Queries (for IE 6-8, and more).
+    -->
+	<!--[if lt IE 9]>
+    	<script type='text/javascript' src="/lib/respond/respond.min.js"></script>
+	<![endif]-->
+
 <!--
 	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
 	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 
