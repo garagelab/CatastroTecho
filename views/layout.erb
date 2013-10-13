@@ -163,23 +163,24 @@
     	<script type='text/javascript' src="/lib/respond/respond.min.js"></script>
 	<![endif]-->
 
-<!--
-	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
+	<!-- Internet Explorer 10 doesn't differentiate device width from viewport width, and 
 	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 
-	we can optionally include CSS (see in casastro_techo.css) and JavaScript to work 
+	we can optionally include CSS (see below) and JavaScript to work 
 	around this problem until Microsoft issues a fix. 
--->
-	<script type='text/javascript' charset='utf-8'>
-		if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-  			var msViewportStyle = document.createElement("style")
-  			msViewportStyle.appendChild(
-    		document.createTextNode(
-      			"@-ms-viewport{width:auto!important}"
-    		)
-  		)
-  		document.getElementsByTagName("head")[0].appendChild(msViewportStyle)
-	}
-	</script>
+	--------------------------------------------------->
+	<!--[if eq IE 10]>
+		<script type='text/javascript' charset='utf-8'>
+			if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+  				var msViewportStyle = document.createElement("style")
+  				msViewportStyle.appendChild(
+    			document.createTextNode(
+      				"@-ms-viewport{width:auto!important}"
+    			)
+  			)
+  			document.getElementsByTagName("head")[0].appendChild(msViewportStyle)
+		}
+		</script>
+	<![endif]-->
 
     <!-- Business code (Visualization functions, routines, etc.) -->
     <link href='/lib/catastro/css/catastro_techo.css' rel='stylesheet'>
@@ -197,11 +198,13 @@
     	<style type="text/css">
 .control-panel {
 	width: 300px;
+  	background-color: white;
+/*
 	background: transparent;
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
     zoom: 1;
-
+*/
 /* 
 	filter: alpha(opacity=80);
 	opacity: 0.8;
@@ -217,10 +220,13 @@
 
 #info_text_container {
   	width: 420px;
+  	background-color: white;
+/*
 	background: transparent;
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
     zoom: 1;
+*/
 /* 
 	filter: alpha(opacity=80);
 	opacity: 0.8;
@@ -240,10 +246,13 @@
 
 #chart_container {
   	width: 300px;
+  	background-color: white;
+/*
 	background: transparent;
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
     zoom: 1;  	
+*/
 /* 
  	filter: alpha(opacity=80);
 	opacity: 0.8;
@@ -266,39 +275,37 @@
     	</style>
 	<![endif]-->
 
+	<!-- Internet Explorer 10 doesn't differentiate device width from viewport width, 
+	and thus doesn't properly apply the media queries in Bootstrap's CSS. To address 
+	this, we can optionally include CSS and JavaScript (see in layout.erb) to work 
+	around this problem until Microsoft issues a fix. 
+	--------------------------------------------------->
+	<!--[if eq IE 10]>
+    	<style type="text/css">
+		@-webkit-viewport   { width: device-width; }
+		@-moz-viewport      { width: device-width; }
+		@-ms-viewport       { width: device-width; }
+		@-o-viewport        { width: device-width; }
+		@viewport           { width: device-width; }
+    	</style>
+	<![endif]-->
 
-    <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com
-      Quick fix for using Twitter Bootstrap with Google maps.
-      Controls and WindowInfo are not printed/shown correctly
-      without this.
-      We override the style of the img tag for the div that
-      contains the map and we need to make sure that this fix
-      gets included in the header aera of HTML-Code.
-      See also: github.com/twitter/bootstrap/issues/1552
-    ================================================== -->
+    <!-- Quick fix for using Twitter Bootstrap with Google maps.
+    Controls and WindowInfo are not printed/shown correctly
+    without this.
+    We override the style of the img tag for the div that
+    contains the map and we need to make sure that this fix
+    gets included in the header aera of HTML-Code.
+    See also: github.com/twitter/bootstrap/issues/1552
+    ------------------------------------------------------->
     <style type="text/css">
-      #map_canvas img {
-        max-width: none;
-      }
-
-      #map_index_page img {
-        max-width: none;
-      }
-
-      #map img {
-        max-width: none;
-      }
-
-      #map_canvas label {
-        width: auto; display:inline;
-      }
-
-      #map_index_page label {
-        width: auto; display:inline;
-      }
+      #map_canvas img { max-width: none; }
+      #map_index_page img { max-width: none; }
+      #map img { max-width: none; }
+      #map_canvas label { width: auto; display:inline; }
+      #map_index_page label { width: auto; display:inline; }
     </style>
   </head>
-
 
 <style>
 .navbar-inner > .container{

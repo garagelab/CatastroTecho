@@ -390,15 +390,3 @@ img.img-barrio {
 	white-space: nowrap;
 	font-family: "Lucida Grande", "Arial", sans-serif;
 }
-
-/*
-	Internet Explorer 10 doesn't differentiate device width from viewport width, and 
-	thus doesn't properly apply the media queries in Bootstrap's CSS. To address this, 
-	we can optionally include CSS and JavaScript (see in layout.erb) to work 
-	around this problem until Microsoft issues a fix. 
-*/
-@-webkit-viewport   { width: device-width; }
-@-moz-viewport      { width: device-width; }
-@-ms-viewport       { width: device-width; }
-@-o-viewport        { width: device-width; }
-@viewport           { width: device-width; }
