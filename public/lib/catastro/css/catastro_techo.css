@@ -131,7 +131,8 @@
 
 .control-panel {
 	width: 300px;
-  	background: rgba(220,220,220,0.8);    
+	background-image: url(/images/widget-bg.png);
+/*   	background: rgba(220,220,220,0.8); */
   	z-index: 110;
   	padding: 10px;
   	border-radius: 10px;
@@ -177,7 +178,8 @@
 
 #info_text_container {
   	width: 420px;
-  	background: rgba(220,220,220,0.8);
+	background-image: url(/images/widget-bg.png);
+/*   	background: rgba(220,220,220,0.8); */
   	top: 50px; /*60*/
   	left: 413px; /*408*/
   	z-index: 100;
@@ -214,7 +216,8 @@
 
 #chart_container {
   	width: 300px;
-  	background: rgba(220,220,220,0.8);
+	background-image: url(/images/widget-bg.png);
+/*   	background: rgba(220,220,220,0.8); */
 /* 
   top: 60px;
   left: 988px;
