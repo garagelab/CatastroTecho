@@ -131,18 +131,7 @@
 
 .control-panel {
 	width: 300px;
-	background: transparent;
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
-    zoom: 1;
   	background: rgba(220,220,220,0.8);    
-
-/* 
-	filter: alpha(opacity=80);
-	opacity: 0.8;
- */
-	-moz-opacity:0.8;
-	-khtml-opacity: 0.8;
   	z-index: 110;
   	padding: 10px;
   	border-radius: 10px;
@@ -188,17 +177,7 @@
 
 #info_text_container {
   	width: 420px;
-	background: transparent;
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
-    zoom: 1;
   	background: rgba(220,220,220,0.8);
-/* 
-	filter: alpha(opacity=80);
-	opacity: 0.8;
- */
-	-moz-opacity:0.8;
-	-khtml-opacity: 0.8;
   	top: 50px; /*60*/
   	left: 413px; /*408*/
   	z-index: 100;
@@ -235,17 +214,7 @@
 
 #chart_container {
   	width: 300px;
-	background: transparent;
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
-    zoom: 1;  	
   	background: rgba(220,220,220,0.8);
-/* 
- 	filter: alpha(opacity=80);
-	opacity: 0.8;
- */
-	-moz-opacity:0.8;
-	-khtml-opacity: 0.8;
 /* 
   top: 60px;
   left: 988px;

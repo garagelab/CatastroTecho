@@ -123,7 +123,7 @@
 	</script>
 
 	<!--
-		IE specific stuff.
+		IE specific stuff. Part I
 	----------------------------------------------------------->
 	
 	<!-- IE8 requires the excanvas library extension located. 
@@ -150,7 +150,9 @@
     	Safari 4.x (and iPhone 3.x), and Firefox 3.x.
      -->
 	<!--[if lt IE 9]>
-    	<script type='text/javascript' charset='utf-8' src='/lib/html5shiv/html5shiv.js'></script>
+    	<script type='text/javascript' charset='utf-8' 
+    		src='/lib/html5shiv/html5shiv.js'>
+    	</script>
 	<![endif]-->
 
      <!-- Respond javascript library 
@@ -187,6 +189,82 @@
     <script type='text/javascript' charset='utf-8' 
     	src='/lib/catastro/js/catastro_techo.js'>
     </script>
+
+	<!--
+		IE specific stuff. Part II
+	----------------------------------------------------------->
+	<!--[if lt IE 9]>
+    	<style type="text/css">
+.control-panel {
+	width: 300px;
+	background: transparent;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
+    zoom: 1;
+
+/* 
+	filter: alpha(opacity=80);
+	opacity: 0.8;
+ */
+  	z-index: 110;
+  	padding: 10px;
+  	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-o-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	-ms-border-radius: 10px;
+}
+
+#info_text_container {
+  	width: 420px;
+	background: transparent;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
+    zoom: 1;
+/* 
+	filter: alpha(opacity=80);
+	opacity: 0.8;
+ */
+  	top: 50px; /*60*/
+  	left: 413px; /*408*/
+  	z-index: 100;
+  	position: absolute;
+  	color: black;
+  	padding: 10px;
+  	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-o-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	-ms-border-radius: 10px;
+}
+
+#chart_container {
+  	width: 300px;
+	background: transparent;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
+    zoom: 1;  	
+/* 
+ 	filter: alpha(opacity=80);
+	opacity: 0.8;
+ */
+/* 
+  top: 60px;
+  left: 988px;
+ */
+  	z-index: 110;
+  	position: absolute;
+  	color: black;
+  	padding: 10px;
+  	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-o-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	-ms-border-radius: 10px;
+}
+
+    	</style>
+	<![endif]-->
 
 
     <!-- Fixed at 08-oct-2012 by andreas.hempfling@gmail.com
