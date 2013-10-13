@@ -131,7 +131,12 @@
 
 .control-panel {
 	width: 300px;
+	background: transparent;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC)"; /* IE8 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCDCDCDC,endColorstr=#CCDCDCDC);   /* IE6 & 7 */
+    zoom: 1;
   	background: rgba(220,220,220,0.8);
+
 /* 
 	filter: alpha(opacity=80);
 	opacity: 0.8;
