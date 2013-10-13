@@ -1485,7 +1485,7 @@ function getFamilyNumber(reporting_level, queryText) {
       
 			// Localidad => same level as municipio (synonymous).
       		case is_reporting_level.localidad:
-        		html = "En el " + current_datasource.alias_municipio + " de " + 
+        		html = "En la " + current_datasource.alias_localidad + " de " + 
         		"<strong>" + current_datasource.filter.localidad + "</strong> hay&nbsp;" +
         		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
         		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
@@ -1495,10 +1495,10 @@ function getFamilyNumber(reporting_level, queryText) {
 
 			// Barrio			
 			case is_reporting_level.barrio:
-				html = "En el barrio <strong>" + current_datasource.filter.barrio_name + "</strong>" +  
-				" de&nbsp;" + 
-				"<strong>" + issel_barrio.row[current_datasource.cols[current_datasource.col_no_localidad].name].value + "</strong>" + 
-				"&nbsp;" + living_text + ",&nbsp;aproximadamente,&nbsp;" +
+				html = "En el barrio <strong>" + current_datasource.filter.barrio_name + 
+				"</strong>" + "&nbsp;de&nbsp;" + "<strong>" + 
+				issel_barrio.row[current_datasource.cols[current_datasource.col_no_localidad].name].value + 
+				"</strong>" + "&nbsp;" + living_text + ",&nbsp;aproximadamente,&nbsp;" +
 				"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
 				"&nbsp;" + familia_text + ".";
         	break;
