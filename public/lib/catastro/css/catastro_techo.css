@@ -140,6 +140,7 @@
   	-o-border-radius: 10px;
   	-webkit-border-radius: 10px;
   	-ms-border-radius: 10px;
+  	behavior: url(/lib/pie/PIE.htc); /* IE 6 - 9 */
 }
 
 .control-panel.ui-state-disabled.ui-draggable-disabled { 
@@ -191,6 +192,7 @@
   	-o-border-radius: 10px;
   	-webkit-border-radius: 10px;
   	-ms-border-radius: 10px;
+  	behavior: url(/lib/pie/PIE.htc); /* IE 6 - 9 */
 }
 
  
@@ -231,6 +233,7 @@
   	-o-border-radius: 10px;
   	-webkit-border-radius: 10px;
   	-ms-border-radius: 10px;
+  	behavior: url(/lib/pie/PIE.htc); /* IE 6 - 9 */
 }
 
 .chart-default {
