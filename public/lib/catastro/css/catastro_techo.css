@@ -130,15 +130,19 @@
 }
 
 .control-panel {
-  width: 300px;
-  background: rgba(220,220,220,0.8);
-  z-index: 110;
-  padding: 10px;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -o-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -ms-border-radius: 10px;
+	width: 300px;
+  	background: rgba(220,220,220,0.8);
+	filter: alpha(opacity=80);
+	opacity: 0.8;
+	-moz-opacity:0.8;
+	-khtml-opacity: 0.8;
+  	z-index: 110;
+  	padding: 10px;
+  	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-o-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	-ms-border-radius: 10px;
 }
 
 .control-panel.ui-state-disabled.ui-draggable-disabled { 
@@ -176,19 +180,23 @@
 }
 
 #info_text_container {
-  width: 420px;
-  background: rgba(220,220,220,0.8);
-  top: 50px; /*60*/
-  left: 413px; /*408*/
-  z-index: 100;
-  position: absolute;
-  color: black;
-  padding: 10px;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -o-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -ms-border-radius: 10px;
+  	width: 420px;
+  	background: rgba(220,220,220,0.8);
+	filter: alpha(opacity=80);
+	opacity: 0.8;
+	-moz-opacity:0.8;
+	-khtml-opacity: 0.8;
+  	top: 50px; /*60*/
+  	left: 413px; /*408*/
+  	z-index: 100;
+  	position: absolute;
+  	color: black;
+  	padding: 10px;
+  	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-o-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	-ms-border-radius: 10px;
 }
 
  
@@ -213,21 +221,25 @@
 }
 
 #chart_container {
-  width: 300px;
-  background: rgba(220,220,220,0.8);
+  	width: 300px;
+  	background: rgba(220,220,220,0.8);
+ 	filter: alpha(opacity=80);
+	opacity: 0.8;
+	-moz-opacity:0.8;
+	-khtml-opacity: 0.8;
 /* 
   top: 60px;
   left: 988px;
  */
-  z-index: 110;
-  position: absolute;
-  color: black;
-  padding: 10px;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -o-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -ms-border-radius: 10px;
+  	z-index: 110;
+  	position: absolute;
+  	color: black;
+  	padding: 10px;
+  	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-o-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	-ms-border-radius: 10px;
 }
 
 .chart-default {
