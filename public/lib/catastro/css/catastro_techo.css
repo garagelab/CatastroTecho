@@ -132,7 +132,7 @@
 .control-panel {
 	width: 300px;
   	background: rgba(220,220,220,0.8);
-  	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  	
+/*   	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  	 */
 	filter: alpha(opacity=80);
 	opacity: 0.8;
 	-moz-opacity:0.8;
@@ -183,7 +183,7 @@
 #info_text_container {
   	width: 420px;
   	background: rgba(220,220,220,0.8);
-  	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+/*   	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; */
 	filter: alpha(opacity=80);
 	opacity: 0.8;
 	-moz-opacity:0.8;
@@ -225,7 +225,7 @@
 #chart_container {
   	width: 300px;
   	background: rgba(220,220,220,0.8);
-  	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  	
+/*   	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  	 */
  	filter: alpha(opacity=80);
 	opacity: 0.8;
 	-moz-opacity:0.8;
