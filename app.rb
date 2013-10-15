@@ -138,7 +138,7 @@ class Techo < Sinatra::Base
 			:from => params[:first_name] + " " + params[:last_name] + "<" + params[:email] + ">",
 		  	:to => 'andreas.hempfling@gmail.com', # cis.argentina@techo.org
 		  	:subject => "Nuevo mensaje de 'Relevamiento Argentina' - " + params[:first_name] + " " + params[:last_name],
-		  	:body => params[:message]
+		  	:body => params[:message],
 		  	:port => '587',
 		  	:via => :smtp,
 		  	:via_options => { 
