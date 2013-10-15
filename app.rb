@@ -134,24 +134,27 @@ class Techo < Sinatra::Base
 
  	post '/content/contact' do 
 # 		Pony.mail(
-# 			:from => params[:name] + "<" + params[:email] + ">",
-# 		  	:to => 'daz@gmail.com', // cis.argentina@techo.org
-# 		  	:subject => params[:name] + " has contacted you",
-# 		  	:body => params[:message],
+# 			:from => params[:first_name] + " " + params[:last_name] + "<" + params[:email] + ">",
+# 		  	:to => 'andreas.hempfling@gmail.com', # cis.argentina@techo.org
+# 		  	:subject => "Nuevo mensaje de 'Relevamiento Argentina' - " + params[:first_name] + " " + params[:last_name],
+# 		  	:body => params[:message]
+
 # 		  	:port => '587',
 # 		  	:via => :smtp,
 # 		  	:via_options => { 
 # 				:address              => 'smtp.gmail.com', 
 # 				:port                 => '587', 
 # 				:enable_starttls_auto => true, 
-# 				:user_name            => 'daz', 
-# 				:password             => 'p@55w0rd', 
+# 				:user_name            => 'user', 
+# 				:password             => 'pw', 
 # 				:authentication       => :plain, 
 # 				:domain               => 'localhost.localdomain'
-# 		  	})
+#		  	}
+
+# 		)
     	redirect '/content/success' 
 	end
-
+	
 	get '/content/success' do
 	
 	end
