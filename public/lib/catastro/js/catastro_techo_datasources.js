@@ -721,7 +721,7 @@ function getMunicipios(response) {
 		var row = response.rows[i];
 
 		// Not IE
-		if (ver != -1) {
+		if (ver == -1) {
 			row[0].trim();
 			row[1].trim();
 		}
@@ -784,7 +784,7 @@ function getBarrios(response) {
 		var row = response.rows[i];
 		
 		// Not IE
-		if (ver != -1) {
+		if (ver == -1) {
 			row[0].trim();
 		}		
 		barrios_cache.push({ id: row[0], label: row[1]});

@@ -1646,7 +1646,6 @@ Number.prototype.format = function(k, fixLength) {
  */
 function getInternetExplorerVersion() {
     var rv = -1; // Return value assumes failure.
-    alert(navigator.appName);
     if (navigator.appName == 'Microsoft Internet Explorer') {
         var ua = navigator.userAgent;
         var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
