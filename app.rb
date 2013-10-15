@@ -136,9 +136,9 @@ class Techo < Sinatra::Base
  		# SendGrid add-on in heroku for contact mails created at 15-oct-2013.
 		Pony.mail(
 			:from => params[:first_name] + " " + params[:last_name] + " <" + params[:email] + ">",
-		  	:to => 'andreas.hempfling@gmail.com', # cis.argentina@techo.org
+		  	:to => 'cis.argentina@techo.org',
 		  	:subject => "Relevamiento Argentina: Nuevo mensaje de " + params[:first_name] + " " + params[:last_name],
-		  	:body => "Nombre: " + params[:first_name] + " " + params[:last_name] + "\n\n" + "Email: " + params[:email] + "\n\n" "Mensaje: " + "\r\n" + params[:message],
+		  	:body => "Nombre: " + params[:first_name] + " " + params[:last_name] + "\n\n" + "Email: " + params[:email] + "\n\n" "Mensaje: " + "\n\n" + params[:message],
 		  	:port => '587',
 		  	:via => :smtp,
 		  	:via_options => { 
