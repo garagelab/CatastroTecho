@@ -137,8 +137,8 @@ class Techo < Sinatra::Base
 		Pony.mail(
 			:from => params[:first_name] + " " + params[:last_name] + " <" + params[:email] + ">",
 		  	:to => 'andreas.hempfling@gmail.com', # cis.argentina@techo.org
-		  	:subject => "Nuevo mensaje de 'Relevamiento Argentina' - " + params[:first_name] + " " + params[:last_name],
-		  	:body => "Nombre: " + params[:first_name] + " " + params[:last_name] + "\n" + "Email: " + params[:email] + "\n\n" "Mensaje: " + "\n" + params[:message],
+		  	:subject => "Relevamiento Argentina: Nuevo mensaje de " + params[:first_name] + " " + params[:last_name],
+		  	:body => "Nombre: " + params[:first_name] + " " + params[:last_name] + "\n\n" + "Email: " + params[:email] + "\n\n" "Mensaje: " + "\r\n" + params[:message],
 		  	:port => '587',
 		  	:via => :smtp,
 		  	:via_options => { 
