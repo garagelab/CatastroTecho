@@ -713,11 +713,16 @@ function getMunicipios(response) {
 	var municipio = current_datasource.shortcut_municipio;
 	var localidad = current_datasource.shortcut_localidad;
 
+	var tmpstr = "";
 	// Apply responded data into municipio array.
 	for (var i in response.rows) {
 		var row = response.rows[i];
-		row[0].trim();
-		row[1].trim();
+		tmpstr = row[0];
+		tmpstr.trim(); 
+		row[0] = tmpstr;
+		tmpstr = row[1];
+		tmpstr.trim(); 
+		row[1] = tmpstr;
 		if (!row[0] == "") {
  			municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
 		}
@@ -769,10 +774,13 @@ function getMunicipios(response) {
 function getBarrios(response) {
 	barrios_cache = [];
 
+	var tmpstr = "";
 	// Apply responded data into barrio array.
 	for (var i in response.rows) {
 		var row = response.rows[i];
-		row[0].trim();
+		tmpstr = row[0];
+		tmpstr.trim(); 
+		row[0] = tmpstr;
 		barrios_cache.push({ id: row[0], label: row[1]});
 	}
 
