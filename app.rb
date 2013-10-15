@@ -133,25 +133,24 @@ class Techo < Sinatra::Base
   	end
 
  	post '/content/contact' do 
-# 		Pony.mail(
-# 			:from => params[:first_name] + " " + params[:last_name] + "<" + params[:email] + ">",
-# 		  	:to => 'andreas.hempfling@gmail.com', # cis.argentina@techo.org
-# 		  	:subject => "Nuevo mensaje de 'Relevamiento Argentina' - " + params[:first_name] + " " + params[:last_name],
-# 		  	:body => params[:message]
-
-# 		  	:port => '587',
-# 		  	:via => :smtp,
-# 		  	:via_options => { 
-# 				:address              => 'smtp.gmail.com', 
-# 				:port                 => '587', 
-# 				:enable_starttls_auto => true, 
-# 				:user_name            => 'user', 
-# 				:password             => 'pw', 
-# 				:authentication       => :plain, 
-# 				:domain               => 'localhost.localdomain'
-#		  	}
-
-# 		)
+ 		# SendGrid add-on in heroku for contact mails created at 15-oct-2013.
+		Pony.mail(
+			:from => params[:first_name] + " " + params[:last_name] + "<" + params[:email] + ">",
+		  	:to => 'andreas.hempfling@gmail.com', # cis.argentina@techo.org
+		  	:subject => "Nuevo mensaje de 'Relevamiento Argentina' - " + params[:first_name] + " " + params[:last_name],
+		  	:body => params[:message]
+		  	:port => '587',
+		  	:via => :smtp,
+		  	:via_options => { 
+				:address => 'smtp.sendgrid.net', 
+				:port => '587', 
+    			:domain => 'heroku.com',
+    			:user_name => ENV['app7793791@heroku.com'],
+    			:password => ENV['kfgxawch'],
+    			:authentication => :plain,
+    			:enable_starttls_auto => true
+		  	}
+		)
     	redirect '/content/success' 
 	end
 	
