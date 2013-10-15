@@ -718,11 +718,9 @@ function getMunicipios(response) {
 	for (var i in response.rows) {
 		var row = response.rows[i];
 		tmpstr = row[0];
-		tmpstr.trim(); 
-		row[0] = tmpstr;
+		row[0] = trim(tmpstr);
 		tmpstr = row[1];
-		tmpstr.trim(); 
-		row[1] = tmpstr;
+		row[1] = trim(tmpstr);
 		if (!row[0] == "") {
  			municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
 		}
@@ -779,8 +777,7 @@ function getBarrios(response) {
 	for (var i in response.rows) {
 		var row = response.rows[i];
 		tmpstr = row[0];
-		tmpstr.trim(); 
-		row[0] = tmpstr;
+		row[0] = trim(tmpstr);
 		barrios_cache.push({ id: row[0], label: row[1]});
 	}
 
