@@ -713,14 +713,18 @@ function getMunicipios(response) {
 	var municipio = current_datasource.shortcut_municipio;
 	var localidad = current_datasource.shortcut_localidad;
 
-	var tmpstr = "";
+	// Detect Microsoft Internet Explorer.
+	var ver = getInternetExplorerVersion();
+
 	// Apply responded data into municipio array.
 	for (var i in response.rows) {
 		var row = response.rows[i];
-		tmpstr = row[0];
-		row[0] = trim(tmpstr);
-		tmpstr = row[1];
-		row[1] = trim(tmpstr);
+
+		// Not IE
+		if (ver != -1) {
+			row[0].trim();
+			row[1].trim();
+		}
 		if (!row[0] == "") {
  			municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
 		}
@@ -772,12 +776,17 @@ function getMunicipios(response) {
 function getBarrios(response) {
 	barrios_cache = [];
 
-	var tmpstr = "";
+	// Detect Microsoft Internet Explorer.
+	var ver = getInternetExplorerVersion();
+
 	// Apply responded data into barrio array.
 	for (var i in response.rows) {
 		var row = response.rows[i];
-		tmpstr = row[0];
-		row[0] = trim(tmpstr);
+		
+		// Not IE
+		if (ver != -1) {
+			row[0].trim();
+		}		
 		barrios_cache.push({ id: row[0], label: row[1]});
 	}
 

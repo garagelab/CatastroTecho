@@ -512,8 +512,9 @@ function getLatLngFocusFromPolygonBoundary(polygonBoundary) {
   	// Extract polygon coordinates from xml structure.
   	polygonBoundary = $(polygonBoundary).find("coordinates").text();
   	polygonBoundary = polygonBoundary.replace(/\\n/g, " ");
-  	polygonBoundary = trim(polygonBoundary);
-
+  	if (!MS_IE) {
+  		polygonBoundary = polygonBoundary.trim();
+	}
   	// Each pair of coordinates is stored in an array element.
   	latlngArr = polygonBoundary.split(' ');
 
@@ -1559,26 +1560,6 @@ function techoBtnOnMouseOut(obj) {
     document.getElementById(id).style.cursor='default';
   }
   return false;
-}
-
-/* Let's trim... */
-/* Reason is: IE 8 and lower doesn't support Javascript's trim functionality. */
-function ltrim(s) {
-    var l=0;
-    while(l < s.length && s[l] == ' ')
-    {   l++; }
-    return s.substring(l, s.length);
-}
-
-function rtrim(s) {
-    var r=s.length -1;
-    while(r > 0 && s[r] == ' ')
-    {   r-=1;   }
-    return s.substring(0, r+1);
-}
-
-function trim(s) {
-    return rtrim(ltrim(s));
 }
 
 /////////////////////////////////////////////////////////////////////
