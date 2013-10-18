@@ -27,7 +27,7 @@
 				  </div>
 				</div>
 				<div class="control-group">
-				  <label class="control-label" for="organization">Organizaci&oacute;n&nbsp;</label>
+				  <label class="control-label" for="organization">Organizaci&oacute;n&nbsp;<span class="required">*</span></label>
 				  <div class="controls">
 					<input type="text" class="input-xlarge" name="organization" id="organization">
 				  </div>
@@ -94,7 +94,7 @@ $(document).ready(function() {
 		rules: {
 			first_name: { minlength: 2, required: true },
 			last_name: { minlength: 2, required: true },
-			organization: { minlength: 2, required: false },
+			organization: { minlength: 2, required: true },
 			email: { required: true, email: true },
 			message: { minlength: 2, required: true },
 			captcha: { required: true, remote: "valcaptcha" }
