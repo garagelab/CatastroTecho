@@ -357,6 +357,7 @@ function initMapBarriosPage() {
   	initMiniLayer.setMap(mini_map);
   	
   	// Show province data (all data).
+// 	console.debug("initMapBarriosPage()->setViewToProvincia()");
   	setViewToProvincia();
 
   	// Init 'Barrio' search field.
@@ -430,6 +431,8 @@ function setViewToProvincia() {
   	queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
   				"as families, count(" + current_datasource.sql_barrio + ") " + 
   				"FROM " + current_datasource.id;
+	
+// 	console.debug("setViewToProvincia()->getFamilyNumber()"); 
   	getFamilyNumber(reporting_level, queryText);
 
   	drawSupplyCharts(reporting_level, "map_page");
@@ -557,6 +560,11 @@ function findPartidoData() {
   	var where_clause;
 
 	if (!current_datasource.filter.municipio && !current_datasource.filter.localidad) {
+		// Creates a double call of getFamilyNumber!
+		// But if we commend these out we get a negative side effect.
+		// Side effect is: We need this after clearing barrio search and reinit provincia
+		// view (For text in the middle above on screen). This would no longer work.
+// 		console.debug("findPartidoData()->setViewToProvincia()");
 		setViewToProvincia();
   		return;
   	} 
@@ -631,6 +639,8 @@ function findPartidoData() {
         queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
         			"as families, count() FROM " + current_datasource.id + 
 					where_clause;
+					
+// 		console.debug("findPartidoData()->getFamilyNumber()"); 
         getFamilyNumber(reporting_level, queryText);
 
       	// Reinit selection for 'Barrio' search field.
@@ -716,7 +726,10 @@ function findBarrioData() {
       	queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
       				"as families, count() FROM " + current_datasource.id +
     				" WHERE " + current_datasource.sql_codigo + " = " + codigo;
-    	getFamilyNumber(reporting_level, queryText);
+
+		// Theres no need for this call. We have to test and observe this.....
+// 		console.debug("findBarrioData()->getFamilyNumber()"); 
+//     	getFamilyNumber(reporting_level, queryText);
 
     	// Extract polygon data from table.
     	var polygonBoundary = response.getDataTable().getValue(0, current_datasource.col_no_polygon);
@@ -1140,6 +1153,8 @@ function showBarrioInfo(e) {
     			" WHERE " + current_datasource.sql_codigo + " = " + codigo + 
     			" AND " + current_datasource.sql_barrio + " = " + 
     				"'" + current_datasource.filter.barrio_name + "'";
+
+// 	console.debug("showBarrioInfo(e)->getFamilyNumber()"); 
   	getFamilyNumber(reporting_level, queryText);
 }
 
@@ -1410,11 +1425,14 @@ function draw_chart(chartObject) {
  *
  */
 function getFamilyNumber(reporting_level, queryText) {
-
-// var qry_caba = "SELECT sum(" + current_datasource.sql_families + ")" + 
-// 					" as families, count() FROM " + current_datasource.id +
-//     				" WHERE 'Departamento' = 'CABA'";	
-// 
+	
+	// Special case for Buenos Aires.
+	if ( (/^buenos_aires_2013/).test(current_datasource.key) && 
+		reporting_level == is_reporting_level.provincia ) {
+		queryText = "SELECT 'Departamento', sum(" + current_datasource.sql_families + ")" + 
+					" as families, count() FROM " + current_datasource.id +
+    				" GROUP BY 'Departamento'";	
+	}
 
 	var info_text_reporting_level = document.getElementById('info_text_reporting_level');
   	query = new google.visualization.Query(urlVizData + queryText);
@@ -1428,7 +1446,14 @@ function getFamilyNumber(reporting_level, queryText) {
       		return;
     	}
 
-	    var	results = [];    	
+	    var	results = [];
+	    
+	    // Special case for Buenos Aires.
+	    var tot_familias_caba = 0;
+	    var tot_barrios_caba = 0;
+	    var tot_familias_not_caba = 0;
+	    var tot_barrios_not_caba = 0;
+	    
     	var numRows = response.getDataTable().getNumberOfRows();
     	// Search criteria not found in data source.
     	if (!numRows) {
@@ -1436,42 +1461,125 @@ function getFamilyNumber(reporting_level, queryText) {
         	return;
     	}
     
-    	for(var i=0; i<numRows; i++) {
-      		results.push(response.getDataTable().getValue(i, 0));
-      		results.push(response.getDataTable().getValue(i, 1));
+    	// Special case for Buenos Aires.
+    	if ( (/^buenos_aires_2013/).test(current_datasource.key) && 
+    			reporting_level == is_reporting_level.provincia ) {
+    		for(var i=0; i<numRows; i++) {
+//     			console.debug(
+//     				response.getDataTable().getValue(i, 0) + " " + 
+//     				response.getDataTable().getValue(i, 1) + " " +
+//     				response.getDataTable().getValue(i, 2)
+//     			);
+    			if ( response.getDataTable().getValue(i, 0) != 'CABA' ) {
+					tot_familias_not_caba += response.getDataTable().getValue(i, 1);
+					tot_barrios_not_caba += response.getDataTable().getValue(i, 2);
+    			}
+    			// CABA
+    			else {
+					tot_familias_caba += response.getDataTable().getValue(i, 1);
+					tot_barrios_caba += response.getDataTable().getValue(i, 2);  			
+    			}
+    		}
+			
+		}
+		else {
+    		for(var i=0; i<numRows; i++) {
+      			results.push(response.getDataTable().getValue(i, 0));
+      			results.push(response.getDataTable().getValue(i, 1));
+    		}
     	}
+
+
+		// Value tests:
+// 		console.debug("getFamilyNumber() ->");
+// 		console.debug("SQL query: " + queryText);
+//      	console.debug("Reporting level: " + reporting_level);
+//      	if ( (/^buenos_aires_2013/).test(current_datasource.key) && 
+//     			reporting_level == is_reporting_level.provincia ) {
+// 
+//     			console.debug("Families/Barrios Bs As: " +
+//     				tot_familias_not_caba + " " + 
+//     				tot_barrios_not_caba + " " +
+//     				tot_familias_caba + " " +
+//     				tot_barrios_caba
+//     			);
+//     	}
+//     	else {
+// 			console.debug("Families: " + results[0]);
+// 			console.debug("Barrios: " + results[1]);
+// 		}
+// 		console.debug("<- getFamilyNumber()");
+
     	
     	// Distinction of singular and plural use of texts in response to numbers.
     	var villa_text = "asentamientos informales";
     	var familia_text = "familias";
 		var living_text = "residen";
+
+    	// Special case for Buenos Aires.
+    	var villa_caba_text = "asentamientos informales";
+    	var familia_caba_text = "familias";
+		var living_caba_text = "residen";
+    	
+    	var villa_not_caba_text = "asentamientos informales";
+    	var familia_not_caba_text = "familias";
+		var living_not_caba_text = "residen";
+
+    	if ( (/^buenos_aires_2013/).test(current_datasource.key) && 
+    			reporting_level == is_reporting_level.provincia ) {
+			if ( parseInt(tot_barrios_not_caba, 10).format() == '1' ) {
+				villa_not_caba_text = "asentamiento informal";
+			}
+
+			if ( parseInt(tot_familias_not_caba, 10).format() == '1' ) {
+				living_not_caba_text = "reside";
+				familia_not_caba_text = "familia";
+			}
+
+			if ( parseInt(tot_barrios_caba, 10).format() == '1' ) {
+				villa_caba_text = "asentamiento informal";
+			}
+
+			if ( parseInt(tot_familias_caba, 10).format() == '1' ) {
+				living_caba_text = "reside";
+				familia_caba_text = "familia";
+			}
+		}
+		else {		
+			if ( parseInt(results[1], 10).format() == '1' ) {
+				villa_text = "asentamiento informal";
+			}
+
+			if ( parseInt(results[0], 10).format() == '1' ) {
+				living_text = "reside";
+				familia_text = "familia";
+			}
+		}
 		
-    	if (parseInt(results[1], 10).format() == '1') {
-      		villa_text = "asentamiento informal";
-    	}
-
-    	if (parseInt(results[0], 10).format() == '1') {
-    		living_text = "reside";
-      		familia_text = "familia";
-    	}
-
 		// Set info texts.
     	var html, municipio;
     	switch(reporting_level) {
     		// Provincia
       		case is_reporting_level.provincia:
-         		html = current_datasource.provincia_prefix_text + "&nbsp;" +
-        		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
-        		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
-        		"&nbsp;" + familia_text + ".";
-
-//          		html = "En la Provincia de " + 
-//         		"<strong>" + current_datasource.filter.provincia + "</strong> hay&nbsp;" +
-//         		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-//         		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
-//         		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
-//         		"&nbsp;" + familia_text + ".";
+    			// Special case for Buenos Aires.
+      		    if ( (/^buenos_aires_2013/).test(current_datasource.key) ) {
+					html = "En la Provinica de Buenos Aires hay <strong>" + 
+					parseInt(tot_barrios_not_caba, 10).format() + 
+					"</strong> asentamientos informales y en la " + 
+					"Ciudad Aut&oacute;noma hay <strong>" + 
+					parseInt(tot_barrios_caba, 10).format() + 
+					"</strong>, en los que residen <strong>" + 
+					parseInt(tot_familias_not_caba, 10).format() + 
+					"</strong> y <strong>" + parseInt(tot_familias_caba, 10).format() + 
+					"</strong> respectivamente.";
+				}
+				else {
+					html = current_datasource.provincia_prefix_text + "&nbsp;" +
+					"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
+					"&nbsp;" + villa_text + ", en los que " + living_text + "&nbsp;" +
+					"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
+					"&nbsp;" + familia_text + ".";
+				}
         	break;
 
 			// Municipio => same level as localidad (synonymous).
@@ -1479,7 +1587,7 @@ function getFamilyNumber(reporting_level, queryText) {
         		html = "En el " + current_datasource.alias_municipio + " de " + 
         		"<strong>" + current_datasource.filter.municipio + "</strong> hay&nbsp;" +
         		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+        		"&nbsp;" + villa_text + ", en los que " + living_text + "&nbsp;" +
         		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
         		"&nbsp;" + familia_text + ".";
         	break;
@@ -1489,7 +1597,7 @@ function getFamilyNumber(reporting_level, queryText) {
         		html = "En la " + current_datasource.alias_localidad + " de " + 
         		"<strong>" + current_datasource.filter.localidad + "</strong> hay&nbsp;" +
         		"<strong>" + parseInt(results[1], 10).format() + "</strong>" +
-        		"&nbsp;" + villa_text + ", en los que residen&nbsp;" +
+        		"&nbsp;" + villa_text + ", en los que " + living_text + "&nbsp;" +
         		"<strong>" + parseInt(results[0], 10).format() + "</strong>" +
         		"&nbsp;" + familia_text + ".";
         	break;
