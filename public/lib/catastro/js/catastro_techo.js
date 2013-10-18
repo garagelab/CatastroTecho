@@ -1318,6 +1318,7 @@ if (current_datasource.key.indexOf("2013") == -1) { // 2011 only...
     charts.gas.query = { value: "SELECT 'GAS' FROM " + current_datasource.id };
   }
 }
+// 2013 and following years...
 else {
   if (where_clause) {
     charts.sewage.query = { value: "SELECT '13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' FROM " + current_datasource.id + where_clause };
@@ -1327,11 +1328,30 @@ else {
   }
   else {
     charts.sewage.query = { value: "SELECT '13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' FROM " + current_datasource.id };
+
+
+//     charts.sewage.query = { 
+//     	value: "SELECT " + 
+//     			"'13.1- Red cloacal publica'," +
+//     			"'13.2- Desagüe a cámara séptica y pozo ciego'," +
+//     			"'13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra', " +
+//     			"'13.4- Otro especificar:'," +
+//     			" FROM " + current_datasource.id + 
+//     			" WHERE " +
+//     			"'13.1- Red cloacal publica' = '1º lugar' AND " +
+//     			"'13.2- Desagüe a cámara séptica y pozo ciego' = '1º lugar' AND " +
+//     			"'13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' = '1º lugar' AND " +
+// 				"'13.4- Otro especificar:' = '1º lugar'"
+// 	};
+
     charts.water.query = { value: "SELECT '14.2- Conexión irregular a la red pública' FROM " + current_datasource.id };
     charts.electrical.query = { value: "SELECT '12.2- Red pública (con medidor comunitario / social)' FROM " + current_datasource.id };
     charts.gas.query = { value: "SELECT '16.2- Gas en garrafa' FROM " + current_datasource.id };
   }
 }
+
+// var data = new google.visualization.DataTable();
+// data.addColumn('string', 'Employee Name');
 
   charts.sewage.chartType = { value: "PieChart" };
   charts.sewage.containerID = { value: "sewage_chart_div" };
