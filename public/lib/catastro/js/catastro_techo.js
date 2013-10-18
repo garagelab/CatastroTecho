@@ -382,6 +382,10 @@ function initTableBarriosPage() {
  						' where ' + current_datasource.sql_codigo + " > 0", 
  						dataTableHandler);
 
+	// View loading message.
+	var loading_msg_txt = document.getElementById('loading-msg-txt');
+  	loading_msg_txt.innerHTML = '<img src="/images/spinner-36x39.gif"/>&nbsp;Cargando datos...';
+
 /*
   	getFusionTableData('select ' +
   						'"' + current_datasource.cols[0].name + '", ' + 

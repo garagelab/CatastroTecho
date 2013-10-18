@@ -439,3 +439,14 @@ label.error {
 	white-space: nowrap;
 	font-family: "Lucida Grande", "Arial", sans-serif;
 }
+
+.loading-msg {
+	font-size: 17px;
+	color: gray;
+	padding-top: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	text-align: center;
+	width: 100%;
+}

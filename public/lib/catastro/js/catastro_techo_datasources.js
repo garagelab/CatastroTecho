@@ -888,7 +888,7 @@ function dataTableHandler(response) {
         	{ "bVisible": true, "sTitle": cols[25], "aTargets": [25] },
         	{ "bVisible": true, "sTitle": cols[26], "aTargets": [26] },
         	{ "bVisible": true, "sTitle": cols[27], "aTargets": [27] }
-    	];
+    	];    	
 	}
 	// Default column selection.
 	else {
@@ -935,7 +935,7 @@ function dataTableHandler(response) {
         	{ "bVisible": true, "sTitle": cols[111], "aTargets": [25], sDefaultContent: "" },
         	{ "bVisible": true, "sTitle": cols[112], "aTargets": [26], sDefaultContent: "" },
         	{ "bVisible": true, "sTitle": cols[113], "aTargets": [27], sDefaultContent: "" }
-    	];
+    	];    	
 	}
   
   $(document).ready(function() {
@@ -1075,6 +1075,10 @@ function dataTableHandler(response) {
     // $(window).bind('resize', function () {
     //   oTable.fnAdjustColumnSizing();
     // } );
+
+	// Delete loading message.
+	var loading_msg_txt = document.getElementById('loading-msg-txt');
+	loading_msg_txt.innerHTML = '';
 
   } ); // end ready()
 }
