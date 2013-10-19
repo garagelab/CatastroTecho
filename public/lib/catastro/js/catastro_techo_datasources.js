@@ -79,6 +79,43 @@ var placeholder = "ingresa el nombre y pulse enter...";
 
 var image_barrios_path = "/images_barrios";
 
+// Init charts
+var charts = {
+	sewage: [],		// 1. Desagües cloacales
+	water: [],		// 2. Red pública
+	electrical: [],	// 3. Sistema eléctrico
+	gas: []			// 4. Red de gas
+};
+
+var sewage_txt = {
+	1: 'Red cloacal publica', 
+  	2: 'Desagüe a cámara séptica y pozo ciego', 
+  	3: 'Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra', 
+  	4: 'Otro especificar'
+};
+
+var water_txt = {
+	1:  'Agua corriente (red pública)', 
+  	2:	'Conexión irregular a la red pública', 
+  	3:	'Perforación / pozo', 
+  	4:	'Camión Cisterna', 
+  	5:	'Otro especificar'
+};
+
+var electrical_txt = {
+  	1:	'Red pública (con medidores domiciliarios)', 
+  	2:	'Red pública (con medidor comunitario / social)', 
+  	3:	'Conexión irregular a la red pública', 
+  	4:	'No tiene'
+};
+
+var gas_txt = {
+  	1:	'Gas natural de red pública', 
+  	2:	'Gas en garrafa', 
+  	3:	'Leña o carbón', 
+  	4:	'Otro especificar'
+};
+
 /////////////////////////////////////////////////////////////////////
 // TERRITORIES SECTION BEGIN >>>
 // ADD NEW TERRITORIES HERE.
@@ -246,8 +283,8 @@ datasources.table['buenos_aires_2013'] = {
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
 	col_no_water: 67, // AGUA
-	col_no_electrical: 56, // ACCESO A LA ENERGÍA
-	col_no_gas: 81, // GAS
+	col_no_electrical: 55, // ACCESO A LA ENERGÍA
+	col_no_gas: 80, // GAS
 	col_no_drains: 86, // DESAGÜES PLUVIALES
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
@@ -298,8 +335,8 @@ datasources.table['cordoba_2013'] = {
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
 	col_no_water: 67, // AGUA
-	col_no_electrical: 56, // ACCESO A LA ENERGÍA
-	col_no_gas: 81, // GAS
+	col_no_electrical: 55, // ACCESO A LA ENERGÍA
+	col_no_gas: 80, // GAS
 	col_no_drains: 86, // DESAGÜES PLUVIALES
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
@@ -350,8 +387,8 @@ datasources.table['rosario_2013'] = {
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
 	col_no_water: 67, // AGUA
-	col_no_electrical: 56, // ACCESO A LA ENERGÍA
-	col_no_gas: 81, // GAS
+	col_no_electrical: 55, // ACCESO A LA ENERGÍA
+	col_no_gas: 80, // GAS
 	col_no_drains: 86, // DESAGÜES PLUVIALES
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
@@ -403,8 +440,8 @@ datasources.table['salta_2013'] = {
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
 	col_no_water: 67, // AGUA
-	col_no_electrical: 56, // ACCESO A LA ENERGÍA
-	col_no_gas: 81, // GAS
+	col_no_electrical: 55, // ACCESO A LA ENERGÍA
+	col_no_gas: 80, // GAS
 	col_no_drains: 86, // DESAGÜES PLUVIALES
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
@@ -455,8 +492,8 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
 	col_no_water: 67, // AGUA
-	col_no_electrical: 56, // ACCESO A LA ENERGÍA
-	col_no_gas: 81, // GAS
+	col_no_electrical: 55, // ACCESO A LA ENERGÍA
+	col_no_gas: 80, // GAS
 	col_no_drains: 86, // DESAGÜES PLUVIALES
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
@@ -507,8 +544,8 @@ datasources.table['posadas_2013'] = {
 	col_no_start_year: 40, // AÑO DE CONFORMACIÓN DEL BARRIO
 	col_no_sewage: 61, // RED CLOACAL
 	col_no_water: 67, // AGUA
-	col_no_electrical: 56, // ACCESO A LA ENERGÍA
-	col_no_gas: 81, // GAS
+	col_no_electrical: 55, // ACCESO A LA ENERGÍA
+	col_no_gas: 80, // GAS
 	col_no_drains: 86, // DESAGÜES PLUVIALES
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
@@ -812,6 +849,231 @@ function getBarrios(response) {
 	});
 }
 
+/** Callback: Get data and draw 'sewage' chart. */
+function set_sewage_chart(response) {  
+	var total = [0, 0, 0, 0];
+	
+	// Count all relevant expressions for chart.
+	for (var i in response.rows) {
+		var row = response.rows[i];
+		if (row[0] == '1º lugar') total[0]++;
+		if (row[1] == '1º lugar') total[1]++;
+		if (row[2] == '1º lugar') total[2]++;
+		if (row[4] == '1º lugar') total[3]++;		
+	}
+
+	// Create and populate the data table.
+  	var expression = [ sewage_txt[1], sewage_txt[2], sewage_txt[3], sewage_txt[4] ];
+  	var total = [ total[0], total[1], total[2], total[3] ];
+
+    // Create data table object  
+    var dataTable = new google.visualization.DataTable();  
+
+    // Define columns  
+    dataTable.addColumn('string','Type');  
+    dataTable.addColumn('number', 'Total');  
+
+	// Fill rows with data.
+	for(i=0; i<expression.length; i++) {
+    	dataTable.addRow([expression[i], total[i]]);	
+	}
+
+	// Set chart values.
+  	charts.sewage.containerID = { value: "sewage_chart_div" };
+  	charts.sewage.dataTable = { value: dataTable };
+  	charts.sewage.chartType = { value: "PieChart" };
+  	// Brown tones.
+  	charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401', '#FF8000'] };
+	
+	// Set chart object.
+	var chart_object = {
+    	"containerId": charts.sewage.containerID.value,
+      	"dataTable": charts.sewage.dataTable.value,
+      	"refreshInterval": 5,
+      	"chartType": charts.sewage.chartType.value,
+    	"options": {
+            areaOpacity: 0.0,
+            backgroundColor: { fill:'transparent' },
+            width: 350,
+            height: 130,
+            colors: charts.sewage.colors.value,
+            chartArea: {left:10,top:6,width:"75%",height:"85%"}
+        }
+    };
+
+	// Draw chart.	
+	var chart = google.visualization.drawChart( chart_object );
+}
+
+/** Callback: Get data and draw 'water' chart. */
+function set_water_chart(response) {  
+	var total = [0, 0, 0, 0, 0];
+	
+	// Count all relevant expressions for chart.
+	for (var i in response.rows) {
+		var row = response.rows[i];
+		if (row[0] == '1º lugar') total[0]++;
+		if (row[1] == '1º lugar') total[1]++;
+		if (row[2] == '1º lugar') total[2]++;
+		if (row[4] == '1º lugar') total[3]++;		
+		if (row[5] == '1º lugar') total[4]++;		
+	}
+
+	// Create and populate the data table.
+  	var expression = [ water_txt[1], water_txt[2], water_txt[3], water_txt[4], water_txt[5] ];
+  	var total = [ total[0], total[1], total[2], total[3], total[4] ];
+
+    // Create data table object  
+    var dataTable = new google.visualization.DataTable();  
+
+    // Define columns  
+    dataTable.addColumn('string','Type');  
+    dataTable.addColumn('number', 'Total');  
+
+	// Fill rows with data.
+	for(i=0; i<expression.length; i++) {
+    	dataTable.addRow([expression[i], total[i]]);	
+	}
+
+	// Set chart values.
+  	charts.water.containerID = { value: "water_chart_div" };
+  	charts.water.dataTable = { value: dataTable };
+  	charts.water.chartType = { value: "PieChart" };
+  	// Blue tones
+  	charts.water.colors = { value: ['#2E9AFE', '#81BEF7', '#045FB4', '#0B3861', '#0000FF'] };
+	
+	// Set chart object.
+	var chart_object = {
+    	"containerId": charts.water.containerID.value,
+      	"dataTable": charts.water.dataTable.value,
+      	"refreshInterval": 5,
+      	"chartType": charts.water.chartType.value,
+    	"options": {
+            areaOpacity: 0.0,
+            backgroundColor: { fill:'transparent' },
+            width: 350,
+            height: 130,
+            colors: charts.water.colors.value,
+            chartArea: {left:10,top:6,width:"75%",height:"85%"}
+        }
+    };
+
+	// Draw chart.	
+	var chart = google.visualization.drawChart( chart_object );
+}
+
+/** Callback: Get data and draw 'electrical' chart. */
+function set_electrical_chart(response) {  
+	var total = [0, 0, 0, 0];
+	
+	// Count all relevant expressions for chart.
+	for (var i in response.rows) {
+		var row = response.rows[i];
+		if (row[0] == '1º lugar') total[0]++;
+		if (row[1] == '1º lugar') total[1]++;
+		if (row[2] == '1º lugar') total[2]++;
+		if (row[4] == '1º lugar') total[3]++;		
+	}
+
+	// Create and populate the data table.
+  	var expression = [ electrical_txt[1], electrical_txt[2], electrical_txt[3], electrical_txt[4] ];
+  	var total = [ total[0], total[1], total[2], total[3] ];
+
+    // Create data table object  
+    var dataTable = new google.visualization.DataTable();  
+
+    // Define columns  
+    dataTable.addColumn('string','Type');  
+    dataTable.addColumn('number', 'Total');  
+
+	// Fill rows with data.
+	for(i=0; i<expression.length; i++) {
+    	dataTable.addRow([expression[i], total[i]]);	
+	}
+
+	// Set chart values.
+  	charts.electrical.containerID = { value: "electrical_chart_div" };
+  	charts.electrical.dataTable = { value: dataTable };
+  	charts.electrical.chartType = { value: "PieChart" };
+  	// Yellow/Orange tones
+  	charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33', '#ff9900'] };
+	
+	// Set chart object.
+	var chart_object = {
+    	"containerId": charts.electrical.containerID.value,
+      	"dataTable": charts.electrical.dataTable.value,
+      	"refreshInterval": 5,
+      	"chartType": charts.electrical.chartType.value,
+    	"options": {
+            areaOpacity: 0.0,
+            backgroundColor: { fill:'transparent' },
+            width: 350,
+            height: 130,
+            colors: charts.electrical.colors.value,
+            chartArea: {left:10,top:6,width:"75%",height:"85%"}
+        }
+    };
+
+	// Draw chart.	
+	var chart = google.visualization.drawChart( chart_object );
+}
+
+/** Callback: Get data and draw 'gas' chart. */
+function set_gas_chart(response) {  
+	var total = [0, 0, 0, 0];
+	
+	// Count all relevant expressions for chart.
+	for (var i in response.rows) {
+		var row = response.rows[i];
+		if (row[0] == '1º lugar') total[0]++;
+		if (row[1] == '1º lugar') total[1]++;
+		if (row[2] == '1º lugar') total[2]++;
+		if (row[4] == '1º lugar') total[3]++;		
+	}
+
+	// Create and populate the data table.
+  	var expression = [ gas_txt[1], gas_txt[2], gas_txt[3], gas_txt[4] ];
+  	var total = [ total[0], total[1], total[2], total[3] ];
+
+    // Create data table object  
+    var dataTable = new google.visualization.DataTable();  
+
+    // Define columns  
+    dataTable.addColumn('string','Type');  
+    dataTable.addColumn('number', 'Total');  
+
+	// Fill rows with data.
+	for(i=0; i<expression.length; i++) {
+    	dataTable.addRow([expression[i], total[i]]);	
+	}
+
+	// Set chart values.
+  	charts.gas.containerID = { value: "gas_chart_div" };
+  	charts.gas.dataTable = { value: dataTable };
+  	charts.gas.chartType = { value: "PieChart" };
+  	// Red tones.
+  	charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E', '#F78181'] };
+	
+	// Set chart object.
+	var chart_object = {
+    	"containerId": charts.gas.containerID.value,
+      	"dataTable": charts.gas.dataTable.value,
+      	"refreshInterval": 5,
+      	"chartType": charts.gas.chartType.value,
+    	"options": {
+            areaOpacity: 0.0,
+            backgroundColor: { fill:'transparent' },
+            width: 350,
+            height: 130,
+            colors: charts.gas.colors.value,
+            chartArea: {left:10,top:6,width:"75%",height:"85%"}
+        }
+    };
+
+	// Draw chart.	
+	var chart = google.visualization.drawChart( chart_object );
+}
+
 /**
  * Callback: Gets and stores selected data in an array for faster access. 
  *
@@ -956,7 +1218,7 @@ function dataTableHandler(response) {
           {
             "sExtends": "csv",
             "sButtonText": "Guardar como CSV archivo",
-            "sFileName": "techo_catastro_" + current_datasource.key + ".csv",
+            "sFileName": "techo_relevamiento_" + current_datasource.key + ".csv",
             "sFieldSeperator": ";"
           }
         ]

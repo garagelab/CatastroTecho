@@ -13,19 +13,6 @@ require 'pony'
 
 Tilt.register 'md', Tilt::RDiscountTemplate
 
-### Database
-#DB = Sequel.connect("fusiontables:///")
-
-API_KEY = 'AIzaSyCQ3Kiec1Vz_flwDFJxqahORuIES0WVxmw'
-
-TABLES = {
-	:buenos_aires		=> '1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY'.to_sym
-}
-
-#FusionTables::Connection::URL = URI.parse("https://www.googleapis.com/fusiontables/v1/query")
-#FusionTables::Connection::API_URL = API_KEY
-
-
 class NilClass
 	def empty?; true; end
 end
@@ -35,7 +22,7 @@ class Techo < Sinatra::Base
   	register Sinatra::Partial
 
 	#################################################################
-	### 
+	### helpers functions
 	#################################################################  	
 	helpers do
     	def root(path)
@@ -77,23 +64,11 @@ class Techo < Sinatra::Base
   	COM = /^(https?:\/\/)(.+?)\.com\.ar/
 
 	#################################################################
-	### 
+	### init
 	#################################################################  	
 	before do
     	# Application version
-    	@version = "12/06/2013"
-
-    	# Connect to service of fusion tables
-		@ft = GData::Client::FusionTables.new
-
-    	# In Fusion, table IDs are numbers.
-		TABLES = {
-			:buenos_aires		=> '1_fEVSZmIaCJzDQoOgTY7pIcjBLng1MFOoeeTtYY'
-		}
-
-    	# Prepare queries.
-    	@qry_total_barrios = "SELECT 'BARRIO', 'PARTIDO', 'LOCALIDAD' FROM #{TABLES[:buenos_aires]} GROUP BY 'BARRIO', 'PARTIDO', 'LOCALIDAD';"
-		@qry_total_families = "SELECT sum('NRO DE FLIAS') as families, count('BARRIO') FROM #{TABLES[:buenos_aires]};"
+    	@version = "21/10/2013"
 
     	if request.url =~ WWW
       		redirect(request.url.sub(WWW, '\1'), 301)
@@ -123,9 +98,8 @@ class Techo < Sinatra::Base
 	### Controller/Handler
 	#################################################################  	
   	get '/' do
-    	navsidebar = partial :"partials/navsidebar"
     	footer = partial :"partials/footer"
-    	erb :index, :locals => { :navsidebar => navsidebar, :footer => footer }
+    	erb :index, :locals => { :footer => footer }
   	end
 
   	get '/content/:page' do |page|
@@ -135,15 +109,22 @@ class Techo < Sinatra::Base
  	post '/content/contact' do 
  		# SendGrid add-on in heroku for contact mails created at 15-oct-2013.
  		if params[:organization] then
- 			body = "Nombre: " + params[:first_name] + " " + params[:last_name] + "\n\n" + "Organización: " + params[:organization] + "\n\n" + "Email: " + params[:email] + "\n\n" "Mensaje: " + "\n\n" + params[:message] 
+ 			body = "Nombre: " + params[:first_name] + " " + 
+ 					params[:last_name] + "\n\n" + "Organización: " + 
+ 					params[:organization] + "\n\n" + "Email: " + 
+ 					params[:email] + "\n\n" "Mensaje: " + "\n\n" + params[:message] 
  		else
- 			body = "Nombre: " + params[:first_name] + " " + params[:last_name] + "\n\n" + "Email: " + params[:email] + "\n\n" "Mensaje: " + "\n\n" + params[:message]
+ 			body = "Nombre: " + params[:first_name] + " " + params[:last_name] + 
+ 			"\n\n" + "Email: " + params[:email] + 
+ 			"\n\n" "Mensaje: " + "\n\n" + params[:message]
  		end
  		
 		Pony.mail(
-			:from => params[:first_name] + " " + params[:last_name] + " <" + params[:email] + ">",
+			:from => params[:first_name] + " " + params[:last_name] + 
+					" <" + params[:email] + ">",
 		  	:to => 'cis.argentina@techo.org',
-		  	:subject => "Relevamiento Argentina: Nuevo mensaje de " + params[:first_name] + " " + params[:last_name],
+		  	:subject => "Relevamiento Argentina: Nuevo mensaje de " + 
+		  				params[:first_name] + " " + params[:last_name],
 		  	:body => body, 
 		  	:port => '587',
 		  	:via => :smtp,

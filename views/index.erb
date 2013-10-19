@@ -21,38 +21,6 @@
             			en su conjunto logra reconocer que &eacute;ste es un problema 
             			prioritario y trabaja activamente por resolverlo.
           			</p>
-
-          			<p>
-            			<%
-            				####
-							# Subject:	GData::Client::BadRequestError
-							# Fixed:	12/06/13 09:40 <andreas.hempfling@gmail.com>
-							# Cause:	Request Quota Exceeded
-							# Reason:	Googles General Quota Limits (All APIs)
-							#			If quota is exceeded, Google Analytics API returns 
-							#			an error for additional requests.
-							# See:		http://stackoverflow.com/questions/6267690/what-are-the-limits-on-the-google-data-api
-							#			https://developers.google.com/analytics/devguides/reporting/core/v3/?hl=es-419#quota_policy
-							#			https://developers.google.com/analytics/devguides/reporting/core/v3/limits-quotas?hl=es-
-							#
-							begin
-              					#@total_barrios = @ft.execute @qry_total_barrios
-              					@total_families = @ft.execute @qry_total_families
-              					tot_villas = number_with_delimeter(@total_families[0][:"count()"].to_i)
-              					tot_families = number_with_delimeter(@total_families[0][:families].to_i)
-								rescue GData::Client::BadRequestError
-				 				tot_villas = '---'
-								tot_families = '---'
-							end
-            			%>
-<!-- 
-            			En las provincias de Buenos Aires hay
-            			<strong><#%= tot_villas %></strong>
-            			villas y asentamientos, en los que residen&nbsp;
-            			<strong><#%= tot_families %></strong>
-            			familias.
- -->
-          			</p>
 			
 					<!-- YouTube video about Techo-->					
 					<p>

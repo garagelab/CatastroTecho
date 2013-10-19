@@ -357,7 +357,6 @@ function initMapBarriosPage() {
   	initMiniLayer.setMap(mini_map);
   	
   	// Show province data (all data).
-// 	console.debug("initMapBarriosPage()->setViewToProvincia()");
   	setViewToProvincia();
 
   	// Init 'Barrio' search field.
@@ -381,6 +380,17 @@ function initTableBarriosPage() {
  	getFusionTableData('select * from ' + current_datasource.id + 
  						' where ' + current_datasource.sql_codigo + " > 0", 
  						dataTableHandler);
+
+//  	getFusionTableData("select " + 
+//  						"'col0','col29','col30','col23','col24'," +
+//  						"'col25','col26','col32','col40','col41'," +
+//  						"'col42','col43','col61','col66','col54'," +
+//  						"'col79','col85','col91','col87','col105'," +
+//  						"'col106','col107','col108','col109','col110'," +
+//  						"'col111','col112','col113'" +
+//  						" from " + current_datasource.id + 
+//  						" where " + current_datasource.sql_codigo + " > 0", 
+//  						dataTableHandler);
 
 	// View loading message.
 	var loading_msg_txt = document.getElementById('loading-msg-txt');
@@ -436,7 +446,6 @@ function setViewToProvincia() {
   				"as families, count(" + current_datasource.sql_barrio + ") " + 
   				"FROM " + current_datasource.id;
 	
-// 	console.debug("setViewToProvincia()->getFamilyNumber()"); 
   	getFamilyNumber(reporting_level, queryText);
 
   	drawSupplyCharts(reporting_level, "map_page");
@@ -568,7 +577,6 @@ function findPartidoData() {
 		// But if we commend these out we get a negative side effect.
 		// Side effect is: We need this after clearing barrio search and reinit provincia
 		// view (For text in the middle above on screen). This would no longer work.
-// 		console.debug("findPartidoData()->setViewToProvincia()");
 		setViewToProvincia();
   		return;
   	} 
@@ -644,7 +652,6 @@ function findPartidoData() {
         			"as families, count() FROM " + current_datasource.id + 
 					where_clause;
 					
-// 		console.debug("findPartidoData()->getFamilyNumber()"); 
         getFamilyNumber(reporting_level, queryText);
 
       	// Reinit selection for 'Barrio' search field.
@@ -732,7 +739,6 @@ function findBarrioData() {
     				" WHERE " + current_datasource.sql_codigo + " = " + codigo;
 
 		// Theres no need for this call. We have to test and observe this.....
-// 		console.debug("findBarrioData()->getFamilyNumber()"); 
 //     	getFamilyNumber(reporting_level, queryText);
 
     	// Extract polygon data from table.
@@ -746,7 +752,7 @@ function findBarrioData() {
         	pixelOffset: null,
         	row : []
     	};
-
+		
 		e.row[current_datasource.cols[0].name] = { value: response.getDataTable().getValue(0, 0) }; // barrio id
 		e.row[current_datasource.cols[current_datasource.col_no_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_barrio) };
     	e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_other_name_barrio) };
@@ -758,10 +764,39 @@ function findBarrioData() {
 
     	e.row[current_datasource.cols[current_datasource.col_no_families].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_families) };
     	e.row[current_datasource.cols[current_datasource.col_no_start_year].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_start_year) };
+
     	e.row[current_datasource.cols[current_datasource.col_no_sewage].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_sewage) };
     	e.row[current_datasource.cols[current_datasource.col_no_water].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_water) };
     	e.row[current_datasource.cols[current_datasource.col_no_electrical].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_electrical) };
     	e.row[current_datasource.cols[current_datasource.col_no_gas].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_gas) };
+
+		if ( current_datasource.year != '2011' ) {
+			// Sewage
+			e.row[current_datasource.cols[61].name] = { value: response.getDataTable().getValue(0, 61) };
+			e.row[current_datasource.cols[62].name] = { value: response.getDataTable().getValue(0, 62) };
+			e.row[current_datasource.cols[63].name] = { value: response.getDataTable().getValue(0, 63) };
+			e.row[current_datasource.cols[64].name] = { value: response.getDataTable().getValue(0, 64) };
+		
+			// Water
+			e.row[current_datasource.cols[67].name] = { value: response.getDataTable().getValue(0, 67) };
+			e.row[current_datasource.cols[68].name] = { value: response.getDataTable().getValue(0, 68) };
+			e.row[current_datasource.cols[69].name] = { value: response.getDataTable().getValue(0, 69) };
+			e.row[current_datasource.cols[70].name] = { value: response.getDataTable().getValue(0, 70) };
+			e.row[current_datasource.cols[71].name] = { value: response.getDataTable().getValue(0, 71) };
+
+			// Electrical
+			e.row[current_datasource.cols[55].name] = { value: response.getDataTable().getValue(0, 55) };
+			e.row[current_datasource.cols[56].name] = { value: response.getDataTable().getValue(0, 56) };
+			e.row[current_datasource.cols[57].name] = { value: response.getDataTable().getValue(0, 57) };
+			e.row[current_datasource.cols[58].name] = { value: response.getDataTable().getValue(0, 58) };
+
+			// Gas
+			e.row[current_datasource.cols[80].name] = { value: response.getDataTable().getValue(0, 80) };
+			e.row[current_datasource.cols[81].name] = { value: response.getDataTable().getValue(0, 81) };
+			e.row[current_datasource.cols[82].name] = { value: response.getDataTable().getValue(0, 82) };
+			e.row[current_datasource.cols[83].name] = { value: response.getDataTable().getValue(0, 83) };
+		}
+    	
     	e.row[current_datasource.cols[current_datasource.col_no_drains].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_drains) };
     	e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_street_lighting) };
     	e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name] = { value: response.getDataTable().getValue(0, current_datasource.col_no_waste_collection) };
@@ -1042,10 +1077,68 @@ function showBarrioInfo(e) {
   	var localidad = e.row[current_datasource.cols[current_datasource.col_no_localidad].name].value;
   	var families = e.row[current_datasource.cols[current_datasource.col_no_families].name].value;
   	var start_year = e.row[current_datasource.cols[current_datasource.col_no_start_year].name].value;
-  	var sewage = e.row[current_datasource.cols[current_datasource.col_no_sewage].name].value;
-  	var water = e.row[current_datasource.cols[current_datasource.col_no_water].name].value;
-  	var electrical = e.row[current_datasource.cols[current_datasource.col_no_electrical].name].value;
-  	var gas = e.row[current_datasource.cols[current_datasource.col_no_gas].name].value;
+
+	var sewage = missing;
+	var water = missing;
+	var electrical = missing;
+	var gas = missing;
+	
+	if (current_datasource.year == '2011') {
+  		sewage = e.row[current_datasource.cols[current_datasource.col_no_sewage].name].value;
+  		water = e.row[current_datasource.cols[current_datasource.col_no_water].name].value;
+  		electrical = e.row[current_datasource.cols[current_datasource.col_no_electrical].name].value;
+  		gas = e.row[current_datasource.cols[current_datasource.col_no_gas].name].value;
+	}
+	// Year 2013 and later.
+	else {
+		// Evaluate table columns.
+		// Sewage
+		var col61 = e.row[current_datasource.cols[61].name].value;
+		var col62 = e.row[current_datasource.cols[62].name].value;
+		var col63 = e.row[current_datasource.cols[63].name].value;
+		var col64 = e.row[current_datasource.cols[64].name].value;
+		
+		if ( col61 == '1º lugar' ) sewage = sewage_txt[1];
+		if ( col62 == '1º lugar' ) sewage = sewage_txt[2];
+		if ( col63 == '1º lugar' ) sewage = sewage_txt[3];
+		if ( col64 == '1º lugar' ) sewage = sewage_txt[4];
+		
+		// Water
+		var col67 = e.row[current_datasource.cols[67].name].value;
+		var col68 = e.row[current_datasource.cols[68].name].value;
+		var col69 = e.row[current_datasource.cols[69].name].value;
+		var col70 = e.row[current_datasource.cols[70].name].value;
+		var col71 = e.row[current_datasource.cols[71].name].value;
+
+		if ( col67 == '1º lugar' ) water = water_txt[1];
+		if ( col68 == '1º lugar' ) water = water_txt[2];
+		if ( col69 == '1º lugar' ) water = water_txt[3];
+		if ( col70 == '1º lugar' ) water = water_txt[4];
+		if ( col71 == '1º lugar' ) water = water_txt[5];
+
+		// Electrical
+		var col55 = e.row[current_datasource.cols[55].name].value;
+		var col56 = e.row[current_datasource.cols[56].name].value;
+		var col57 = e.row[current_datasource.cols[57].name].value;
+		var col58 = e.row[current_datasource.cols[58].name].value;
+
+		if ( col55 == '1º lugar' ) electrical = electrical_txt[1];
+		if ( col56 == '1º lugar' ) electrical = electrical_txt[2];
+		if ( col57 == '1º lugar' ) electrical = electrical_txt[3];
+		if ( col58 == '1º lugar' ) electrical = electrical_txt[4];
+
+		// Gas
+		var col80 = e.row[current_datasource.cols[80].name].value;
+		var col81 = e.row[current_datasource.cols[81].name].value;
+		var col82 = e.row[current_datasource.cols[82].name].value;
+		var col83 = e.row[current_datasource.cols[83].name].value;
+
+		if ( col80 == '1º lugar' ) gas = gas_txt[1];
+		if ( col81 == '1º lugar' ) gas = gas_txt[2];
+		if ( col82 == '1º lugar' ) gas = gas_txt[3];
+		if ( col83 == '1º lugar' ) gas = gas_txt[4];
+	}
+  	
   	var drains = e.row[current_datasource.cols[current_datasource.col_no_drains].name].value;
   	var street_lighting = e.row[current_datasource.cols[current_datasource.col_no_street_lighting].name].value;
   	var waste_collection = e.row[current_datasource.cols[current_datasource.col_no_waste_collection].name].value;
@@ -1158,7 +1251,6 @@ function showBarrioInfo(e) {
     			" AND " + current_datasource.sql_barrio + " = " + 
     				"'" + current_datasource.filter.barrio_name + "'";
 
-// 	console.debug("showBarrioInfo(e)->getFamilyNumber()"); 
   	getFamilyNumber(reporting_level, queryText);
 }
 
@@ -1258,14 +1350,6 @@ function deleteCirclesFromMiniMap() {
 
 /** Prepare charts with data. */
 function drawSupplyCharts(reporting_level, page) {
-	// Init charts
-  	var charts = {
-    	sewage: [],		// 1. Desagües cloacales
-    	water: [],		// 2. Red pública
-    	electrical: [],	// 3. Sistema eléctrico
-    	gas: []			// 4. Red de gas
-  	};
-
 	// Prepare charts with values.
   	//
   	// Prepare queries in response of view level.
@@ -1304,136 +1388,133 @@ function drawSupplyCharts(reporting_level, page) {
     	where_clause = null;
     	chart_base = is_reporting_level.provincia;
   	}
-
-	// A little bit cosmetics...
-	//chart_base = chart_base.substring(0, 1).toUpperCase() + chart_base.substr(1, chart_base.length-1);
 	
-if (current_datasource.key.indexOf("2013") == -1) { // 2011 only...
-  if (where_clause) {
-    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id + where_clause };
-    charts.water.query = { value: "SELECT 'AGUA' FROM " + current_datasource.id  + where_clause };
-    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + current_datasource.id  + where_clause };
-    charts.gas.query = { value: "SELECT 'GAS' FROM " + current_datasource.id  + where_clause };
-  }
-  else {
-    charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id };
-    charts.water.query = { value: "SELECT 'AGUA' FROM " + current_datasource.id };
-    charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + current_datasource.id };
-    charts.gas.query = { value: "SELECT 'GAS' FROM " + current_datasource.id };
-  }
-}
-// 2013 and following years...
-else {
-  if (where_clause) {
-    charts.sewage.query = { value: "SELECT '13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' FROM " + current_datasource.id + where_clause };
-    charts.water.query = { value: "SELECT '14.2- Conexión irregular a la red pública' FROM " + current_datasource.id  + where_clause };
-    charts.electrical.query = { value: "SELECT '12.2- Red pública (con medidor comunitario / social)' FROM " + current_datasource.id  + where_clause };
-    charts.gas.query = { value: "SELECT '16.2- Gas en garrafa' FROM " + current_datasource.id  + where_clause };
-  }
-  else {
-    charts.sewage.query = { value: "SELECT '13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' FROM " + current_datasource.id };
+	if (current_datasource.key.indexOf("2013") == -1) { // 2011 only...
+	  if (where_clause) {
+		charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id + where_clause };
+		charts.water.query = { value: "SELECT 'AGUA' FROM " + current_datasource.id  + where_clause };
+		charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + current_datasource.id  + where_clause };
+		charts.gas.query = { value: "SELECT 'GAS' FROM " + current_datasource.id  + where_clause };
+	  }
+	  else {
+		charts.sewage.query = { value: "SELECT 'RED CLOACAL' FROM " + current_datasource.id };
+		charts.water.query = { value: "SELECT 'AGUA' FROM " + current_datasource.id };
+		charts.electrical.query = { value: "SELECT 'ACCESO A LA ENERGÍA' FROM " + current_datasource.id };
+		charts.gas.query = { value: "SELECT 'GAS' FROM " + current_datasource.id };
+	  }
+	  
+	  // --------------------
+	  // Proceeding for 2011.
+	  // --------------------
+	  charts.sewage.chartType = { value: "PieChart" };
+	  charts.sewage.containerID = { value: "sewage_chart_div" };
+	  charts.sewage.dataSourceUrl = { value: urlVizData };
+	  // Brown tones.
+	  charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401', '#FF8000'] };
 
+	  charts.water.chartType = { value: "PieChart" };
+	  charts.water.containerID = { value: "water_chart_div" };
+	  charts.water.dataSourceUrl = { value: urlVizData };
+	  // Blue tones
+	  charts.water.colors = { value: ['#2E9AFE', '#81BEF7', '#045FB4', '#0B3861', '#0000FF'] };
 
-//     charts.sewage.query = { 
-//     	value: "SELECT " + 
-//     			"'13.1- Red cloacal publica'," +
-//     			"'13.2- Desagüe a cámara séptica y pozo ciego'," +
-//     			"'13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra', " +
-//     			"'13.4- Otro especificar:'," +
-//     			" FROM " + current_datasource.id + 
-//     			" WHERE " +
-//     			"'13.1- Red cloacal publica' = '1º lugar' AND " +
-//     			"'13.2- Desagüe a cámara séptica y pozo ciego' = '1º lugar' AND " +
-//     			"'13.3- Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra' = '1º lugar' AND " +
-// 				"'13.4- Otro especificar:' = '1º lugar'"
-// 	};
+	  charts.electrical.chartType = { value: "PieChart" };
+	  charts.electrical.containerID = { value: "electrical_chart_div" };
+	  charts.electrical.dataSourceUrl = { value: urlVizData };
+	  // Yellow/Orange tones
+	//  charts.electrical.colors = { value: ['#FFBF00', '#FFCC00', '#FF8000', '#FFD700', '#FFA500'] };
+	  charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33', '#ff9900'] };
 
-    charts.water.query = { value: "SELECT '14.2- Conexión irregular a la red pública' FROM " + current_datasource.id };
-    charts.electrical.query = { value: "SELECT '12.2- Red pública (con medidor comunitario / social)' FROM " + current_datasource.id };
-    charts.gas.query = { value: "SELECT '16.2- Gas en garrafa' FROM " + current_datasource.id };
-  }
-}
+	  charts.gas.chartType = { value: "PieChart" };
+	  charts.gas.containerID = { value: "gas_chart_div" };
+	  charts.gas.dataSourceUrl = { value: urlVizData };
+	  // Red tones.
+	  charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E', '#F78181'] };
 
-// var data = new google.visualization.DataTable();
-// data.addColumn('string', 'Employee Name');
+	  // Legend for charts only for map page.
+	  if (page == 'map_page') {
+			var info_text_charts = document.getElementById('info_text_charts');
+			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
+	  }
 
-  charts.sewage.chartType = { value: "PieChart" };
-  charts.sewage.containerID = { value: "sewage_chart_div" };
-  charts.sewage.dataSourceUrl = { value: urlVizData };
-  // Brown tones.
-  charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401', '#FF8000'] };
+	  // Draw charts.
+	  var chartObject;
+	  for(var chart in charts) {
+		switch(page) {
+		  case 'index_page':
+			chartObject = {
+			  containerID: charts[chart].containerID.value,
+			  dataSourceUrl: charts[chart].dataSourceUrl.value,
+			  query: charts[chart].query.value,
+			  chartType: charts[chart].chartType.value,
+			  options: {
+				width: 500,
+				height: 240,
+				colors: charts[chart].colors.value,
+				chartArea: {left:20,top:6,width:"100%",height:"85%"}
+			  }
+			};
+			break;
 
-  charts.water.chartType = { value: "PieChart" };
-  charts.water.containerID = { value: "water_chart_div" };
-  charts.water.dataSourceUrl = { value: urlVizData };
-  // Blue tones
-  charts.water.colors = { value: ['#2E9AFE', '#81BEF7', '#045FB4', '#0B3861', '#0000FF'] };
+		  case 'map_page':
+			chartObject = {
+			  containerID: charts[chart].containerID.value,
+			  dataSourceUrl: charts[chart].dataSourceUrl.value,
+			  query: charts[chart].query.value,
+			  chartType: charts[chart].chartType.value,
+			  options: {
+				areaOpacity: 0.0,
+				backgroundColor: { fill:'transparent' },
+				width: 350,
+				height: 130,
+				colors: charts[chart].colors.value,
+				chartArea: {left:10,top:6,width:"75%",height:"85%"}
+			  }
+			};
+			break;
 
-  charts.electrical.chartType = { value: "PieChart" };
-  charts.electrical.containerID = { value: "electrical_chart_div" };
-  charts.electrical.dataSourceUrl = { value: urlVizData };
-  // Yellow/Orange tones
-//  charts.electrical.colors = { value: ['#FFBF00', '#FFCC00', '#FF8000', '#FFD700', '#FFA500'] };
-  charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33', '#ff9900'] };
+		  //default:
+		  // not set...
+		}
+		draw_chart(chartObject);
+	  }
+	}
+	//	-----------------------------------------
+	//	Proceeding for 2013 and following years.
+	//	-----------------------------------------
+	else {
+	  	// Legend for charts only for map page.
+	  	if (page == 'map_page') {
+			var info_text_charts = document.getElementById('info_text_charts');
+			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
+	  	}
 
-  charts.gas.chartType = { value: "PieChart" };
-  charts.gas.containerID = { value: "gas_chart_div" };
-  charts.gas.dataSourceUrl = { value: urlVizData };
-  // Red tones.
-  charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E', '#F78181'] };
-
-  // Legend for charts only for map page.
-  if (page == 'map_page') {
-    var info_text_charts = document.getElementById('info_text_charts');
-    info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
-  }
-
-  // Draw charts.
-  var chartObject;
-  for(var chart in charts) {
-    switch(page) {
-      case 'index_page':
-        chartObject = {
-          containerID: charts[chart].containerID.value,
-          dataSourceUrl: charts[chart].dataSourceUrl.value,
-          query: charts[chart].query.value,
-          chartType: charts[chart].chartType.value,
-          options: {
-            width: 500,
-            height: 240,
-            colors: charts[chart].colors.value,
-            chartArea: {left:20,top:6,width:"100%",height:"85%"}
-          }
-        };
-        break;
-
-      case 'map_page':
-        chartObject = {
-          containerID: charts[chart].containerID.value,
-          dataSourceUrl: charts[chart].dataSourceUrl.value,
-          query: charts[chart].query.value,
-          chartType: charts[chart].chartType.value,
-          options: {
-            areaOpacity: 0.0,
-            backgroundColor: { fill:'transparent' },
-            width: 350,
-            height: 130,
-            colors: charts[chart].colors.value,
-            chartArea: {left:10,top:6,width:"75%",height:"85%"}
-          }
-        };
-        break;
-
-      //default:
-      // not set...
-    }
-    draw_chart(chartObject);
-  }
+		if (where_clause) {
+			// Draw 'sewage' chart.
+			getFusionTableData("select 'col61', 'col62', 'col63', 'col64' from " + current_datasource.id + where_clause, set_sewage_chart);
+			// Draw 'water' chart.
+			getFusionTableData("select 'col67', 'col68', 'col69', 'col70', 'col71' from " + current_datasource.id + where_clause, set_water_chart);
+			// Draw 'electrical' chart.
+			getFusionTableData("select 'col55', 'col56', 'col57', 'col58' from " + current_datasource.id + where_clause, set_electrical_chart);
+			// Draw 'gas' chart.
+			getFusionTableData("select 'col80', 'col81', 'col82', 'col83' from " + current_datasource.id + where_clause, set_gas_chart);
+	  	}
+	  	else {
+			// Draw 'sewage' chart.
+			getFusionTableData("select 'col61', 'col62', 'col63', 'col64' from " + current_datasource.id, set_sewage_chart);
+			// Draw 'water' chart.
+			getFusionTableData("select 'col67', 'col68', 'col69', 'col70', 'col71' from " + current_datasource.id, set_water_chart);
+			// Draw 'electrical' chart.
+			getFusionTableData("select 'col55', 'col56', 'col57', 'col58' from " + current_datasource.id, set_electrical_chart);
+			// Draw 'gas' chart.
+			getFusionTableData("select 'col80', 'col81', 'col82', 'col83' from " + current_datasource.id, set_gas_chart);
+	  	}
+	}
 }
 
 /** Draws a chart on given page. */
 function draw_chart(chartObject) {
-	google.visualization.drawChart( {
+	var chart = google.visualization.drawChart( {
     	"containerId": chartObject["containerID"],
     	"dataSourceUrl": chartObject["dataSourceUrl"],
     	"query": chartObject["query"],
@@ -1489,11 +1570,6 @@ function getFamilyNumber(reporting_level, queryText) {
     	if ( (/^buenos_aires_2013/).test(current_datasource.key) && 
     			reporting_level == is_reporting_level.provincia ) {
     		for(var i=0; i<numRows; i++) {
-//     			console.debug(
-//     				response.getDataTable().getValue(i, 0) + " " + 
-//     				response.getDataTable().getValue(i, 1) + " " +
-//     				response.getDataTable().getValue(i, 2)
-//     			);
     			if ( response.getDataTable().getValue(i, 0) != 'CABA' ) {
 					tot_familias_not_caba += response.getDataTable().getValue(i, 1);
 					tot_barrios_not_caba += response.getDataTable().getValue(i, 2);
