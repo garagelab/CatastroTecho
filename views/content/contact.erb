@@ -58,8 +58,8 @@
 				<div class="control-group">
 			      <label class="control-label" for="captcha">Ingresa el código&nbsp;<span class="required">*</span></label>
 				  <div class="controls">
-				    <img id="captcha-img" style="margin-bottom:5px;" src="http://www.EasyCaptchas.com/1234.captcha" />
-					<a id="refresh-captcha" title="Renovar c&oacute;digo" href="#">Renovar c&oacute;digo</a><br>
+				    <img id="captcha-img" style="margin-bottom:5px;" src="http://www.EasyCaptchas.com/1234.captcha?transparent=true" />
+					<a id="refresh-captcha" title="Renovar c&oacute;digo" href="http://www.easycaptchas.com/" onclick="document.getElementById('captcha-img').src+='&rf=1';return false;">Renovar c&oacute;digo</a><br>
 					<input type="text" class="input-xlarge" name="captcha" />
 				  </div>
 				</div>
@@ -130,11 +130,11 @@ $(document).ready(function() {
 		min: $.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
 	});
 
-	$('#refresh-captcha').click(function() {
-		$('#captcha-img').attr('src', "http://www.EasyCaptchas.com/1234.captcha&rf=1");
-		alert("refresh-captcha()");
-		return false; 
-	});
+// 	$('#refresh-captcha').click(function() {
+// 		$('#captcha-img').attr('src', "http://www.EasyCaptchas.com/1234.captcha&rf=1");
+// 		alert("refresh-captcha()");
+// 		return false; 
+// 	});
 	
 // // 					<a href="http://easycaptchas.com/" onclick="document.getElementById('captcha-img').src+='&rf=1';return false;" style="font-size:11px">Renovar código</a><br />
 

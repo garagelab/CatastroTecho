@@ -88,32 +88,32 @@ var charts = {
 };
 
 var sewage_txt = {
-	1: 'Red cloacal publica', 
-  	2: 'Desagüe a cámara séptica y pozo ciego', 
-  	3: 'Desagüe sólo a pozo negro / ciego u hoyo excavación a tierra', 
-  	4: 'Otro especificar'
+	1: 'Red cloacal',
+	2: 'Cámara séptica',
+	3: 'Pozo ciego',
+	4: 'Otro'
 };
 
 var water_txt = {
-	1:  'Agua corriente (red pública)', 
-  	2:	'Conexión irregular a la red pública', 
-  	3:	'Perforación / pozo', 
-  	4:	'Camión Cisterna', 
-  	5:	'Otro especificar'
+	1:  'Agua corriente',
+	2:  'Conexión irregular',
+	3:  'Agua de pozo',
+	4:  'Camión Cisterna',
+	5:  'Otro'
 };
 
 var electrical_txt = {
-  	1:	'Red pública (con medidores domiciliarios)', 
-  	2:	'Red pública (con medidor comunitario / social)', 
-  	3:	'Conexión irregular a la red pública', 
-  	4:	'No tiene'
+	1:  'Red pública regular',
+	2:  'Medidor comunitario',
+	3:  'Red pública irregular',
+	4:  'No tiene',
 };
 
 var gas_txt = {
-  	1:	'Gas natural de red pública', 
-  	2:	'Gas en garrafa', 
-  	3:	'Leña o carbón', 
-  	4:	'Otro especificar'
+	1:  'Gas natural',
+	2:  'Gas en garrafa',
+	3:  'Leña o carbón',
+	4:  'Otro'
 };
 
 /////////////////////////////////////////////////////////////////////
@@ -185,11 +185,12 @@ datasources.table['buenos_aires_2011'] = {
 	col_no_street_lighting: 21, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 22, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 7,
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
+	search_part_txt_label: 'partido o localidad',
+	shortcut_municipio: 'pdo.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-34.672747,-58.41774], 
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/bsas'
 };
 
 //*******************************************************************
@@ -241,7 +242,8 @@ datasources.table['cordoba_2011'] = {
 	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-31.40039,-64.228233],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/cordoba'
 };
 
 //*******************************************************************
@@ -289,11 +291,12 @@ datasources.table['buenos_aires_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
+	search_part_txt_label: 'partido o localidad',
+	shortcut_municipio: 'pdo.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-34.672747,-58.41774],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/bsas'
 };
 
 //*******************************************************************
@@ -345,7 +348,8 @@ datasources.table['cordoba_2013'] = {
 	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-31.40039,-64.228233],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/cordoba'
 };
 
 //*******************************************************************
@@ -393,11 +397,12 @@ datasources.table['rosario_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
+	search_part_txt_label: 'departamento o localidad',
+	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-32.948615,-60.722049],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/rosario'
 };
 
 //*******************************************************************
@@ -446,11 +451,12 @@ datasources.table['salta_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
+	search_part_txt_label: 'departamento o localidad',
+	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-24.775517,-65.410246],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/salta'
 };
 
 //*******************************************************************
@@ -498,11 +504,12 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
+	search_part_txt_label: 'departamento o localidad',
+	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-38.943659,-68.113569],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/nqn_rn'
 };
 
 //*******************************************************************
@@ -550,11 +557,12 @@ datasources.table['posadas_2013'] = {
 	col_no_street_lighting: 94, // ALUMBRADO PÚBLICO
 	col_no_waste_collection: 90, // RECOLECCIÓN DE RESIDUOS
 	col_no_polygon: 196,
-	search_part_txt_label: 'municipio o localidad',
-	shortcut_municipio: 'mpio.',
+	search_part_txt_label: 'departamento o localidad',
+	shortcut_municipio: 'dpto.',
 	shortcut_localidad: 'loc.',
 	center_lat_lng:	[-27.387316,-55.928834],
-	filter: data_filter
+	filter: data_filter,
+	img_path: image_barrios_path + '/posadas'
 };
 
 /////////////////////////////////////////////////////////////////////
@@ -646,9 +654,17 @@ function resetFilter(level) {
 
 /* Set image (path only) from current selected barrio and shows it on screen. */
 function setBarrioImage(barrio_id) {
-	var image = image_barrios_path + '/' + barrio_id + '.jpg';
+	var image = current_datasource.img_path + '/' + barrio_id + '.jpg';
 	$('#img-barrio')
-		.error( function () { setBarrioDummyImage(); })
+		.error( function () {
+				// Image id not found. Looking for another image with suffix '_1'.
+				var image = current_datasource.img_path + '/' + barrio_id + '_1' + '.jpg';
+				$('#img-barrio')
+					.error( function () {
+						setBarrioDummyImage(); 
+					})
+					.attr('src', image);
+		})
 		.attr('src', image);
 }
 
@@ -762,9 +778,14 @@ function getMunicipios(response) {
 			row[0].trim();
 			row[1].trim();
 		}
-		if (!row[0] == "") {
- 			municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
+		
+		// In case of Rosario there are no departamentos.
+		if ( current_datasource.name != 'Rosario') {
+			if (!row[0] == "") {
+ 				municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
+			}
 		}
+		
 		if (!row[1] == "") {
 			municipios_cache.push({ id: row[1], label: row[1] + " (" + localidad + ")"});
 		}
