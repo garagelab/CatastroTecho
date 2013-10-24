@@ -256,7 +256,10 @@
 		// Tab slide out for graphics panel.
 		// Attention! Source in lib\tabslideout\jquery.tabSlideOut.v1.3.js was modified.
 		// Do not change it to another version without verification before!
-        $('.slide-out-div').tabSlideOut({
+		//
+		// Please note: In css there is 'display: none;' for this because div 
+		// show up in the middle of the screen sometimes when page was loading.
+		$('.slide-out-div').show().tabSlideOut({
             tabHandle: '.slide-out-handle',	//class of the element that will become your tab
 //          pathToTabImage: '/images/charts_tab_white.gif', //Optionally can be set using css
             imageHeight: '83px',	//height of tab image //Optionally can be set using css
@@ -269,8 +272,7 @@
             fixedPosition: true     //options: true makes it stick(fixed position) on scroll
         	});
         // Slide out initially.
-		$('.slide-out-handle').click();
-
+ 		$('.slide-out-handle').click();
 //**************************************************************
 // Event handling
 //**************************************************************

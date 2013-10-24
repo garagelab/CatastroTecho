@@ -256,10 +256,7 @@
 .slide-out-div {
 	padding: 20px;
     width:300px;
-/* 
-    background: #ccc;
-    border: #29216d 1px solid;
- */
+ 	display: none;
     z-index: 400 !important;
 }
 
