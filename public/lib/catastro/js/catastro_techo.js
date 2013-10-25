@@ -305,13 +305,12 @@ function initMapBarriosPage() {
 	// Special case for Buenos Aires.
 	if ( current_datasource.name == 'Buenos Aires' ) {
   		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
-		'<label class="radio inline">' +
+		'<label class="radio inline control-label">' +
   		'<input type="radio" name="bsas-territory" id="bsas-provincia" value="bsas-provincia">' +
-		current_datasource.search_part_txt_label + '</input>' +
+		current_datasource.search_part_txt_label +
 		'</label>' +
-		'<label class="radio inline">' +
+		'<label class="radio inline control-label">' +
   		'<input type="radio" name="bsas-territory" id="bsas-caba" value="bsas-caba">' + 'CABA' +
-  		'</input>' +
 		'</label>';
 		document.getElementById('bsas-provincia').checked = true;
 	}
