@@ -273,6 +273,7 @@
         	});
         // Slide out initially.
  		$('.slide-out-handle').click();
+		
 //**************************************************************
 // Event handling
 //**************************************************************
@@ -331,8 +332,15 @@
 			removeAllPartidoSelections();
 		});
 
+// 		$("#search_part_txt_label").on("click", function(e) {
+// // 			e.stopPropagation();
+// 			console.debug($('input[name=bsas-territory]:checked', '.radio').val());
+// 			var issel_radio = $('input[name=bsas-territory]:checked', '.radio').val();
+// 			
+// 		});
+
 		// Prevents the event object of selector from moving on to the next node.
-		$('#selector').on("click", function(e) { 
+		$('#selector').on("click", function(e) {
 			e.stopPropagation();
 		});
 

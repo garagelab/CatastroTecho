@@ -769,6 +769,11 @@ function getMunicipios(response) {
 	// Detect Microsoft Internet Explorer.
 	var ver = getInternetExplorerVersion();
 
+	var issel_radio = null;
+	if ( current_datasource.name == 'Buenos Aires' ) {
+		issel_radio = $('input[name=bsas-territory]:checked', '.radio').val();
+	}
+	
 	// Apply responded data into municipio array.
 	for (var i in response.rows) {
 		var row = response.rows[i];
@@ -780,15 +785,44 @@ function getMunicipios(response) {
 		}
 		
 		// In case of Rosario there are no departamentos.
-		if ( current_datasource.name != 'Rosario') {
+		// Buenos Aires is also a special case and is proceeded later above.
+		if ( current_datasource.name != 'Rosario' && current_datasource.name != 'Buenos Aires' ) {
 			if (!row[0] == "") {
  				municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
 			}
 		}
-		
-		if (!row[1] == "") {
-			municipios_cache.push({ id: row[1], label: row[1] + " (" + localidad + ")"});
+
+		if ( current_datasource.name != 'Buenos Aires' ) {
+			if (!row[1] == "") {
+				municipios_cache.push({ id: row[1], label: row[1] + " (" + localidad + ")"});			
+			}
 		}
+		// Special case for Buenos Aires.
+		else {
+			switch( issel_radio ) {
+				// Special case for CABA "Ciudad Autónoma de Buenos Aires".
+				case 'bsas-caba':
+					if ( !row[1] == "" ) {
+						var caba_check = row[1].toLowerCase();
+						if ( caba_check.substr(0, 6) == "comuna" ) { // Only CABA!
+							municipios_cache.push({ id: row[1], label: row[1] + " (CABA)"});
+						}
+					}
+				break;
+				// Special case for "Provincia de Buenos Aires".
+				case 'bsas-provincia':
+					if ( !row[0] == "" ) {
+ 						municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
+					}
+					if ( !row[1] == "" ) {					
+						var caba_check = row[1].toLowerCase();
+						if ( caba_check.substr(0, 6) != "comuna" ) { // All exept CABA!
+							municipios_cache.push({ id: row[1], label: row[1] + " (" + localidad + ")"});									
+						}
+					}
+				break;
+			}
+		}		
 	}
 
 	// Remove duplicates.

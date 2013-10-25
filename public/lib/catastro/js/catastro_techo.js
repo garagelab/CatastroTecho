@@ -301,9 +301,25 @@ function setViewToDatasource(datasource_key) {
 function initMapBarriosPage() {
 	getCurrentDatasource();
 	var search_part_txt_label = document.getElementById('search_part_txt_label');
-  	search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
+	
+	// Special case for Buenos Aires.
+	if ( current_datasource.name == 'Buenos Aires' ) {
+  		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
+		'<label class="radio inline">' +
+  		'<input type="radio" name="bsas-territory" id="bsas-provincia" value="bsas-provincia">' +
+		current_datasource.search_part_txt_label + '</input>' +
+		'</label>' +
+		'<label class="radio inline">' +
+  		'<input type="radio" name="bsas-territory" id="bsas-caba" value="bsas-caba">' + 'CABA' +
+  		'</input>' +
+		'</label>';
+		document.getElementById('bsas-provincia').checked = true;
+	}
+	else {
+  		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
   		current_datasource.search_part_txt_label;
-  	
+	}
+	
   	map = new google.maps.Map(document.getElementById('map_canvas'), {
   		center: new google.maps.LatLng(current_datasource.center_lat_lng[0],
   										current_datasource.center_lat_lng[1]),
