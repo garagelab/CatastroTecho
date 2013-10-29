@@ -197,7 +197,7 @@
 
  
 .slide-out-handle {
-	background: url('/images/charts_tab_white.gif') no-repeat;
+/* 	background: url('/images/charts_tab_white_min.gif') no-repeat; */
 	width: 40px;
 	height: 83px;
     display: block;
@@ -208,7 +208,7 @@
 }
 
 .slide-out-handle:hover {
-	background: url('/images/charts_tab_grey.gif') no-repeat;
+/* 	background: url('/images/charts_tab_grey_min.gif') no-repeat; */
 }
 
 #info_text_charts {

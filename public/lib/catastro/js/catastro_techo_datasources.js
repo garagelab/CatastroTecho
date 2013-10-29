@@ -369,14 +369,14 @@ datasources.table['rosario_2013'] = {
 	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
-	sql_municipio: "'Municipio/Partido/Comuna'",
+	sql_municipio: "'Departamento'",
 	sql_localidad: "'Localidad'",
 	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: 'municipio',
+	alias_municipio: 'departamento',
 	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
@@ -422,7 +422,7 @@ datasources.table['salta_2013'] = {
 	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
-	sql_municipio: "'Municipio/Partido/Comuna'",
+	sql_municipio: "'Departamento'",
 	sql_localidad: "'Localidad'",
 	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
@@ -430,7 +430,7 @@ datasources.table['salta_2013'] = {
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_localidad: "'Localidad'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: 'municipio',
+	alias_municipio: 'departamento',
 	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
@@ -476,14 +476,14 @@ datasources.table['rio_negro_neuquen_2013'] = {
 	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
-	sql_municipio: "'Municipio/Partido/Comuna'",
+	sql_municipio: "'Departamento'",
 	sql_localidad: "'Localidad'",
 	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: 'municipio',
+	alias_municipio: 'departamento',
 	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
@@ -529,14 +529,14 @@ datasources.table['posadas_2013'] = {
 	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
-	sql_municipio: "'Municipio/Partido/Comuna'",
+	sql_municipio: "'Departamento'",
 	sql_localidad: "'Localidad'",
 	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: 'municipio',
+	alias_municipio: 'departamento',
 	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,
@@ -784,9 +784,8 @@ function getMunicipios(response) {
 			row[1].trim();
 		}
 		
-		// In case of Rosario there are no departamentos.
 		// Buenos Aires is also a special case and is proceeded later above.
-		if ( current_datasource.name != 'Rosario' && current_datasource.name != 'Buenos Aires' ) {
+		if ( current_datasource.name != 'Buenos Aires' ) {
 			if (!row[0] == "") {
  				municipios_cache.push({ id: row[0], label: row[0] + " (" + municipio + ")"});
 			}

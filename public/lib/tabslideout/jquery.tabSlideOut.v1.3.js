@@ -200,8 +200,7 @@
                         slideIn();
                     }
                 });
-                clickScreenToClose();
-                
+                clickScreenToClose();           
         };
         
         var slideOutOnLoad = function(){
@@ -223,4 +222,5 @@
         };
         
     };
+
 })(jQuery);

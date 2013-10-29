@@ -4,7 +4,7 @@
 	<div class="row-fluid">
     	<!-- Selections container - control panel -->
     	<div id="selector" class="control-panel">
-    		<span id="reset-contro-panel-pos"><a href="#"><i id="icon-reply" class="icon-reply icon"></i></a></span>
+    		<span id="reset-control-panel-pos"><a href="#"><i id="icon-reply" class="icon-reply icon"></i></a></span>
     		<span><a href="#"><i id="icon-move" class="icon-move icon"></i></a></span>
 
 			<!-- Year -->    	
@@ -18,7 +18,7 @@
 			<!-- Methodology and information for download -->
     		<div class="methodology_and_information">
 				<ul class="breadcrumb information-space-reducer">
- 					<li id="2013"><a href="#">2013</a>&nbsp;&nbsp;</li>
+<!--  					<li id="2013"><a href="#">2013</a>&nbsp;&nbsp;</li> -->
   					<li id="methodology">
   						<a href="#">Metodolog&iacute;a&nbsp;</a><span class="divider">|</span>
   					</li>  
@@ -37,14 +37,16 @@
 			</div>
 
 			<!-- Territory / Mini map -->
+<!-- 
 	    	<div id="mini_canvas_container">
       			<div id="mini_map_canvas"></div>
     		</div>
+ -->
 
       		<form id="form_muni_barrio_search">
 				<!-- Municipio/Localidad Search -->
         		<fieldset>
-          		<label id="search_part_txt_label"></label>
+          		<span id="search_part_txt_label"></span>
           		<div class="input-append">
             		<input class="span10" id="search_part_txt" size="10" type="text" 
                     	placeholder="ingresa el nombre y pulse enter..." 
@@ -273,7 +275,9 @@
         	});
         // Slide out initially.
  		$('.slide-out-handle').click();
-		
+ 		$('.slide-out-handle').css('background', "url('/images/charts_tab_white_min.gif') no-repeat");
+		var slide_is_out = true;
+
 //**************************************************************
 // Event handling
 //**************************************************************
@@ -358,7 +362,7 @@
 		});
 
 		// Repositioning control panel.
-		$('#reset-contro-panel-pos').click(function (e) {
+		$('#reset-control-panel-pos').click(function (e) {
   			e.preventDefault();
 			$("#selector").css({ left: "90px", top: "50px", position: "absolute" });
  		});	
@@ -439,24 +443,58 @@
 			return false;
 		});	
 
-		$('#mini_map_canvas').click(function (e) {
-  			e.preventDefault();
-			$(".control-panel").draggable('disable');
-			return false;
-		});
+// 		$('#mini_map_canvas').click(function (e) {
+//   			e.preventDefault();
+// 			$(".control-panel").draggable('disable');
+// 			return false;
+// 		});
 
-		$('#mini_map_canvas').mouseleave(function (e) {
-  			e.preventDefault();
-			$(".control-panel").draggable('enable');
-			return false;
-		});
+// 		$('#mini_map_canvas').mouseleave(function (e) {
+//   			e.preventDefault();
+// 			$(".control-panel").draggable('enable');
+// 			return false;
+// 		});
 
-		$('#mini_map_canvas').mousemove(function (e) {
- 			e.preventDefault();
-			$(".control-panel").draggable('disable');
-			return false;
-		});
+// 		$('#mini_map_canvas').mousemove(function (e) {
+//  			e.preventDefault();
+// 			$(".control-panel").draggable('disable');
+// 			return false;
+// 		});
 		// <<< end prevent tab slide out from close.
+
+		$('.slide-out-handle').hover(
+			function() {
+				var isset_bgimg = $('.slide-out-handle').css('background-image');
+				// Slide is out.
+				if ( isset_bgimg.indexOf("min") >= 0 ) {
+					$('.slide-out-handle').css('background', "url('/images/charts_tab_grey_min.gif') no-repeat");
+					slide_is_out = true;
+				}
+				else {
+					$('.slide-out-handle').css('background', "url('/images/charts_tab_grey_max.gif') no-repeat");
+					slide_is_out = false;
+				}  		
+			}, 
+			function() {
+				if ( slide_is_out ) {
+					$('.slide-out-handle').css('background', "url('/images/charts_tab_white_min.gif') no-repeat");
+				}
+				else {
+					$('.slide-out-handle').css('background', "url('/images/charts_tab_white_max.gif') no-repeat");
+				}
+			}
+		);
+
+		$('.slide-out-handle').on("click", function(e) { 
+			if ( slide_is_out ) {
+				$('.slide-out-handle').css('background', "url('/images/charts_tab_white_max.gif') no-repeat");
+				slide_is_out = false;
+			}
+			else {
+				$('.slide-out-handle').css('background', "url('/images/charts_tab_white_max.gif') no-repeat");
+				slide_is_out = true;
+			}  		
+		});
 
 	}); // end $(document).ready(function()
 

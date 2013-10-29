@@ -304,15 +304,17 @@ function initMapBarriosPage() {
 	
 	// Special case for Buenos Aires.
 	if ( current_datasource.name == 'Buenos Aires' ) {
-  		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
-		'<label class="radio inline control-label">' +
-  		'<input type="radio" name="bsas-territory" id="bsas-provincia" value="bsas-provincia">' +
-		current_datasource.search_part_txt_label +
-		'</label>' +
-		'<label class="radio inline control-label">' +
-  		'<input type="radio" name="bsas-territory" id="bsas-caba" value="bsas-caba">' + 'CABA' +
-		'</label>';
-		document.getElementById('bsas-provincia').checked = true;
+  		search_part_txt_label.innerHTML = 
+  			'<i class="icon-filter"></i>&nbsp;'+
+			'<label class="radio inline">' +
+  			'<input type="radio" name="bsas-territory" id="bsas-provincia" value="bsas-provincia">' +
+			current_datasource.search_part_txt_label +
+			'</label>' +
+  			'<label class="radio inline">' +
+  			'<input type="radio" name="bsas-territory" id="bsas-caba" value="bsas-caba">' +
+  			'CABA' +
+			'</label>';
+  		document.getElementById('bsas-provincia').checked = true;
 	}
 	else {
   		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
@@ -347,29 +349,29 @@ function initMapBarriosPage() {
     	streetViewControl: false
   	} );
 
-  	mini_map = new google.maps.Map(document.getElementById('mini_map_canvas'), {
-  		center: new google.maps.LatLng(current_datasource.center_lat_lng[0],
-  										current_datasource.center_lat_lng[1]),
-    	zoom: 8,
-    	minZoom: 8,
-		zoomControl: false,
-  		scaleControl: false,
-  		scrollwheel: false,
-  		disableDoubleClickZoom: true,    	
-    	mapTypeId: google.maps.MapTypeId.HYBRID,
-//     	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    	mapTypeControl: false,
-		zoomControl: false,
-    	streetViewControl: false
-  	} );
+//   	mini_map = new google.maps.Map(document.getElementById('mini_map_canvas'), {
+//   		center: new google.maps.LatLng(current_datasource.center_lat_lng[0],
+//   										current_datasource.center_lat_lng[1]),
+//     	zoom: 8,
+//     	minZoom: 8,
+// 		zoomControl: false,
+//   		scaleControl: false,
+//   		scrollwheel: false,
+//   		disableDoubleClickZoom: true,    	
+//     	mapTypeId: google.maps.MapTypeId.HYBRID,
+//     	//mapTypeId: google.maps.MapTypeId.ROADMAP,
+//     	mapTypeControl: false,
+// 		zoomControl: false,
+//     	streetViewControl: false
+//   	} );
 
 	// Bind the maps together
-	mini_map.bindTo('center', map, 'center');
+// 	mini_map.bindTo('center', map, 'center');
 
   	initMapLayer();
   	initLayer.setMap(map);
-  	initMiniMapLayer();
-  	initMiniLayer.setMap(mini_map);
+//   	initMiniMapLayer();
+//   	initMiniLayer.setMap(mini_map);
   	
   	// Show province data (all data).
   	setViewToProvincia();
@@ -644,17 +646,17 @@ function findPartidoData() {
         	map.setZoom(current_datasource.partidoZoom);
         	
   			// Add a Circle overlay to the mini map.
-  			var mini_map_circle_options = {
-      			strokeColor: '#FF0000',
-      			strokeOpacity: 0.8,
-      			strokeWeight: 2,
-      			fillColor: '#FF0000',
-      			fillOpacity: 0.35,
-      			map: mini_map,
-      			center: lat_lng,
-      			radius: 7000 // 7000 m
-    		};
-    		mini_map_circles.push(new google.maps.Circle(mini_map_circle_options));    		
+//   			var mini_map_circle_options = {
+//       			strokeColor: '#FF0000',
+//       			strokeOpacity: 0.8,
+//       			strokeWeight: 2,
+//       			fillColor: '#FF0000',
+//       			fillOpacity: 0.35,
+//       			map: mini_map,
+//       			center: lat_lng,
+//       			radius: 7000 // 7000 m
+//     		};
+//     		mini_map_circles.push(new google.maps.Circle(mini_map_circle_options));    		
       	}
      
       	// Reset barrio info.
@@ -974,7 +976,7 @@ function removeAllPartidoSelections() {
  	map.setZoom(current_datasource.startZoom);
  	
  	// Remove circle from mini map.
- 	deleteCirclesFromMiniMap();
+//  	deleteCirclesFromMiniMap();
 
   	delete queryText;
 
@@ -1449,7 +1451,8 @@ function drawSupplyCharts(reporting_level, page) {
 	  // Legend for charts only for map page.
 	  if (page == 'map_page') {
 			var info_text_charts = document.getElementById('info_text_charts');
-			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
+// 			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
+			info_text_charts.innerHTML = "Acceso a los servicios b&aacute;sicos";
 	  }
 
 	  // Draw charts.
@@ -1501,7 +1504,8 @@ function drawSupplyCharts(reporting_level, page) {
 	  	// Legend for charts only for map page.
 	  	if (page == 'map_page') {
 			var info_text_charts = document.getElementById('info_text_charts');
-			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
+// 			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
+			info_text_charts.innerHTML = "Acceso a los servicios b&aacute;sicos";
 	  	}
 
 		if (where_clause) {
@@ -1719,7 +1723,8 @@ function getFamilyNumber(reporting_level, queryText) {
 
 			// Barrio			
 			case is_reporting_level.barrio:
-				html = "En el barrio <strong>" + current_datasource.filter.barrio_name + 
+				html = "En el barrio <strong>" + 
+				current_datasource.filter.barrio_name +
 				"</strong>" + "&nbsp;de&nbsp;" + "<strong>" + 
 				issel_barrio.row[current_datasource.cols[current_datasource.col_no_localidad].name].value + 
 				"</strong>" + "&nbsp;" + living_text + ",&nbsp;aproximadamente,&nbsp;" +
