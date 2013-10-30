@@ -263,7 +263,7 @@ datasources.table['buenos_aires_2013'] = {
 	ciudad_prefix_text: "y en la Ciudad de <strong>Buenos Aires</strong> hay",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
 	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad', 'Provincia'",
-	sql_municipio: "'Municipio/Partido/Comuna'",
+	sql_municipio: "'Departamento'",
 	sql_localidad: "'Localidad'",
 	sql_codigo: "'id'",
 	sql_barrio: "'1. Nombre del barrio'",
