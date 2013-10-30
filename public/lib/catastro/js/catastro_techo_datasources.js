@@ -270,7 +270,7 @@ datasources.table['buenos_aires_2013'] = {
 	sql_other_name_barrio: "'2. Otros nombres del barrio'",
 	sql_partido: "'Municipio/Partido/Comuna'",
 	sql_families: "'4. ¿ Cúantas familias viven aproximadamente en el barrio actualmente?'",
-	alias_municipio: 'municipio',
+	alias_municipio: 'partido',
 	alias_localidad: "localidad",
 	cols: {},
 	col_no_barrio: 29,

@@ -320,7 +320,18 @@ function initMapBarriosPage() {
   		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
   		current_datasource.search_part_txt_label;
 	}
-	
+
+	// Set Barrio info labels.
+  	var partido_label = document.getElementById('partido_label');
+	partido_label.innerHTML = 
+		current_datasource.alias_municipio.substr(0, 1).toUpperCase() + 
+		current_datasource.alias_municipio.substr(1) + ':';
+
+  	var localidad_label = document.getElementById('localidad_label');
+	localidad_label.innerHTML = 
+		current_datasource.alias_localidad.substr(0, 1).toUpperCase() + 
+		current_datasource.alias_localidad.substr(1) + ':';
+
   	map = new google.maps.Map(document.getElementById('map_canvas'), {
   		center: new google.maps.LatLng(current_datasource.center_lat_lng[0],
   										current_datasource.center_lat_lng[1]),
@@ -1090,7 +1101,12 @@ function showBarrioInfo(e) {
   	var barrio_key = e.row[current_datasource.cols[0].name].value; // id or code!!!
   	var barrio = e.row[current_datasource.cols[current_datasource.col_no_barrio].name].value;
   	var other_name_barrio = e.row[current_datasource.cols[current_datasource.col_no_other_name_barrio].name].value;
-  	var partido = e.row[current_datasource.cols[current_datasource.col_no_municipio].name].value;
+  	if ( current_datasource.name == 'Buenos Aires' ) {
+  		var partido = e.row[current_datasource.cols[current_datasource.col_no_municipio].name].value;
+  	}
+  	else {
+  		var partido = e.row[current_datasource.cols[current_datasource.col_no_departamento].name].value;
+  	}
   	var localidad = e.row[current_datasource.cols[current_datasource.col_no_localidad].name].value;
   	var families = e.row[current_datasource.cols[current_datasource.col_no_families].name].value;
   	var start_year = e.row[current_datasource.cols[current_datasource.col_no_start_year].name].value;
@@ -1171,7 +1187,6 @@ function showBarrioInfo(e) {
 	else {
 		codigo = parseInt(current_datasource.filter.barrio_id);
 	}
-
 	
 	setBarrioImage(codigo);
 	
