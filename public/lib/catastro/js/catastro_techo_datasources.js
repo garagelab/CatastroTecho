@@ -315,7 +315,7 @@ datasources.table['cordoba_2013'] = {
 	provincia_prefix_text: "En la Provincia de <strong>Córdoba</strong> hay",
 	ciudad_prefix_text: "",
 	sql_main_grp:	"'1. Nombre del barrio', '2. Otros nombres del barrio', 'Municipio/Partido/Comuna', 'Localidad'",
-	sql_barrio_search_grp:	"'#id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Departamento', 'Localidad', 'Provincia'",
+	sql_barrio_search_grp:	"'id', '1. Nombre del barrio', '2. Otros nombres del barrio', 'Departamento', 'Localidad', 'Provincia'",
 	sql_municipio: "'Departamento'",
 	sql_localidad: "'Localidad'",
 	sql_codigo: "'id'",
@@ -595,10 +595,8 @@ function setCurrentDatasource(datasource_key) {
  	data_filter['provincia'] = null;
 	data_filter['municipio'] = null;
 	data_filter['localidad'] = null;
-	data_filter['barrio'] = null;
-			
-//	console.debug("setCurrentDatasource() => " + current_datasource.name + " (" + current_datasource.key + ")"); 
- }
+	data_filter['barrio'] = null;			
+}
 
 /**
  * Get current datasource
@@ -623,11 +621,8 @@ function getCurrentDatasource() {
 	//getFusionTableData("select " + current_datasource.sql_barrio_search_grp + " from " + current_datasource.id, setDataCache);	
 
  	current_datasource.filter['provincia'] = current_datasource.provincia;
-
-// 	console.debug("getCurrentDatasource() => " + current_datasource.name + " (" + current_datasource.key + ")"); 
 	
 	var sel_year = Session.get("sel_year");
-// 	console.debug("getCurrentDatasource() => sel_year is " + sel_year); 
 	return current_datasource;
 }
 
@@ -769,9 +764,9 @@ function getMunicipios(response) {
 	// Detect Microsoft Internet Explorer.
 	var ver = getInternetExplorerVersion();
 
-	var issel_radio = null;
+	var issel_radio_bsas = null;
 	if ( current_datasource.name == 'Buenos Aires' ) {
-		issel_radio = $('input[name=bsas-territory]:checked', '.radio').val();
+		issel_radio_bsas = $('input[name=bsas-territory]:checked', '.radio').val();
 	}
 	
 	// Apply responded data into municipio array.
@@ -798,7 +793,7 @@ function getMunicipios(response) {
 		}
 		// Special case for Buenos Aires.
 		else {
-			switch( issel_radio ) {
+			switch( issel_radio_bsas ) {
 				// Special case for CABA "Ciudad Autónoma de Buenos Aires".
 				case 'bsas-caba':
 					if ( !row[1] == "" ) {
@@ -833,13 +828,6 @@ function getMunicipios(response) {
 	for (key in tmp_arr) {
     	municipios_cache.push(tmp_arr[key]);	
 	}
-	
-	// A little bit data cleansing...
-// 	for (var i=0; i<municipios_cache.length; i++) {
-// 		var str = municipios_cache[i].text.toLowerCase();
-// 		console.debug(str);
-// 		municipios_cache[i].text = str;
-// 	}
 
 	// Sort texts ascending.
 	municipios_cache.sort(function(a, b){
@@ -847,20 +835,7 @@ function getMunicipios(response) {
  		if (textA < textB) return -1
  		if (textA > textB)return 1
  		return 0 //default return value (no sorting)
-	});
-	
-		
-	// A little bit data cleansing...
-// 	for(var i=0; i<=municipios_cache.length; i++) {
-// 		var str = municipios_cache[i].text;
-// 		municipios_cache[i].text.substring(0, 1).toUpperCase();
-// 		str.substring(0, 1).toUpperCase();
-// 		str.substring(1, str.length-1).toLowerCase();
-// 		municipios_cache[i].text = str;
-// 	}
-
-
-//	console.debug("getMunicipios() =>  municipios_cache ", municipios_cache.length);
+	});		
 }
 
 /** Callback: Get barrios from current datasource. */
@@ -877,7 +852,8 @@ function getBarrios(response) {
 		// Not IE
 		if (ver == -1) {
 			row[0].trim();
-		}		
+		}
+		
 		barrios_cache.push({ id: row[0], label: row[1]});
 	}
 
@@ -890,9 +866,6 @@ function getBarrios(response) {
 	for (key in tmp_arr) {
     	barrios_cache.push(tmp_arr[key]);	
 	}
-
-//	console.debug("total barrios: " + barrios_cache.length);
-//	$("#test").replaceWith("&nbsp;villa o asentamiento&nbsp;" + barrios_cache.length); 
 		
 	// Sort texts ascending.
 	barrios_cache.sort(function(a, b){
@@ -1148,7 +1121,6 @@ function setDataCache(response) {
 				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4]
 //				label:		entry[1] + ', ' + entry[2] + ', ' + entry[3] + ', ' + entry[4].toString()  + ', ' + entry[0] 
 			};
-			//console.debug(barrios_cache.data[i].label);	
 		}
 	}
 }

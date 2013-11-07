@@ -5,11 +5,14 @@
  * Objective:	Establish an interactive, web-based platform with information
  *				and analysis for the comprehensive description of the geometric
  *				location, structures, people and infrastructure of all the poor
- *				districts of the Buenos Aires province.
+ *				districts of different regions in Argentina.
  * Code type:	Business coding
  * Copyright:	2012 - 2013 Techo http://www.techo.org/ All Rights Reserved.
  * @author		Andreas Hempfling <andreas.hempfling@gmail.com>
  *
+ * Hint:		Tested on Chrome 30.x, Firefox 24.0, Opera 17.x, Safari 6.x and IE 9 and 10.
+ *				Maybe it should also work in higher versions and also in other browsers.
+ *				However: It will not work on IE 8 and below!
  */
 
 /////////////////////////////////////////////////////////////////////
@@ -99,6 +102,8 @@ var mini_map;
 var mini_map_circles = [];
 var initLayer;
 var initMiniLayer;
+var initCABALayer;
+var initGranBsAsLayer;
 var markers = [];
 var techo_marker = "../images/marker_techo1.png";
 var techo_marker_shadow = "../images/shadow_blue_marker.png";
@@ -300,26 +305,6 @@ function setViewToDatasource(datasource_key) {
  */
 function initMapBarriosPage() {
 	getCurrentDatasource();
-	var search_part_txt_label = document.getElementById('search_part_txt_label');
-	
-	// Special case for Buenos Aires.
-	if ( current_datasource.name == 'Buenos Aires' ) {
-  		search_part_txt_label.innerHTML = 
-  			'<i class="icon-filter"></i>&nbsp;'+
-			'<label class="radio inline">' +
-  			'<input type="radio" name="bsas-territory" id="bsas-provincia" value="bsas-provincia">' +
-			current_datasource.search_part_txt_label +
-			'</label>' +
-  			'<label class="radio inline">' +
-  			'<input type="radio" name="bsas-territory" id="bsas-caba" value="bsas-caba">' +
-  			'CABA' +
-			'</label>';
-  		document.getElementById('bsas-provincia').checked = true;
-	}
-	else {
-  		search_part_txt_label.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
-  		current_datasource.search_part_txt_label;
-	}
 
 	// Set Barrio info labels.
   	var partido_label = document.getElementById('partido_label');
@@ -383,6 +368,10 @@ function initMapBarriosPage() {
   	initLayer.setMap(map);
 //   	initMiniMapLayer();
 //   	initMiniLayer.setMap(mini_map);
+
+	if ( current_datasource.name == 'Buenos Aires' ) {
+  		updateMap();
+  	}
   	
   	// Show province data (all data).
   	setViewToProvincia();
@@ -470,10 +459,31 @@ function setViewToProvincia() {
 	reporting_level = is_reporting_level.provincia;
 
   	// Init numbers of villas and families and charts.
-  	queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
-  				"as families, count(" + current_datasource.sql_barrio + ") " + 
-  				"FROM " + current_datasource.id;
-	
+  	// Special case for Buenos Aires. But it's only preparation here - not used at the moment.
+	if ( current_datasource.name == 'Buenos Aires' ) {
+		issel_radio_bsas = $('input[name=bsas-territory]:checked', '.radio').val();
+		switch( issel_radio_bsas ) {
+			// Special case for CABA "Ciudad Autónoma de Buenos Aires".
+			case 'bsas-caba':
+  				queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+  							"as families, count(" + current_datasource.sql_barrio + ") " + 
+  							"FROM " + current_datasource.id + " " +
+  							"WHERE 'Departamento' = 'CABA'";
+			break;
+			// Special case for "Provincia de Buenos Aires".
+			case 'bsas-provincia':
+  				queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+  							"as families, count(" + current_datasource.sql_barrio + ") " + 
+  							"FROM " + current_datasource.id + " " +
+  							"WHERE 'Departamento' not equal to 'CABA'";
+			break;
+		}
+	}
+	else {
+  		queryText = "SELECT sum(" + current_datasource.sql_families + ") " + 
+  					"as families, count(" + current_datasource.sql_barrio + ") " + 
+  					"FROM " + current_datasource.id;
+	}
   	getFamilyNumber(reporting_level, queryText);
 
   	drawSupplyCharts(reporting_level, "map_page");
@@ -510,24 +520,29 @@ function initMiniMapLayer() {
 }
 
 /** Update Fusion Table Layer for main map. */
-function initMapLayer() {  
-  	initLayer = new google.maps.FusionTablesLayer( {
-    	suppressInfoWindows: true, // Because we have a separate listener for that.
-    	query: {
-      		select: 'Poligon',
-      		from: current_datasource.id
-    	},
-    	styles: [ {
-      		polygonOptions: {
-        		fillColor: polygon_color[current_datasource.year], // Color del plano
-        		fillOpacity: 0.3,         // Opacidad del plano
-        		strokeColor: "#000000",   // Color del margen
-        		strokeOpacity: 0.5,       // Opacidad del margen
-        		strokeWeight: 1           // Grosor del margen
-      		}
-    	} ]
-  	} );
+function initMapLayer() {
+		initLayer = new google.maps.FusionTablesLayer( {
+			suppressInfoWindows: true, // Because we have a separate listener for that.
+			query: {
+				select: 'Poligon',
+				from: current_datasource.id
+			},
+			styles: [ {
+				polygonOptions: {
+					fillColor: polygon_color[current_datasource.year], // Color del plano
+					fillOpacity: 0.3,         // Opacidad del plano
+					strokeColor: "#000000",   // Color del margen
+					strokeOpacity: 0.5,       // Opacidad del margen
+					strokeWeight: 1           // Grosor del margen
+				}
+			} ]
+		} );
   	addBarrioListener(initLayer);
+	
+	// Show provincia and CABA separately.
+	if ( current_datasource.name == 'Buenos Aires' ) {
+		updateMap();
+	}  	
 }
 
 /**
@@ -543,6 +558,79 @@ function addBarrioListener(initLayer) {
 		reporting_level = is_reporting_level.barrio;
 		showBarrioInfo(e);
   	} );
+}
+
+/** Update current map layer. Actually for Buenos Aires only. */
+function updateMap() {
+	var issel_radio_bsas = null;
+	if ( current_datasource.name == 'Buenos Aires' ) {
+		issel_radio_bsas = $('input[name=bsas-territory]:checked', '.radio').val();
+		switch( issel_radio_bsas ) {
+			// Special case for CABA "Ciudad Autónoma de Buenos Aires".
+			case 'bsas-caba':
+          		initLayer.setOptions( {
+					query: {
+						select: 'Poligon',
+						from: current_datasource.id,
+						where: "Departamento = 'CABA'"
+					},
+					styles: [ {
+						polygonOptions: {
+							fillColor: polygon_color[current_datasource.year], // Color del plano
+							fillOpacity: 0.3,         // Opacidad del plano
+							strokeColor: "#000000",   // Color del margen
+							strokeOpacity: 0.5,       // Opacidad del margen
+							strokeWeight: 1           // Grosor del margen
+						}
+					} ]
+				} );
+				setBsAsViewOptions();
+			break;
+			// Special case for "Provincia de Buenos Aires".
+			case 'bsas-provincia':
+          		initLayer.setOptions( {
+					query: {
+						select: 'Poligon',
+						from: current_datasource.id,
+						where: "Departamento not equal to 'CABA'"
+					},
+					styles: [ {
+						polygonOptions: {
+							fillColor: polygon_color[current_datasource.year], // Color del plano
+							fillOpacity: 0.3,         // Opacidad del plano
+							strokeColor: "#000000",   // Color del margen
+							strokeOpacity: 0.5,       // Opacidad del margen
+							strokeWeight: 1           // Grosor del margen
+						}
+					} ]
+				} );
+				setBsAsViewOptions();
+			break;
+		}
+	}
+}
+
+/** Set individual view options for Buenos Aires */
+function setBsAsViewOptions() {
+	if ( current_datasource.name == 'Buenos Aires' ) {
+		issel_radio_bsas = $('input[name=bsas-territory]:checked', '.radio').val();
+		switch( issel_radio_bsas ) {
+			// Special case for CABA "Ciudad Autónoma de Buenos Aires".
+			case 'bsas-caba':
+				// For CABA change midpoint and zoom in. 
+				var lat_lng = new google.maps.LatLng(-34.640552,-58.450802);
+  				map.setCenter(lat_lng);
+				map.setZoom(12);			 
+			break;
+			// Special case for "Provincia de Buenos Aires".
+			case 'bsas-provincia':
+				var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
+  													current_datasource.center_lat_lng[1]);
+  				map.setCenter(lat_lng);
+				map.setZoom(current_datasource.startZoom);
+			break;
+		}
+	}
 }
 
 /** Evaluate focus (midpoint) from a given polygon boundary. */
@@ -592,6 +680,31 @@ function getLatLngFocusFromPolygonBoundary(polygonBoundary) {
   	return result;
 }
 
+/** Set territory labels */
+function set_terri_labels(current_datasource) {
+	var search_part_txt_label_bsas = document.getElementById('search_part_txt_label_bsas');
+	var search_part_txt_label_other = document.getElementById('search_part_txt_label_other');
+
+	// Special case w/ radio buttons for Buenos Aires selection only.
+	search_part_txt_label_bsas.innerHTML = 
+		'<label class="icon-radio">' +
+		'<i class="icon-filter"></i>&nbsp;'+
+		'</label>' +
+		'<label class="radio inline">' +
+		'<input type="radio" class="bg-radio" name="bsas-territory" id="bsas-provincia" value="bsas-provincia">' +
+		'partido o localidad' +
+		'</label>' +
+		'<label class="radio inline">' +
+		'<input type="radio" class="bg-radio" name="bsas-territory" id="bsas-caba" value="bsas-caba">' +
+		'CABA' +
+		'</label>';
+	document.getElementById('bsas-provincia').checked = true;
+
+	// All other territory labels w/o radio buttons.
+  	search_part_txt_label_other.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
+  	current_datasource.search_part_txt_label;
+}
+
 /** Find municipio/departamento data for selected municipio/departamento name. */
 function findPartidoData() {	
 	var latlngArr = [];
@@ -599,7 +712,7 @@ function findPartidoData() {
   	var comma1, comma2;
   	var polygonBoundary;
   	var where_clause;
-
+	
 	if (!current_datasource.filter.municipio && !current_datasource.filter.localidad) {
 		// Creates a double call of getFamilyNumber!
 		// But if we commend these out we get a negative side effect.
@@ -620,8 +733,9 @@ function findPartidoData() {
 	}
     
     queryText = encodeURIComponent("SELECT * FROM " + current_datasource.id + where_clause);
+
   	query = new google.visualization.Query(urlVizData + queryText);
-    
+
 	query.send(function(response) {
 	    if (response.isError()) {
       		console.error('Function: findPartidoData() Error-msg: ' + 
@@ -741,6 +855,7 @@ function findBarrioData() {
     		"SELECT * FROM " + 
     			current_datasource.id + 
     		" WHERE " + current_datasource.sql_codigo + " = " + codigo);
+
   	query = new google.visualization.Query(urlVizData + queryText);
 
 	// Callback
@@ -766,13 +881,10 @@ function findBarrioData() {
       				"as families, count() FROM " + current_datasource.id +
     				" WHERE " + current_datasource.sql_codigo + " = " + codigo;
 
-		// Theres no need for this call. We have to test and observe this.....
-//     	getFamilyNumber(reporting_level, queryText);
-
     	// Extract polygon data from table.
     	var polygonBoundary = response.getDataTable().getValue(0, current_datasource.col_no_polygon);
     	lat_lng = getLatLngFocusFromPolygonBoundary(polygonBoundary);
-
+			
     	// e only has four properties, "infoWindowHtml", "latLng", "pixelOffset" and "row".
     	var e = {
     		infoWindowHtml: null,
@@ -846,9 +958,10 @@ function initSearchFieldPartido() {
 	var query = "SELECT " + 
         current_datasource.sql_municipio + ", " + 
         current_datasource.sql_localidad + 
-        'FROM ' + current_datasource.id + 
+        ' FROM ' + current_datasource.id + 
         " GROUP BY " + current_datasource.sql_municipio + ", " + 
-        current_datasource.sql_localidad;		
+        current_datasource.sql_localidad;
+        
 	var encodedQuery = encodeURIComponent(query);
 
     // Construct the URL.
@@ -908,6 +1021,35 @@ function initSearchFieldPartido() {
 	});
 }
 
+function initSearchFieldPartidoVirtual() {
+	// Special case for Buenos Aires if NOTHING (municipio or localidad) is selected!
+	// Note: If there is an explicit filter like other territories, it is handled like
+	// the others. Nothing to do here.
+	// But if there is NOT, we have nevertheless always an implicit filter condition 
+	// due to the radio buttons -> 'Provincia de Buenos Aires' or 'CABA'.
+	var result = null;
+	if ( current_datasource.name == 'Buenos Aires' && 
+		current_datasource.filter.municipio === null && 
+		current_datasource.filter.localidad === null ) {
+		// Handle implicit filter condition.
+		issel_radio_bsas = $('input[name=bsas-territory]:checked', '.radio').val();
+		switch( issel_radio_bsas ) {
+			// Special case for CABA "Ciudad Autónoma de Buenos Aires".
+			case 'bsas-caba':
+				// Prepare where clause for barrio search.			
+				result = " WHERE 'Provincia' = 'CABA'"; 
+			break;
+			// Special case for "Provincia de Buenos Aires".
+			case 'bsas-provincia':
+				// Prepare where clause for barrio search.
+				result = " WHERE 'Provincia' = 'BUENOS AIRES'"; 
+			break;
+		}
+	}
+	
+	return result;
+}
+
 /** Barrio search */
 function initSearchFieldBarrio() {
 	// Prepare query string.
@@ -915,15 +1057,26 @@ function initSearchFieldBarrio() {
 	// So only dependent barrios are selectable for users.
 	var query = "SELECT " + 
         current_datasource.sql_barrio_search_grp + 
-        'FROM ' + current_datasource.id;
+        ' FROM ' + current_datasource.id;
 
-    if (current_datasource.filter.municipio) {
-		query = query + where_mpio_name__eq__selected_name;    	
-    }
+	// Special case for Buenos Aires.
+	if ( current_datasource.name == 'Buenos Aires' && 
+		current_datasource.filter.municipio === null && 
+		current_datasource.filter.localidad === null ) {
+		var result = initSearchFieldPartidoVirtual();
+		if ( result ) {
+			query = query + result;
+		}
+	}
+	else {	
+	    if (current_datasource.filter.municipio) {
+			query = query + where_mpio_name__eq__selected_name;    	
+    	}
 
-    if (current_datasource.filter.localidad) {
-		query = query + where_loc_name__eq__selected_name;    	
-    }
+    	if (current_datasource.filter.localidad) {
+			query = query + where_loc_name__eq__selected_name;    	
+    	}
+	}
 	
 	var encodedQuery = encodeURIComponent(query);
 
@@ -973,6 +1126,9 @@ function removeAllPartidoSelections() {
 	var partido_filter = document.getElementById('search_part_txt')
   	if (!partido_filter.value) { 
   		removeAllBarrioSelections();
+		if ( current_datasource.name == 'Buenos Aires' ) {
+			updateMap();
+		}
   		return; 
   	}
 
@@ -983,8 +1139,11 @@ function removeAllPartidoSelections() {
   	initLayer.setMap(map);
 	var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
   										current_datasource.center_lat_lng[1]);
-  	map.setCenter(lat_lng);
- 	map.setZoom(current_datasource.startZoom);
+
+	if ( current_datasource.name != 'Buenos Aires' ) {
+  		map.setCenter(lat_lng);
+ 		map.setZoom(current_datasource.startZoom);
+	}
  	
  	// Remove circle from mini map.
 //  	deleteCirclesFromMiniMap();
@@ -1017,8 +1176,13 @@ function removeAllBarrioSelections() {
   		var lat_lng = new google.maps.LatLng(current_datasource.center_lat_lng[0],
   											current_datasource.center_lat_lng[1]);
 
-    	map.setCenter(lat_lng);
-    	map.setZoom(current_datasource.startZoom);
+		if ( current_datasource.name == 'Buenos Aires' ) {
+			updateMap();
+		}
+		else {
+    		map.setCenter(lat_lng);
+    		map.setZoom(current_datasource.startZoom);
+    	}
   	}
 
   	removeBarrioInfo();
@@ -1413,8 +1577,26 @@ function drawSupplyCharts(reporting_level, page) {
     	chart_base = current_datasource.filter.municipio;
   	}
   	else if(reporting_level = is_reporting_level.provincia) {
-    	where_clause = null;
-    	chart_base = is_reporting_level.provincia;
+  		// Special case for Buenos Aires.
+		if ( current_datasource.name == 'Buenos Aires' ) {
+			issel_radio_bsas = $('input[name=bsas-territory]:checked', '.radio').val();
+			switch( issel_radio_bsas ) {
+				// Special case for CABA "Ciudad Autónoma de Buenos Aires".
+				case 'bsas-caba':
+    				where_clause = " WHERE " + current_datasource.sql_municipio + " = 'CABA'";
+    				chart_base = is_reporting_level.provincia;
+				break;
+				// Special case for "Provincia de Buenos Aires".
+				case 'bsas-provincia':
+    				where_clause = " WHERE " + current_datasource.sql_municipio + " not equal to 'CABA'";
+    				chart_base = is_reporting_level.provincia;
+				break;
+			}
+		}
+		else {
+    		where_clause = null;
+    		chart_base = is_reporting_level.provincia;
+    	}
   	}
   	else {
     	where_clause = null;
@@ -1702,10 +1884,12 @@ function getFamilyNumber(reporting_level, queryText) {
 					"</strong> asentamientos informales y en la " + 
 					"Ciudad Aut&oacute;noma hay <strong>" + 
 					parseInt(tot_barrios_caba, 10).format() + 
-					"</strong>, en los que residen <strong>" + 
+					"</strong>, en los que residen,&nbsp;" + 
+					"<span style='color:#ff0000;'>aproximadamente</span>,&nbsp;<strong>" + 
 					parseInt(tot_familias_not_caba, 10).format() + 
 					"</strong> y <strong>" + parseInt(tot_familias_caba, 10).format() + 
-					"</strong> respectivamente.";
+					"</strong><span style='color:#ff0000;'>&nbsp;" + familia_caba_text +
+					"</span>&nbsp;respectivamente.";
 				}
 				else {
 					html = current_datasource.provincia_prefix_text + "&nbsp;" +

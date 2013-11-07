@@ -46,7 +46,8 @@
       		<form id="form_muni_barrio_search">
 				<!-- Municipio/Localidad Search -->
         		<fieldset>
-          		<span id="search_part_txt_label"></span>
+          		<span id="search_part_txt_label_bsas"></span>
+          		<span id="search_part_txt_label_other"></span>
           		<div class="input-append">
             		<input class="span10" id="search_part_txt" size="10" type="text" 
                     	placeholder="ingresa el nombre y pulse enter..." 
@@ -59,12 +60,12 @@
                     	onmouseout="techoBtnOnMouseOut(this)">
                     	<i class="icon-remove"></i>
             		</button>
-          		</div>
+          		</div>          		
         		</fieldset>
 
         		<!-- Barrio Search -->
         		<fieldset>
-          		<label><i class="icon-map-marker"></i>&nbsp;villa o asentamiento</label>
+          		<span><i class="icon-map-marker"></i>&nbsp;villa o asentamiento</span>
           		<div class="input-append">
             		<input class="span10" id="search_barrio_txt" size="10" type="text" 
                     	placeholder="ingresa el nombre y pulse enter..." 
@@ -247,6 +248,17 @@
 		var current_datasource = Session.get("current_datasource");
 		$('#sel_terri').select2('val', current_datasource.key);
 
+		// Set territory labels.
+		set_terri_labels(current_datasource);
+		if ( current_datasource.name == 'Buenos Aires' ) {
+			$('#search_part_txt_label_bsas').show();
+			$('#search_part_txt_label_other').hide();
+		}
+		else {
+			$('#search_part_txt_label_bsas').hide();
+			$('#search_part_txt_label_other').show();
+		}
+
   		// Init barrio tabs to first tab.
 		$(function () {
     		$('#barrio_tabs a:first').tab('show');
@@ -330,10 +342,16 @@
 			});
 			current_datasource = Session.get("current_datasource");
 			$('#sel_terri').select2('val', current_datasource.key);
-			
 
 			// Clear municipio and barrio search fields.
 			removeAllPartidoSelections();
+		});
+
+		// Change layer in dependence on selected radio button.
+		$('input[name=bsas-territory]:radio').on("change", function(e) {
+			initMapBarriosPage();
+			// Clear municipio and barrio search fields.
+			removeAllPartidoSelections();				
 		});
 
 		// Prevents the event object of selector from moving on to the next node.
@@ -371,9 +389,26 @@
 		$("#sel_terri").on("change", function(e) { 
   			e.preventDefault();
 			if (e.val) {
-				setViewToDatasource(e.val);
+				var key_check = e.val;
+				if ( key_check.indexOf('buenos_aires') >= 0 ) {
+					$('#search_part_txt_label_bsas').show();
+					$('#search_part_txt_label_other').hide();
+					document.getElementById('bsas-provincia').checked = true;
+				}
+				else {
+					$('#search_part_txt_label_bsas').hide();
+					$('#search_part_txt_label_other').show();
+				}
+				
 				// Clear municipio and barrio search fields.
-				removeAllPartidoSelections();				
+				removeAllPartidoSelections();
+				
+				setViewToDatasource(e.val);
+
+				// Set territory labels.
+				current_datasource = Session.get("current_datasource");
+  				search_part_txt_label_other.innerHTML = '<i class="icon-filter"></i>&nbsp;' + 
+  				current_datasource.search_part_txt_label;
 			}
 			return false;
 		});
