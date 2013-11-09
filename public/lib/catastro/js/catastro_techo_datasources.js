@@ -1226,7 +1226,11 @@ function dataTableHandler(response) {
     	];    	
 	}
   
-  $(document).ready(function() {
+  // Check if flash is enabled for download csv files.
+  var has_flash = has_flash_enabled();
+  var btn_csv_txt = has_flash ? "Guardar como CSV archivo" : "Guardar como CSV archivo (se requiere Flash plugin pero no está instalado)";
+  
+  $(document).ready(function() {    
     var oTable = $('#table_container').dataTable( {
       //
       // Positions of various controls end elements.
@@ -1235,6 +1239,7 @@ function dataTableHandler(response) {
       //
       // Menu buttons
       "oTableTools": {
+      	// flash must be enabled for this.
         "sSwfPath": "/lib/DataTables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf",
         "aButtons": [
           // {
@@ -1243,7 +1248,7 @@ function dataTableHandler(response) {
           // },
           {
             "sExtends": "csv",
-            "sButtonText": "Guardar como CSV archivo",
+            "sButtonText": btn_csv_txt,
             "sFileName": "techo_relevamiento_" + current_datasource.key + ".csv",
             "sFieldSeperator": ";"
           }

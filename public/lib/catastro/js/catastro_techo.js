@@ -2006,6 +2006,25 @@ function techoBtnOnMouseOut(obj) {
 Number.decPoint = ',';
 Number.thousand_sep = '.';
 
+/** Checks if flash is installed/enabled on browser */
+function has_flash_enabled() {
+	var has_flash = false;
+	
+	try { 
+		var flash_obj = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');		
+		if ( flash_obj ) {
+			has_flash = true;
+		}
+	} 
+	catch(e) { 
+		if ( navigator.mimeTypes ['application/x-shockwave-flash'] != undefined ) {
+			has_flash = true; 
+		}
+	}
+	
+	return has_flash;
+}
+
 /*
 //
 // Usage: <number_obj>.format([, number]  [, bool]  )
