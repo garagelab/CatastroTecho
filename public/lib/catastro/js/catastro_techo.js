@@ -1295,10 +1295,10 @@ function showBarrioInfo(e) {
 		var col63 = e.row[current_datasource.cols[63].name].value;
 		var col64 = e.row[current_datasource.cols[64].name].value;
 		
-		if ( col61 == '1º lugar' ) sewage = sewage_txt[1];
-		if ( col62 == '1º lugar' ) sewage = sewage_txt[2];
-		if ( col63 == '1º lugar' ) sewage = sewage_txt[3];
-		if ( col64 == '1º lugar' ) sewage = sewage_txt[4];
+		if ( col61 == '1º lugar' ) sewage = sewage_txt[0];
+		if ( col62 == '1º lugar' ) sewage = sewage_txt[1];
+		if ( col63 == '1º lugar' ) sewage = sewage_txt[2];
+		if ( col64 == '1º lugar' ) sewage = sewage_txt[3];
 		
 		// Water
 		var col67 = e.row[current_datasource.cols[67].name].value;
@@ -1307,11 +1307,11 @@ function showBarrioInfo(e) {
 		var col70 = e.row[current_datasource.cols[70].name].value;
 		var col71 = e.row[current_datasource.cols[71].name].value;
 
-		if ( col67 == '1º lugar' ) water = water_txt[1];
-		if ( col68 == '1º lugar' ) water = water_txt[2];
-		if ( col69 == '1º lugar' ) water = water_txt[3];
-		if ( col70 == '1º lugar' ) water = water_txt[4];
-		if ( col71 == '1º lugar' ) water = water_txt[5];
+		if ( col67 == '1º lugar' ) water = water_txt[0];
+		if ( col68 == '1º lugar' ) water = water_txt[1];
+		if ( col69 == '1º lugar' ) water = water_txt[2];
+		if ( col70 == '1º lugar' ) water = water_txt[3];
+		if ( col71 == '1º lugar' ) water = water_txt[4];
 
 		// Electrical
 		var col55 = e.row[current_datasource.cols[55].name].value;
@@ -1319,10 +1319,10 @@ function showBarrioInfo(e) {
 		var col57 = e.row[current_datasource.cols[57].name].value;
 		var col58 = e.row[current_datasource.cols[58].name].value;
 
-		if ( col55 == '1º lugar' ) electrical = electrical_txt[1];
-		if ( col56 == '1º lugar' ) electrical = electrical_txt[2];
-		if ( col57 == '1º lugar' ) electrical = electrical_txt[3];
-		if ( col58 == '1º lugar' ) electrical = electrical_txt[4];
+		if ( col55 == '1º lugar' ) electrical = electrical_txt[0];
+		if ( col56 == '1º lugar' ) electrical = electrical_txt[1];
+		if ( col57 == '1º lugar' ) electrical = electrical_txt[2];
+		if ( col58 == '1º lugar' ) electrical = electrical_txt[3];
 
 		// Gas
 		var col80 = e.row[current_datasource.cols[80].name].value;
@@ -1330,10 +1330,10 @@ function showBarrioInfo(e) {
 		var col82 = e.row[current_datasource.cols[82].name].value;
 		var col83 = e.row[current_datasource.cols[83].name].value;
 
-		if ( col80 == '1º lugar' ) gas = gas_txt[1];
-		if ( col81 == '1º lugar' ) gas = gas_txt[2];
-		if ( col82 == '1º lugar' ) gas = gas_txt[3];
-		if ( col83 == '1º lugar' ) gas = gas_txt[4];
+		if ( col80 == '1º lugar' ) gas = gas_txt[0];
+		if ( col81 == '1º lugar' ) gas = gas_txt[1];
+		if ( col82 == '1º lugar' ) gas = gas_txt[2];
+		if ( col83 == '1º lugar' ) gas = gas_txt[3];
 	}
   	
   	var drains = e.row[current_datasource.cols[current_datasource.col_no_drains].name].value;
@@ -1704,7 +1704,7 @@ function drawSupplyCharts(reporting_level, page) {
 // 			info_text_charts.innerHTML = "Diagramas para <strong>" + chart_base + "</strong>";
 			info_text_charts.innerHTML = "Acceso a los servicios b&aacute;sicos";
 	  	}
-
+	  	
 		if (where_clause) {
 			// Draw 'sewage' chart.
 			getFusionTableData("select 'col61', 'col62', 'col63', 'col64' from " + current_datasource.id + where_clause, set_sewage_chart);

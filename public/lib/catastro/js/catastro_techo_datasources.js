@@ -88,32 +88,32 @@ var charts = {
 };
 
 var sewage_txt = {
-	1: 'Red cloacal',
-	2: 'Cámara séptica',
-	3: 'Pozo ciego',
-	4: 'Otro'
+	0: 'Red cloacal',
+	1: 'Cámara séptica',
+	2: 'Pozo ciego',
+	3: 'Otro'
 };
 
 var water_txt = {
-	1:  'Agua corriente',
-	2:  'Conexión irregular',
-	3:  'Agua de pozo',
-	4:  'Camión Cisterna',
-	5:  'Otro'
+	0:  'Agua corriente',
+	1:  'Conexión irregular',
+	2:  'Agua de pozo',
+	3:  'Camión Cisterna',
+	4:  'Otro'
 };
 
 var electrical_txt = {
-	1:  'Red pública regular',
-	2:  'Medidor comunitario',
-	3:  'Red pública irregular',
-	4:  'No tiene',
+	0:  'Red pública regular',
+	1:  'Medidor comunitario',
+	2:  'Red pública irregular',
+	3:  'No tiene'
 };
 
 var gas_txt = {
-	1:  'Gas natural',
-	2:  'Gas en garrafa',
-	3:  'Leña o carbón',
-	4:  'Otro'
+	0:  'Gas natural',
+	1:  'Gas en garrafa',
+	2:  'Leña o carbón',
+	3:  'Otro'
 };
 
 /////////////////////////////////////////////////////////////////////
@@ -886,11 +886,11 @@ function set_sewage_chart(response) {
 		if (row[0] == '1º lugar') total[0]++;
 		if (row[1] == '1º lugar') total[1]++;
 		if (row[2] == '1º lugar') total[2]++;
-		if (row[4] == '1º lugar') total[3]++;		
+		if (row[3] == '1º lugar') total[3]++;		
 	}
-
+	
 	// Create and populate the data table.
-  	var expression = [ sewage_txt[1], sewage_txt[2], sewage_txt[3], sewage_txt[4] ];
+  	var expression = [ sewage_txt[0], sewage_txt[1], sewage_txt[2], sewage_txt[3] ];
   	var total = [ total[0], total[1], total[2], total[3] ];
 
     // Create data table object  
@@ -910,7 +910,8 @@ function set_sewage_chart(response) {
   	charts.sewage.dataTable = { value: dataTable };
   	charts.sewage.chartType = { value: "PieChart" };
   	// Brown tones.
-  	charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401', '#FF8000'] };
+//   	charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401', '#FF8000'] };
+  	charts.sewage.colors = { value: ['#8A4B08', '#61380B', '#B45F04', '#DF7401'] };
 	
 	// Set chart object.
 	var chart_object = {
@@ -924,6 +925,7 @@ function set_sewage_chart(response) {
             width: 350,
             height: 130,
             colors: charts.sewage.colors.value,
+            sliceVisibilityThreshold: 0,
             chartArea: {left:10,top:6,width:"75%",height:"85%"}
         }
     };
@@ -942,12 +944,12 @@ function set_water_chart(response) {
 		if (row[0] == '1º lugar') total[0]++;
 		if (row[1] == '1º lugar') total[1]++;
 		if (row[2] == '1º lugar') total[2]++;
-		if (row[4] == '1º lugar') total[3]++;		
-		if (row[5] == '1º lugar') total[4]++;		
+		if (row[3] == '1º lugar') total[3]++;		
+		if (row[4] == '1º lugar') total[4]++;		
 	}
 
 	// Create and populate the data table.
-  	var expression = [ water_txt[1], water_txt[2], water_txt[3], water_txt[4], water_txt[5] ];
+  	var expression = [ water_txt[0], water_txt[1], water_txt[2], water_txt[3], water_txt[4] ];
   	var total = [ total[0], total[1], total[2], total[3], total[4] ];
 
     // Create data table object  
@@ -981,6 +983,7 @@ function set_water_chart(response) {
             width: 350,
             height: 130,
             colors: charts.water.colors.value,
+            sliceVisibilityThreshold: 0,
             chartArea: {left:10,top:6,width:"75%",height:"85%"}
         }
     };
@@ -999,11 +1002,11 @@ function set_electrical_chart(response) {
 		if (row[0] == '1º lugar') total[0]++;
 		if (row[1] == '1º lugar') total[1]++;
 		if (row[2] == '1º lugar') total[2]++;
-		if (row[4] == '1º lugar') total[3]++;		
+		if (row[3] == '1º lugar') total[3]++;		
 	}
 
 	// Create and populate the data table.
-  	var expression = [ electrical_txt[1], electrical_txt[2], electrical_txt[3], electrical_txt[4] ];
+  	var expression = [ electrical_txt[0], electrical_txt[1], electrical_txt[2], electrical_txt[3] ];
   	var total = [ total[0], total[1], total[2], total[3] ];
 
     // Create data table object  
@@ -1023,7 +1026,8 @@ function set_electrical_chart(response) {
   	charts.electrical.dataTable = { value: dataTable };
   	charts.electrical.chartType = { value: "PieChart" };
   	// Yellow/Orange tones
-  	charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33', '#ff9900'] };
+  	charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33'] };
+//   	charts.electrical.colors = { value: ['#ffcc00', '#ff9933', '#ffcc66', '#ffcc33', '#ff9900'] };
 	
 	// Set chart object.
 	var chart_object = {
@@ -1037,6 +1041,7 @@ function set_electrical_chart(response) {
             width: 350,
             height: 130,
             colors: charts.electrical.colors.value,
+            sliceVisibilityThreshold: 0,
             chartArea: {left:10,top:6,width:"75%",height:"85%"}
         }
     };
@@ -1055,11 +1060,11 @@ function set_gas_chart(response) {
 		if (row[0] == '1º lugar') total[0]++;
 		if (row[1] == '1º lugar') total[1]++;
 		if (row[2] == '1º lugar') total[2]++;
-		if (row[4] == '1º lugar') total[3]++;		
+		if (row[3] == '1º lugar') total[3]++;		
 	}
 
 	// Create and populate the data table.
-  	var expression = [ gas_txt[1], gas_txt[2], gas_txt[3], gas_txt[4] ];
+  	var expression = [ gas_txt[0], gas_txt[1], gas_txt[2], gas_txt[3] ];
   	var total = [ total[0], total[1], total[2], total[3] ];
 
     // Create data table object  
@@ -1079,7 +1084,8 @@ function set_gas_chart(response) {
   	charts.gas.dataTable = { value: dataTable };
   	charts.gas.chartType = { value: "PieChart" };
   	// Red tones.
-  	charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E', '#F78181'] };
+  	charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E'] };
+//   	charts.gas.colors = { value: ['#FF0000', '#FA5858', '#8A0808', '#FE2E2E', '#F78181'] };
 	
 	// Set chart object.
 	var chart_object = {
@@ -1093,6 +1099,7 @@ function set_gas_chart(response) {
             width: 350,
             height: 130,
             colors: charts.gas.colors.value,
+            sliceVisibilityThreshold: 0,
             chartArea: {left:10,top:6,width:"75%",height:"85%"}
         }
     };
