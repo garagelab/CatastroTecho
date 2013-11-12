@@ -1242,25 +1242,27 @@ function dataTableHandler(response) {
       //
       // Positions of various controls end elements.
 
-      "sDom": 'T<"clear">lfip<"clear">rtS<"clear">ip<"clear">',
+// CSV button below is temporarily hidden.
+//      "sDom": 'T<"clear">lfip<"clear">rtS<"clear">ip<"clear">',
+     "sDom": '<"clear">lfip<"clear">rtS<"clear">ip<"clear">',
       //
       // Menu buttons
-      "oTableTools": {
+//       "oTableTools": {
       	// flash must be enabled for this.
-        "sSwfPath": "/lib/DataTables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf",
-        "aButtons": [
+//         "sSwfPath": "/lib/DataTables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf",
+//         "aButtons": [
           // {
           //   "sExtends": "copy",
           //   "sButtonText": "Copiar al clipboard"
           // },
-          {
-            "sExtends": "csv",
-            "sButtonText": btn_csv_txt,
-            "sFileName": "techo_relevamiento_" + current_datasource.key + ".csv",
-            "sFieldSeperator": ";"
-          }
-        ]
-      },
+//           {
+//             "sExtends": "csv",
+//             "sButtonText": btn_csv_txt,
+//             "sFileName": "techo_relevamiento_" + current_datasource.key + ".csv",
+//             "sFieldSeperator": ";"
+//           }
+//         ]
+//       },
       //
       // Translations
       "oLanguage": {
