@@ -155,7 +155,7 @@
 
 #selector {
   left: 90px; /*78*/
-  top: 50px; /*60*/
+  top: 90px; /*50*/
   position: absolute;
   color: black;
 }
@@ -187,7 +187,7 @@
   	width: 420px;
 	background-image: url(/images/widget-bg.png);
 /*   	background: rgba(220,220,220,0.8); */
-  	top: 50px; /*60*/
+  	top: 90px; /*50*/
   	left: 413px; /*408*/
   	z-index: 100;
   	position: absolute;

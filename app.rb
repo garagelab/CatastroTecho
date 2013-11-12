@@ -89,10 +89,10 @@ class Techo < Sinatra::Base
 
 	## HTTP authentication
 	# We protect all requests (for all directories, etc.) in the application.
- 	userinfo = "Por favor, ingrese para tener acceso a la información.".encode(Encoding::ISO_8859_1)
- 	use Rack::Auth::Basic, userinfo do |username, password|
-   		username == 'catastro' and password == 'utpmp'
- 	end
+#  	userinfo = "Por favor, ingrese para tener acceso a la información.".encode(Encoding::ISO_8859_1)
+#  	use Rack::Auth::Basic, userinfo do |username, password|
+#    		username == 'catastro' and password == 'utpmp'
+#  	end
 
 	#################################################################
 	### Controller/Handler

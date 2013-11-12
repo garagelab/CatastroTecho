@@ -327,7 +327,7 @@ function initMapBarriosPage() {
    		mapTypeControl: true,
     	mapTypeControlOptions: {
         	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-        	position: google.maps.ControlPosition.LEFT_TOP
+        	position: google.maps.ControlPosition.LEFT_CENTER
     	},    	
 //     	overviewMapControl: true,
 // 	    overviewMapControlOptions: {
@@ -336,11 +336,11 @@ function initMapBarriosPage() {
 // 		},
 		zoomControlOptions: {
       		style: google.maps.ZoomControlStyle.SMALL,
-      		position: google.maps.ControlPosition.TOP_LEFT
+      		position: google.maps.ControlPosition.LEFT_CENTER
     	},
     	panControl: true,
     	panControlOptions: {
-        	position: google.maps.ControlPosition.TOP_LEFT
+        	position: google.maps.ControlPosition.LEFT_CENTER
     	},
     	streetViewControl: false
   	} );

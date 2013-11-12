@@ -241,7 +241,7 @@
 }
 </style>
 
-  <body style="padding-top: 50px;">
+  <body style="padding-top: 90px;">
 
 	<!-- Various modal content.
 	Please note:
@@ -432,56 +432,28 @@
     ================================================== -->
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" id="techo-link" href="http://www.techo.org.ar" target="_blank">
-            <img src="/images/logo_techo_trans1.png" class="pull-left" />
-          </a>
-          <a style="padding-left:5px" class="brand" href="/">Relevamiento Argentina</a>
-
-          <ul class="nav">
-            <% if request.path_info == '/' %>
-              <li class="active">
-            <% else %>
-              <li>
-            <% end %>
-            <a href="/">Inicio</a></li>
-
-            <% if request.path_info == '/content/mapa-de-barrios' %>
-              <li class="active">
-            <% else %>
-              <li>
-            <% end %>
-            <a href="/content/mapa-de-barrios">Mapa</a></li>
-
-            <% if request.path_info == '/content/tabla-de-barrios' %>
-              <li class="active">
-            <% else %>
-              <li>
-            <% end %>
-            <a href="/content/tabla-de-barrios">Tabla</a></li>
-
-            <% if request.path_info == '/content/faq' %>
-              <li class="active">
-            <% else %>
-              <li>
-            <% end %>
-            <a href="/content/faq">FAQ</a></li>
-
-            <% if request.path_info == '/content/contact' %>
-              <li class="active">
-            <% else %>
-              <li>
-            <% end %>
-            <a href="/content/contact">Contacto</a></li>
-          </ul>
-
-          <ul class="nav pull-right">
-            <li>
-            	<a style="padding-right:2px" href="http://www.garagelab.cc/" target="_blank">Con el apoyo de&nbsp;</a>     
-            </li>
-            <li>
-            	<a style="padding-left:0;" type="padding-left:0;" href="http://www.garagelab.cc/" target="_blank"><img src="/images/logo_garagelab_trans1.png" /></a>
-            </li>
+        <div class="container" style="background-color: #727175;">
+			<ul class="nav">
+          		<!-- Home Techo logo -->			
+            	<li><a style="padding:0;" href="/"><img src="/images/logo_techo.png" height="80" width="212" class="pull-left"/></a></li>
+          		<!-- Methodology -->
+              	<li style="padding-left:10px;"><a href="/content/methodology"><img src="/images/methodology.png" height="24" width="104"/></a></li>
+              	<li><a href=""><img src="/images/divider.png" height="24" width="6"/></a></li>
+          		<!-- FAQs -->
+              	<li><a href="/content/faq"><img src="/images/faqs.png" height="24" width="37"/></a></li>
+              	<li><a href=""><img src="/images/divider.png" height="24" width="6"/></a></li>
+          		<!-- Contact -->
+              	<li><a href="/content/contact"><img src="/images/contact.png" height="24" width="75"/></a></li>
+              	<li><a href=""><img src="/images/divider.png" height="24" width="6"/></a></li>
+          		<!-- Table -->
+              	<li><a href="/content/tabla-de-barrios"><img src="/images/table.png" height="24" width="47"/></a></li>
+              	<li><a href=""><img src="/images/divider.png" height="24" width="6"/></a></li>
+          		<!-- Territory -->
+            	<li><a href="/content/mapa-de-barrios"><img src="/images/territory.png" height="24" width="88"/></a></li>
+          		<!-- Download information -->
+              	<li><a href="/downloads/Relevamientos_de_asentamientos_2013_BAJA.pdf" target="_blank"><img src="/images/download_info.png" height="55" width="127"/></a></li>
+          		<!-- Garagelab logo -->
+            	<li><a style="padding:0; margin-left:10px;" href="http://www.garagelab.cc/" target="_blank"><img src="/images/logo_garagelab.png" height="73" width="151" class="pull-right"/></a></li>
           </ul>
         </div>
       </div>

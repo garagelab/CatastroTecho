@@ -16,6 +16,7 @@
 			</div>
 
 			<!-- Methodology and information for download -->
+<!-- 
     		<div class="methodology_and_information">
 				<ul class="breadcrumb information-space-reducer">
  					<li id="2013"><a href="#">2013</a>&nbsp;&nbsp;</li>
@@ -29,6 +30,7 @@
   					</li>  
 				</ul>
 			</div>
+ -->
 
         	<!-- Territory search -->
 			<div>
@@ -281,7 +283,7 @@
             tabLocation: 'right',   //side of screen where tab lives, top, right, bottom, or left
             speed: 250,             //speed of animation - smaller value means faster.
             action: 'click',        //options: 'click' or 'hover', action to trigger animation
-            topPos: '50px',         //position from the top/ use if tabLocation is left or right
+            topPos: '90px',         //position from the top/ use if tabLocation is left or right
             leftPos: '100px',       //position from left/ use if tabLocation is bottom or top
             fixedPosition: true     //options: true makes it stick(fixed position) on scroll
         	});
@@ -382,7 +384,8 @@
 		// Repositioning control panel.
 		$('#reset-control-panel-pos').click(function (e) {
   			e.preventDefault();
-			$("#selector").css({ left: "90px", top: "50px", position: "absolute" });
+// 			$("#selector").css({ left: "90px", top: "50px", position: "absolute" });
+			$("#selector").css({ left: "90px", top: "90px", position: "absolute" });
  		});	
  
 		// Get selected territory and set new datasource.
