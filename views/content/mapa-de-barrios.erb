@@ -436,6 +436,10 @@
 
 		// >> All functions below to prevent tab slide out from close.
 		// This is an ugly solution. Perhaps a better will be found.
+		$(".navbar").on("click", function(e) { 
+ 			e.stopPropagation();
+		});
+
 		$("#search_part_txt").on("click", function(e) { 
   			e.preventDefault();
   			return false;
