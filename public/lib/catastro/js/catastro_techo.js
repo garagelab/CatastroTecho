@@ -327,7 +327,7 @@ function initMapBarriosPage() {
    		mapTypeControl: true,
     	mapTypeControlOptions: {
         	style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-        	position: google.maps.ControlPosition.LEFT_TOP
+        	position: google.maps.ControlPosition.LEFT_CENTER
     	},    	
 //     	overviewMapControl: true,
 // 	    overviewMapControlOptions: {
@@ -336,11 +336,11 @@ function initMapBarriosPage() {
 // 		},
 		zoomControlOptions: {
       		style: google.maps.ZoomControlStyle.SMALL,
-      		position: google.maps.ControlPosition.TOP_LEFT
+      		position: google.maps.ControlPosition.LEFT_CENTER
     	},
     	panControl: true,
     	panControlOptions: {
-        	position: google.maps.ControlPosition.TOP_LEFT
+        	position: google.maps.ControlPosition.LEFT_CENTER
     	},
     	streetViewControl: false
   	} );
@@ -1987,6 +1987,26 @@ function techoBtnOnMouseOut(obj) {
     document.getElementById(id).style.cursor='default';
   }
   return false;
+}
+
+// Show notification "Estamos en beta".
+// Realized with Gritter.
+// See also: http://boedesign.com/blog/2009/07/11/growl-for-jquery-gritter/
+function show_beta_notice() {
+	var unique_id = $.gritter.add({
+		title: 'Estamos en beta.',
+		text: 'Si encontr&aacute;s alg&uacute;n error, ' + 
+				'tenes alguna sugerencia o simplemente queres hablar ' +
+				'con nosotros, escribinos a ' +
+				'<a href="mailto:cis.argentina@techo.org">cis.argentina@techo.org</a>.',
+		image: '/images/info.png',
+		// (bool | optional) if you want it to fade out on its own or just sit there
+		sticky: true,
+		// Time in milliseconds, e.g. 2000 = 2 seconds. If sticky equal false only.
+		time: '8000',
+		// (string | optional) the class name you want to apply to that specific message
+		class_name: 'my-sticky-class'
+	});
 }
 
 /////////////////////////////////////////////////////////////////////

@@ -155,7 +155,7 @@
 
 #selector {
   left: 90px; /*78*/
-  top: 50px; /*60*/
+  top: 90px; /*50*/
   position: absolute;
   color: black;
 }
@@ -187,7 +187,7 @@
   	width: 420px;
 	background-image: url(/images/widget-bg.png);
 /*   	background: rgba(220,220,220,0.8); */
-  	top: 50px; /*60*/
+  	top: 90px; /*50*/
   	left: 413px; /*408*/
   	z-index: 100;
   	position: absolute;
@@ -466,3 +466,181 @@ label.error {
 .bg-radio {
 	background-image: url(/images/widget-bg.png);
 }
+
+
+
+
+
+.default-caption {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    text-align: center;
+    font-family: DinCondBold, Helvetica, Arial, sans-serif;
+    font-size: 35px;
+    color: #8b8b8b;
+}
+
+#faqtext  {
+	margin-left: auto;
+	margin-right: auto;
+    padding: 0 35px;
+/*     float: left; */
+    width: 600px;
+    text-align: justify;
+}
+
+#infotext  {
+    padding: 0 35px;
+    float: left;
+    width: 358px;
+    text-align: justify;
+}
+
+#infotecho, #infocis {
+    padding: 0 35px;
+    float: left;
+    width: 358px;
+    text-align: justify;
+}
+
+#infocis {
+    float: right;
+}
+
+    #infotecho p, #infocis p, #infotext p, #faqtext p {
+        clear: both;
+        font-family: DinLightAlter, Helvetica, Arial, sans-serif;
+        color: #8b8b8b;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+        #infotecho p b, #infocis p b, #infotext p b, #faqtext p b {
+            font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        }
+
+    #infotecho .title, #infocis .title, #infotext .title, #faqtext .title {        
+        font-family: DinCondBold, Helvetica, Arial, sans-serif;
+        color: #009cdd;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 25px;
+    }
+
+    #infocis .title {
+        color: #c25b32;
+    }
+
+    #infotext .title {
+        color: #009cdd;
+        width: 100%;
+    }
+
+    #faqtext .title {
+        color: #009cdd;
+        width: 100%;
+    }
+
+        #infotecho .title div,  #infocis .title div, #infotext .title div, #faqtext .title div {
+            float: left;
+        }
+
+            #infotecho .title div:nth-of-type(2), 
+            #infocis .title div:nth-of-type(2),
+            #infotext .title div:nth-of-type(2),
+            #faqtext .title div:nth-of-type(2) {
+                width: 158px;
+            }
+
+        #infotecho .title .doubleline,
+        #infocis .title .doubleline,
+        #infotext .title .doubleline,
+        #faqtext .title .doubleline {
+            width: 100px;
+            height: 3px;
+            border-top: solid 1px #009cdd;
+            border-bottom: solid 1px #009cdd;
+            margin-top: 14px;
+        }
+        #infocis .title .doubleline {
+            border-top: solid 1px #c25b32;
+            border-bottom: solid 1px #c25b32;        
+        }
+
+        #infotecho .title b, #infocis .title b, #infotext .title b, #faqtext .title b {
+            font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        }
+
+    #infocis .rayas {
+        margin-top: 12px;
+    }
+
+section {
+    margin: 24px 0;
+}
+
+#title {
+    width: 424px;
+    margin: 0 auto;
+    text-align: center;
+    color: #757374;
+}
+
+    #title .techologo {
+        height: 50px;
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+
+    #title .linea1 {
+        font-family: DinCondBold, Helvetica, Arial, sans-serif;
+        font-size: 45px;
+    }
+
+        #title .linea1 * {
+            float: left;
+        }
+
+        #title .linea1 img {
+            margin-top: 15px;
+        }
+
+        #title .linea1 div {
+            width: 306px;
+        }
+
+    #title .linea2 {
+        clear: left;
+        font-family: DinCondLight, Helvetica, Arial, sans-serif;
+        font-size: 45px;
+    }
+
+    #title .linea3 {
+        clear: left;
+        font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #fff;
+    }
+
+        #title .linea3 * {
+            float: left;
+        }
+
+        #title .linea3 .year {
+            margin: 0 26px;
+            width: 40px;
+            height: 16px;
+            border-radius: 20px;
+            background-color: #757374;
+            padding: 7px 0 17px 0;
+        }
+
+        #title .linea3 .doubleline {
+            width: 166px;
+            height: 3px;
+            border-top: solid 1px #757374;
+            border-bottom: solid 1px #757374;
+            margin-top: 17px;
+        }
