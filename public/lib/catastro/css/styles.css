@@ -1,0 +1,550 @@
+﻿html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url(../img/fondo.png);
+    font-family: DinCondMedium, Helvetica, Arial, sans-serif;
+}
+
+    body > div {
+        width: 864px;
+        margin: 0 auto;
+        background: #fff;
+        box-shadow: 0 0 40px 2px rgba(0,0,0,0.2);
+    }
+
+img{ border: none; }
+
+section {
+    margin: 24px 0;
+}
+
+header.home {
+    width: 100%;
+    height: 430px;
+    background-image: url(../img/header.jpg);
+}
+
+    header ul.social {
+        float: right;
+        margin: 37px 45px 0 0 !important;
+    }
+
+header.other {
+    width: 100%;
+    height: 120px;
+    background-color: #727175;
+}
+
+ul.menu {
+    padding-top: 0;
+    padding-left: 0;
+    margin: 0;
+    list-style-type: none;
+}
+    ul.menu li {
+        float: left;
+        height: 80px;
+        margin-right: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 20px;
+        font-family: DinCondMedium, Helvetica, Arial, sans-serif;
+/*         text-transform: uppercase; */
+        color: #ffffff;
+    }
+
+    ul.menu li a {
+        display: block;
+        text-decoration: none;
+/*         text-transform: uppercase; */
+        text-align: center;
+        font-family: DinCondMedium, Helvetica, Arial, sans-serif;
+        font-size: 20px;
+        color: #ffffff;
+    }
+
+ul.social {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+    ul.social li {
+        float: left;
+        width: 37px;
+        height: 37px;
+        margin-right: 14px;
+    }
+
+        ul.social li:last-child {
+            margin-right: 0;
+        }
+
+        ul.social li a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+    ul.social .facebook {
+        background-image: url(../img/facebook.png);
+    }
+
+    ul.social .twitter {
+        background-image: url(../img/twitter.png);
+    }
+
+    ul.social .mail {
+        background-image: url(../img/mail.png);
+    }
+
+header.other #territory {
+	float: left;
+	margin-left: 525px;
+	margin-top: -53px;
+}
+
+#title {
+    width: 424px;
+    margin: 0 auto;
+    text-align: center;
+    color: #757374;
+}
+
+    #title .techologo {
+        height: 50px;
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+
+    #title .linea1 {
+        font-family: DinCondBold, Helvetica, Arial, sans-serif;
+        font-size: 45px;
+    }
+
+        #title .linea1 * {
+            float: left;
+        }
+
+        #title .linea1 img {
+            margin-top: 15px;
+        }
+
+        #title .linea1 div {
+            width: 306px;
+        }
+
+    #title .linea2 {
+        clear: left;
+        font-family: DinCondLight, Helvetica, Arial, sans-serif;
+        font-size: 45px;
+    }
+
+    #title .linea3 {
+        clear: left;
+        font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #fff;
+    }
+
+        #title .linea3 * {
+            float: left;
+        }
+
+        #title .linea3 .year {
+            margin: 0 26px;
+            width: 40px;
+            height: 16px;
+            border-radius: 20px;
+            background-color: #757374;
+            padding: 7px 0 17px 0;
+        }
+
+        #title .linea3 .doubleline {
+            width: 166px;
+            height: 3px;
+            border-top: solid 1px #757374;
+            border-bottom: solid 1px #757374;
+            margin-top: 17px;
+        }
+
+#servicios {
+    width: 450px;
+    text-align: center;
+    color: #808080;
+    float: right;
+}
+
+    #servicios a {
+        text-decoration: none;
+    }
+
+    #servicios .video {
+        margin: 0 auto;
+    }
+
+    #servicios ul {
+        width: 400px;
+        padding: 0;
+        margin: 0 auto;
+        list-style-type: none;
+    }
+
+        #servicios ul li {
+            position: relative;
+            text-align: center;
+            margin: 0 25px;
+            height: 200px;
+            width: 150px;
+            float: left;
+        }
+
+            #servicios ul li:nth-child(2n+1) {
+                clear: left;
+            }
+
+    #servicios .servicio-container {
+        -webkit-transition: all 0.2s;
+        background-color: #fff;
+        transition: all 0.2s;
+        position: absolute;
+        padding: 0 5px;
+        height: 166px;
+        width: 140px;
+        bottom: 0;
+    }
+
+        #servicios .servicio-container:hover {
+            box-shadow: 0 -7px 10px 2px rgba(0,0,0,0.2);
+            height: 266px;
+        }
+
+    #servicios .servicio-desc {
+        font-family: DinCondBold, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #757374;
+        display: block;
+    }
+
+    #servicios .servicio-porc {
+        font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        color: #009bdb;
+        display: block;
+        font-size: 40px;
+    }
+
+    #servicios .servicio-detail {
+        font-family: DinCondMediumAlter, Helvetica, Arial, sans-serif;
+        -webkit-transition: height 0.2s;
+        transition: height 0.2s;
+        text-align: justify;
+        overflow: hidden;
+        font-size: 13px;
+        display: block;
+        color: #757374;
+        height: 0;
+    }
+
+    #servicios .servicio-container:hover .servicio-detail {
+        height: 100px;
+    }
+
+#mapa {
+    float: left;
+    width: 377px;
+    height: 687px;
+    margin-left: 37px;
+    background-image: url(../img/mapa.png);
+    position: relative;
+}
+
+    #mapa .circle {
+        background-color: #59b0e5;
+        border-radius: 5px;
+        position: absolute;
+        display: block;
+        opacity: 0.5;
+        height: 9px;
+        width: 9px;
+        z-index: 1;
+    }
+
+    #mapa .marker {
+        position: absolute;
+    }
+
+        #mapa .marker div {
+            position: relative;
+            width: 47px;
+            height: 58px;
+        }
+
+        #mapa .marker .marker-icon {
+            background-image: url(../img/marker.png);
+            display: block;
+            width: 47px;
+            height: 58px;
+            cursor: pointer;
+            position: absolute;
+            z-index: 2;
+        }
+            #mapa .marker .marker-icon:hover {
+                background-image: url(../img/markerhover.png);
+            }
+
+        #mapa .marker .marker-circle {
+            transition: all 0.2s;
+            -webkit-transition: all 0.2s;
+            display: block;
+            width: 0;
+            height: 0;
+            border-radius: 30px;
+            border: solid 0 #fff;
+            background-color: #59b0e5;
+            box-shadow: 0 0 1px 1px #59b0e5;
+            opacity: 0.3;
+            position: absolute;
+            top: 47px;
+            left: 28px;
+            z-index: 1;
+        }
+
+        #mapa .marker:hover .marker-circle {
+            border-width: 5px;
+            width: 50px;
+            height: 50px;
+            top: 19px;
+            left: -6px;
+        }
+
+    #mapa #salta {
+        top: 85px;
+        left: 110px;
+    }
+
+    #mapa #misiones {
+        top: 127px;
+        left: 270px;
+    }
+
+    #mapa #santafe {
+        top: 194px;
+        left: 189px;
+    }
+
+    #mapa #cordoba {
+        top: 210px;
+        left: 130px;
+    }
+
+    #mapa #bsas {
+        top: 258px;
+        left: 216px;
+    }
+
+    #mapa #bsas2 {
+        top: 312px;
+        left: 242px;
+    }
+
+    #mapa #bsas3 {
+        top: 320px;
+        left: 210px;
+    }
+
+    #mapa #neuquen {
+        top: 342px;
+        left: 76px;
+    }
+
+    #mapa #neuquen2 {
+        top: 395px;
+        left: 85px;
+    }
+
+    #mapa #rionegro {
+        top: 360px;
+        left: 110px;
+    }
+
+.rayas {
+    height: 29px;
+    background-image: url(../img/patron.jpg);
+}
+
+.default-caption {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    text-align: center;
+    font-family: DinCondBold, Helvetica, Arial, sans-serif;
+    font-size: 35px;
+    color: #8b8b8b;
+}
+
+ul {
+	clear: both;
+	font-family: DinLightAlter, Helvetica, Arial, sans-serif;
+	color: #8b8b8b;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+#faqtext  {
+	margin-left: auto;
+	margin-right: auto;
+    padding: 0 35px;
+/*     float: left; */
+    width: 600px;
+    text-align: justify;
+}
+
+#infotext  {
+    padding: 0 35px;
+    float: left;
+    width: 358px;
+    text-align: justify;
+}
+
+#infotecho, #infocis {
+    padding: 0 35px;
+    float: left;
+    width: 358px;
+    text-align: justify;
+}
+
+#infocis {
+    float: right;
+}
+
+    #infotecho p, #infocis p, #infotext p, #faqtext p {
+        clear: both;
+        font-family: DinLightAlter, Helvetica, Arial, sans-serif;
+        color: #8b8b8b;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+        #infotecho p b, #infocis p b, #infotext p b, #faqtext p b {
+            font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        }
+
+    #infotecho .title, #infocis .title, #infotext .title, #faqtext .title {        
+        font-family: DinCondBold, Helvetica, Arial, sans-serif;
+        color: #009cdd;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 25px;
+    }
+
+    #infocis .title {
+        color: #c25b32;
+    }
+
+    #infotext .title {
+        color: #009cdd;
+        width: 100%;
+    }
+
+    #faqtext .title {
+        color: #009cdd;
+        width: 100%;
+    }
+
+        #infotecho .title div,  #infocis .title div, #infotext .title div, #faqtext .title div {
+            float: left;
+        }
+
+            #infotecho .title div:nth-of-type(2), 
+            #infocis .title div:nth-of-type(2),
+            #infotext .title div:nth-of-type(2),
+            #faqtext .title div:nth-of-type(2) {
+                width: 158px;
+            }
+
+        #infotecho .title .doubleline,
+        #infocis .title .doubleline,
+        #infotext .title .doubleline,
+        #faqtext .title .doubleline {
+            width: 100px;
+            height: 3px;
+            border-top: solid 1px #009cdd;
+            border-bottom: solid 1px #009cdd;
+            margin-top: 14px;
+        }
+        #infocis .title .doubleline {
+            border-top: solid 1px #c25b32;
+            border-bottom: solid 1px #c25b32;        
+        }
+
+        #infotecho .title b, #infocis .title b, #infotext .title b, #faqtext .title b {
+            font-family: DinCondBlack, Helvetica, Arial, sans-serif;
+        }
+
+    #infocis .rayas {
+        margin-top: 12px;
+    }
+
+#contacto img {
+    width: 30px;
+    float: left;
+}
+
+#contacto span {
+    margin-top: 7px;
+    font-family: DinLightAlter, Helvetica, Arial, sans-serif;
+    display: block;
+    float: left;
+}
+
+#contacto a {
+    font-family: DinCondBold, Helvetica, Arial, sans-serif;
+    text-decoration: none;
+    color: #8b8b8b;
+}
+
+input {
+	width: 150px;
+}
+
+footer {
+    margin-top: 25px;
+    height: 141px;
+    background-image: url(../img/footer.jpg);
+}
+
+    footer section {
+        font-family: DinCondMedium, Helvetica, Arial, sans-serif;
+        margin-left: 50px;
+        float: left;
+        color: #fff;
+    }
+
+        footer section.logos {
+            margin-top: 10px;
+        }
+
+    footer h4 {
+        border-bottom: solid 1px #fff;
+        font-weight: normal;
+        padding: 0 0 5px 0;
+        margin: 0 0 5px 0;
+        font-size: 20px;
+    }
+
+    footer a {
+        text-decoration: none;
+        color: #fff;
+    }
+    
+	footer a:hover {
+  		text-decoration: none;
+  		color: #fff;
+	}
+    

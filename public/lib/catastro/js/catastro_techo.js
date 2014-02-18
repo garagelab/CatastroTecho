@@ -1989,6 +1989,26 @@ function techoBtnOnMouseOut(obj) {
   return false;
 }
 
+// Show notification "Estamos en beta".
+// Realized with Gritter.
+// See also: http://boedesign.com/blog/2009/07/11/growl-for-jquery-gritter/
+function show_beta_notice() {
+	var unique_id = $.gritter.add({
+		title: 'Estamos en beta.',
+		text: 'Si encontr&aacute;s alg&uacute;n error, ' + 
+				'tenes alguna sugerencia o simplemente queres hablar ' +
+				'con nosotros, escribinos a ' +
+				'<a href="mailto:cis.argentina@techo.org">cis.argentina@techo.org</a>.',
+		image: '/images/info.png',
+		// (bool | optional) if you want it to fade out on its own or just sit there
+		sticky: true,
+		// Time in milliseconds, e.g. 2000 = 2 seconds. If sticky equal false only.
+		time: '8000',
+		// (string | optional) the class name you want to apply to that specific message
+		class_name: 'my-sticky-class'
+	});
+}
+
 /////////////////////////////////////////////////////////////////////
 // Prototypes for global using.
 /////////////////////////////////////////////////////////////////////
